@@ -29,10 +29,10 @@
       <li class="breadcrumb-item">
         <a href="#">หน้าแรก</a>
       </li>
-      <li class="breadcrumb-item active">ศูนย์ต้นทุน</li>
+      <li class="breadcrumb-item active">แผนก/ฝ่าย</li>
     </ol>
     <!-- end breadcrumb -->
-  
+
   </main>
 @endsection
 
