@@ -9,7 +9,7 @@
       </li>
       <li class="nav-item nav-dropdown {{ (request()->is('/water/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon icon-puzzle"></i> งบประมาณ</a>
+          <i class="nav-icon fa fa-money"></i> งบประมาณ</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('water/import')) ? 'active' : '' }}" href="{{ route('wimport') }}">
@@ -24,7 +24,7 @@
       @if(Auth::user()->type ==1)
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="{{ route('register') }}" >
-          <i class="nav-icon icon-doc"></i> Register</a>
+          <i class="nav-icon icon-people"></i> Register</a>
       </li>
       @endif
     </ul>

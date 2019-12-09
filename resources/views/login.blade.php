@@ -62,7 +62,7 @@
                           {{ session()->get('message') }}
                       </div>
                   @endif
-                  <h1>Login</h1>
+                  <h1>Login <span style="font-size:23px;">ระบบงบประมาณ</span></h1>
                   <p class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</p>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
