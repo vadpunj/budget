@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBudgetsTable extends Migration
+class CreateLogUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateBudgetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('budgets', function (Blueprint $table) {
+        Schema::create('log_users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->char('list');
-            $table->text('detail');
-            $table->double('money');
-            $table->integer('year');
-            $table->string('branch');
-            $table->char('remark');
+            $table->string('user_id',10);
+            $table->char('path');
+            $table->char('type_log');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateBudgetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('budgets');
+        Schema::dropIfExists('log_users');
     }
 }

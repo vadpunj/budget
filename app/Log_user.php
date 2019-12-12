@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Budget extends Model
+class Log_user extends Model
 {
-    protected $table = 'budgets';
+    protected $table = 'log_users';
 }

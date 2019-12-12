@@ -26,26 +26,11 @@ Route::get('/logout', "UserController@logout")->name('logout');
 Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_source')->name('home');
   Route::post('/home', 'InputController@post_data')->name('insert');
-  // Route::get('/home/insert', 'InputController@test_input')->name('insert');
-  Route::get('/list', 'InputController@list_data')->name('list');
   Route::post('/find/branch', 'InputController@ajax_data');
-  // Route::get('/upload/readfile',function(){
-  //     return view('readfile');
-  //   })->name('upload');
-  // Route::get('/export', 'InputController@export')->name('export');
-  Route::group(['prefix' => 'electric'], function(){
-    Route::get('/import_excel', 'ImportExcelController@index_electric')->name('eimport');
+  Route::group(['prefix' => 'budget'], function(){
+    Route::get('/import_excel', 'ImportExcelController@index_electric')->name('import');
     Route::post('/import_excel/import', 'ImportExcelController@import_electric');
-
-    Route::get('/export_excel', 'ExportExcelController@index_electric')->name('eexport');
+    Route::get('/export_excel', 'ExportExcelController@index_electric')->name('export');
     Route::post('/export_excel/export', 'ExportExcelController@export_electric');
   });
-  Route::group(['prefix' => 'water'], function(){
-    Route::get('/import_excel', 'ImportExcelController@index_water')->name('wimport');
-    Route::post('/import_excel/import', 'ImportExcelController@import_water');
-
-    Route::get('/export_excel', 'ExportExcelController@index_water')->name('wexport');
-    Route::post('/export_excel/export', 'ExportExcelController@export_water');
-  });
-
 });

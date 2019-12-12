@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Budget extends Model
+class Delete extends Model
 {
-    protected $table = 'budgets';
+    protected $table = 'delete_logs';
 }

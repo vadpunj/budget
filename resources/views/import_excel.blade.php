@@ -26,7 +26,7 @@
     <li class="breadcrumb-item">
       <a href="#">หน้าแรก</a>
     </li>
-    <li class="breadcrumb-item active">Import file {{ $type }}</li>
+    <li class="breadcrumb-item active">Import file</li>
   </ol>
    <h3 align="center">Import Excel File</h3>
 
@@ -48,7 +48,7 @@
    </div>
    @endif
    <div class="card-body">
-   <form method="post" enctype="multipart/form-data" action="{{ url($type.'/import_excel/import') }}">
+   <form method="post" enctype="multipart/form-data" action="{{ url('/import_excel/import') }}">
     {{ csrf_field() }}
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Time Key</label>
