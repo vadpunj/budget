@@ -37,30 +37,7 @@
 @endsection
 
 @section('js')
-<script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
-  <script>
-  function myfunc(){
-    var x = document.getElementById("branch").value;
-    $.ajaxSetup({
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
-    $.ajax({
-        type: 'POST',
-        url: '/find/branch',
-        data: {data:x},
-        dataType: "json",
-        success: function (json) {
-          document.getElementById("demo").innerHTML = json.success;
-        },
-        error: function (e) {
-            console.log(e.message);
-        }
-    });
-  }
-
-  </script>
+  <script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/popper.js/dist/umd/popper.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>

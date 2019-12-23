@@ -28,9 +28,9 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/home', 'InputController@post_data')->name('insert');
   Route::post('/find/branch', 'InputController@ajax_data');
   Route::group(['prefix' => 'budget'], function(){
-    Route::get('/import_excel', 'ImportExcelController@index_electric')->name('import');
-    Route::post('/import_excel/import', 'ImportExcelController@import_electric');
-    Route::get('/export_excel', 'ExportExcelController@index_electric')->name('export');
-    Route::post('/export_excel/export', 'ExportExcelController@export_electric');
+    Route::get('/import_excel', 'ImportExcelController@index_budget')->name('import');
+    Route::post('/import_excel/import', 'ImportExcelController@import_budget');
+    Route::get('/export_excel', 'ExportExcelController@index_budget')->name('export');
+    Route::post('/export_excel/export', 'ExportExcelController@export_budget');
   });
 });

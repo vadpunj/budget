@@ -29,7 +29,7 @@
       <li class="breadcrumb-item">
         <a href="#">หน้าแรก</a>
       </li>
-      <li class="breadcrumb-item active">Export file {{ $type }}</li>
+      <li class="breadcrumb-item active">Export file budget</li>
     </ol>
    @if($message = Session::get('success'))
    <div class="alert alert-success alert-block">
@@ -42,12 +42,12 @@
        <h3 align="center">Export File</h3>
         <div class="form-group">
           <button class="btn btn-primary mb-1" type="button" data-toggle="modal" data-target="#myModal">Export</button>
-          {{--<a class="btn btn-primary" href="{{url($type.'/export_excel/export')}}">Export</a>--}}
+          {{--<a class="btn btn-primary" href="{{url('budget/export_excel/export')}}">Export</a>--}}
         </div>
 
-       <div class="panel panel-default">
+      <div class="panel panel-default">
         <div class="panel-heading">
-         <h3 class="panel-title">{{ ucfirst($type).' Data'}}</h3>
+         <h3 class="panel-title">{{ 'Budget Data'}}</h3>
         </div>
         <table class="table table-responsive-sm table-bordered myTable">
           <thead>
@@ -78,9 +78,9 @@
           </tbody>
         </table>
       </div>
-     </div>
-   </div>
- </main>
+      </div>
+    </div>
+  </main>
 
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -91,7 +91,7 @@
            <span aria-hidden="true">×</span>
          </button>
         </div>
-        <form action="{{ url($type.'/export_excel/export') }}" method="post">
+        <form action="{{ url('budget/export_excel/export') }}" method="post">
           {{ csrf_field() }}
           <div class="modal-body">
             <div class="form-group row">

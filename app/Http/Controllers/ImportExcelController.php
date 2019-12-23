@@ -13,24 +13,19 @@ use App\Budget;
 
 class ImportExcelController extends Controller
 {
-    public function index_electric()
+    public function index_budget()
     {
-      $data = Budget::groupBy('TIME_KEY')
-        ->selectRaw('TIME_KEY,sum(M_UNIT) as M_UNIT, sum(M_UNIT_PRICE) as M_UNIT_PRICE,sum(M_Cost_TOTAL) as M_Cost_TOTAL')
-        ->orderBy('TIME_KEY','DESC')
-        ->first();
+      $data = Budget::get();
       return view('import_excel', ['data' => $data]);
     }
 
-    public function import_electric(Request $request)
+    public function import_budget(Request $request)
     {
       set_time_limit(0);
       $this->validate($request, [
         'select_file'  => 'required|mimes:xls,xlsx',
         'time_key' => 'required|numeric'
       ]);
-      // delete ก่อน insert
-      $delete_data = Budget::where('TIME_KEY',$request->time_key)->delete();
 
      $path = $request->file('select_file')->getRealPath();
      $name = $request->file('select_file')->getClientOriginalName();
@@ -38,8 +33,7 @@ class ImportExcelController extends Controller
      $data = Excel::load($path)->get();
 
      $insert_log = new Log_user;
-     $insert_log->user_name = Auth::user()->name;
-     // $insert_log->user_name = 'phats';
+     $insert_log->user_id = Auth::user()->emp_id;
      $insert_log->path = $pathreal.$name;
      $insert_log->type_log = 'electric';
      $insert_log->save();

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     @section('title')
     @show
-    <title>CoreUI Free Bootstrap Admin Template</title>
+    <title>Budget Project</title>
     @yield('css')
   </head>
   <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
