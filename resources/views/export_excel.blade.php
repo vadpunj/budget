@@ -51,28 +51,22 @@
         </div>
         <table class="table table-responsive-sm table-bordered myTable">
           <thead>
-              <th>TIME KEY</th>
-              <th>ASSET ID</th>
-              <th>COST CENTER</th>
-              <th>METER ID</th>
-              <th>M UNIT</th>
-              <th>M UNIT PRICE</th>
-              <th>M Cost TOTAL</th>
-              <th>ACTIVITY CODE</th>
-              <th>Create Date</th>
+            <th>Year</th>
+            <th>Branch</th>
+            <th>List</th>
+            <th>Detail</th>
+            <th>Money</th>
+            <th>Remark</th>
           </thead>
           <tbody>
          @foreach($data as $row)
            <tr>
-            <td>{{ $row->TIME_KEY }}</td>
-            <td>{{ $row->ASSET_ID }}</td>
-            <td>{{ $row->COST_CENTER }}</td>
-            <td>{{ $row->METER_ID }}</td>
-            <td align="right">{{ number_format($row->M_UNIT) }}</td>
-            <td>{{ $row->M_UNIT_PRICE }}</td>
-            <td align="right">{{ number_format($row->M_Cost_TOTAL,2) }}</td>
-            <td align="center">{{ $row->ACTIVITY_CODE }}</td>
-            <td align="center">{{ Func::get_date($row->created_at) }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="right"></td>
+            <td></td>
            </tr>
          @endforeach
           </tbody>

@@ -25,20 +25,15 @@ class ExportExcelController extends Controller
 
       $content = "";
       foreach($data as $value => $key){
-        if($key->TIME_KEY == $key->M_UNIT){
-          $content .= "\n".$key->TIME_KEY;
-          $content .= "\r";
-        }else{
-          $content .= "\n".$key->TIME_KEY."\t";
-          $content .= $key->ASSET_ID."\t";
-          $content .= $key->COST_CENTER."\t";
-          $content .= $key->METER_ID."\t";
-          $content .= $key->M_UNIT."\t";
-          $content .= $key->M_UNIT_PRICE."\t";
-          $content .= $key->M_Cost_TOTAL."\t";
-          $content .= $key->ACTIVITY_CODE;
-          $content .= "\r";
-        }
+        $content .= $key->TIME_KEY."\t";
+        $content .= $key->ASSET_ID."\t";
+        $content .= $key->COST_CENTER."\t";
+        $content .= $key->METER_ID."\t";
+        $content .= $key->M_UNIT."\t";
+        $content .= $key->M_UNIT_PRICE."\t";
+        $content .= $key->M_Cost_TOTAL."\t";
+        $content .= $key->ACTIVITY_CODE;
+        $content .= "\r\n";
       }
       $fileName = "logs-".$time_key.".txt";
 

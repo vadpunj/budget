@@ -50,13 +50,13 @@
    <div class="card-body">
    <form method="post" enctype="multipart/form-data" action="{{ url('budget/import_excel/import') }}">
     {{ csrf_field() }}
-    <div class="form-group row">
+    {{--<div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Time Key</label>
       <div class="col-md-4">
         <input class="form-control" name="time_key" type="text" required>
 
       </div>
-    </div>
+    </div>--}}
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Select File</label>
       <div class="col-md-4">
@@ -67,29 +67,32 @@
       <input type="submit" name="upload" class="btn btn-primary" value="Submit">
     </div><br>
    </form>
-   <div class="card-header word" style="width: 50%;"> ข้อมูลเดือนล่าสุดในระบบ</div>
-   <table class="table table-responsive-sm table-sm" style="width: 50%;">
+   <table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
      <thead>
        <tr>
-         <th>Time Key</th>
-         <th>M Unit</th>
-         <th>M Unit Price</th>
-         <th>M Cost Total</th>
+         <th>Year</th>
+         <th>Branch</th>
+         <th>List</th>
+         <th>Detail</th>
+         <th>Money</th>
+         <th>Remark</th>
        </tr>
      </thead>
      @if(!empty($data))
      <tbody>
        <tr>
-         <td>{{ $data->TIME_KEY}}</td>
-         <td>{{ number_format($data->M_UNIT) }}</td>
-         <td>{{ number_format($data->M_UNIT_PRICE,2) }}</td>
-         <td>{{ number_format($data->M_Cost_TOTAL,2) }}</td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
+         <td></td>
        </tr>
      </tbody>
      @else
      <tbody>
        <tr>
-         <td colspan="4" align="center">{{ 'ไม่มีข้อมูล' }}</td>
+         <td colspan="6" align="center">{{ 'ไม่มีข้อมูล' }}</td>
        </tr>
      </tbody>
      @endif

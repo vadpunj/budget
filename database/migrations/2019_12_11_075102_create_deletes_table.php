@@ -28,6 +28,6 @@ class CreateDeletesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deletes');
+        Schema::dropIfExists('delete_logs');
     }
 }

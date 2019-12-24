@@ -20,7 +20,7 @@ class CreateBudgetsTable extends Migration
             $table->double('money');
             $table->integer('year');
             $table->string('branch');
-            $table->char('remark');
+            $table->char('remark')->nullable();
             $table->timestamps();
         });
     }
