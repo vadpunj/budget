@@ -4,8 +4,12 @@
     <ul class="nav">
       <!-- <li class="nav-title">จัดการระบบ</li> -->
       <li class="nav-item">
-        <a class="nav-link {{ (request()->is('/home')) ? 'active' : '' }}" href="{{ route('home') }}">
+        <a class="nav-link {{ (request()->is('/dashboard')) ? 'active' : '' }}" href="{{ route('dashboard') }}">
           <i class="nav-icon icon-pencil"></i> ฝ่าย-แผนก</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/home')) ? 'active' : '' }}" href="{{ route('home') }}">
+          <i class="nav-icon icon-pencil"></i> ศูนย์ต้นทุน</a>
       </li>
       <li class="nav-item nav-dropdown {{ (request()->is('buget/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">

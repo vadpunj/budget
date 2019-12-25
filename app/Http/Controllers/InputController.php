@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use App\Imports\FileImport;
 use App\Exports\FileExport;
 use Illuminate\Support\Facades\Auth;
-use App\Transaction;
 use App\Branch;
+use App\Transaction;
 use DB;
 use Excel;
 use Func;
@@ -18,10 +18,15 @@ class InputController extends Controller
     public function get_source()
     {
 
+      return view('dashboard');
+
+    }
+    public function get_data()
+    {
+
       return view('home');
 
     }
-
     public function post_data(Request $request)
     {
 
@@ -43,7 +48,7 @@ class InputController extends Controller
       $people->source = $source;
       $people->start_date = $start_date;
       $people->end_date = $end_date;
-      $people->user = Auth::user()->emp_id;
+      $people->user_id = Auth::user()->emp_id;
       $save = $people->save();
 
       return view('home');

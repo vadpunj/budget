@@ -70,7 +70,7 @@ class UserController extends Controller
 
         if($response['Result'] == 'Pass'){
           \Auth::login($user);
-          return redirect()->route('home'); // รหัส login ผ่าน
+          return redirect()->route('dashboard'); // รหัส login ผ่าน
         }else{
           return redirect()->back()->with('message', 'รหัสผ่านไม่ถูกต้อง'); //รหัสผิด
         }
