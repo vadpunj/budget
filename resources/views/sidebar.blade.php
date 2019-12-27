@@ -16,6 +16,10 @@
           <i class="nav-icon fa fa-money"></i> งบประมาณ</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
+            <a class="nav-link {{ (request()->is('buget/add')) ? 'active' : '' }}" href="{{ route('add') }}">
+              <i class="nav-icon fa fa-plus"></i> Add</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link {{ (request()->is('buget/import')) ? 'active' : '' }}" href="{{ route('import') }}">
               <i class="nav-icon icon-doc"></i> import file</a>
           </li>

@@ -9,6 +9,7 @@ use App\Exports\FileExport;
 use Illuminate\Support\Facades\Auth;
 use App\Branch;
 use App\Transaction;
+use App\Budget;
 use DB;
 use Excel;
 use Func;
@@ -63,5 +64,37 @@ class InputController extends Controller
         return response()->json(['success' => 'ไม่มีสาขาที่กรอก']);
       }
 
+    }
+
+    public function get_add()
+    {
+      return view('add');
+    }
+
+    public function post_add(Request $request)
+    {
+      $year = $request->year;
+      $list = $request->list;
+      $detail = $request->detail;
+      $money = $request->money;
+      $branch = $request->branch;
+      $remark = $request->remark;
+
+      $this->validate($request,[
+         'year' => 'required|numeric',
+         'money' => 'required|numeric',
+         'branch' => 'required|numeric'
+      ]);
+
+      $insert = new Budget;
+      $insert->list = $list;
+      $insert->detail = $detail;
+      $insert->money = $money;
+      $insert->year = $year;
+      $insert->branch = $branch;
+      $insert->remark = $remark;
+
+
+      return view('add');
     }
 }

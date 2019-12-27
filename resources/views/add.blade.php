@@ -2,7 +2,7 @@
 
 @section('title')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Home page</title>
+<title>Add page</title>
 @endsection
 
 @section('css')
@@ -29,7 +29,7 @@
       <li class="breadcrumb-item">
         <a href="#">หน้าแรก</a>
       </li>
-      <li class="breadcrumb-item active">ศูนย์ต้นทุน</li>
+      <li class="breadcrumb-item active">เพิ่มข้อมูลงบประมาณ</li>
     </ol>
     <!-- end breadcrumb -->
   <div class="container-fluid">
@@ -43,59 +43,72 @@
                 {!! session('notification') !!}
               </div>
             @endif
-          <i class="fa fa-align-justify"></i> กรอกศูนย์ต้นทุน</div>
-            <form class="form-horizontal" action="{{ route('insert') }}" method="post">
+          <i class="fa fa-align-justify"></i> กรอกข้อมูลงบประมาณ</div>
+            <form class="form-horizontal" action="{{ route('add_insert') }}" method="post">
               @csrf
               <div class="card-body">
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">วันทำรายการ</label>
+                  <label class="col-md-2 col-form-label">ปีงบประมาณ</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <span class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </span>
-                      <input class="form-control @error('start_date') is-invalid @enderror" type="date" name="start_date">
-                      @error('start_date')
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $message }}</strong>
-                          </span>
+                      <input class="form-control @error('year') is-invalid @enderror" type="text" name="year">
+                      @error('year')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
                       @enderror
                     </div>
                   </div>
-                  <label class="col-md-2 col-form-label">ถึง</label>
-                    <div class="form-group col-sm-4">
-                      <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="fa fa-calendar"></i>
+                  <label class="col-md-2 col-form-label">เรื่อง</label>
+                  <div class="form-group col-sm-4">
+                    <div class="input-group">
+                      <input class="form-control @error('list') is-invalid @enderror" type="text" name="list">
+                      @error('list')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
                         </span>
-                        <input class="form-control @error('end_date') is-invalid @enderror" type="date" name="end_date">
-                        @error('end_date')
-                          <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                          </span>
-                        @enderror
-                      </div>
+                      @enderror
                     </div>
+                  </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">ศูนย์ต้นทุน</label>
+                  <label class="col-md-2 col-form-label">รายละเอียด</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control @error('source') is-invalid @enderror" type="text" name="source">
-                    @error('source')
+                    <textarea class="form-control @error('detail') is-invalid @enderror" type="text" name="detail"></textarea>
+                    @error('detail')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                       </span>
                     @enderror
                   </div>
-                  <label class="col-md-2 col-form-label">สาขาหน่วยงาน</label>
+                  <label class="col-md-2 col-form-label">จำนวนเงิน</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control @error('branch') is-invalid @enderror" type="text" id="branch" name="branch" onchange="myfunc()">
-                    @error('branch')
+                    <input class="form-control @error('money') is-invalid @enderror" type="text" name="money">
+                    @error('money')
                       <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
+                        <strong>{{ $message }}</strong>
                       </span>
                     @enderror
-                    <p id="demo"></p>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-2 col-form-label">Branch</label>
+                  <div class="form-group col-sm-4">
+                    <input class="form-control @error('branch') is-invalid @enderror" type="text" name="branch">
+                    @error('branch')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                  </div>
+                  <label class="col-md-2 col-form-label">Remark</label>
+                  <div class="form-group col-sm-4">
+                    <input class="form-control @error('remark') is-invalid @enderror" type="text" name="remark">
+                    @error('remark')
+                      <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
                   </div>
                 </div>
               </div>
@@ -112,30 +125,7 @@
 @endsection
 
 @section('js')
-<script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
-  <script>
-  function myfunc(){
-    var x = document.getElementById("branch").value;
-    $.ajaxSetup({
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
-    $.ajax({
-        type: 'POST',
-        url: '/find/branch',
-        data: {data:x},
-        dataType: "json",
-        success: function (json) {
-          document.getElementById("demo").innerHTML = json.success;
-        },
-        error: function (e) {
-            console.log(e.message);
-        }
-    });
-  }
-
-  </script>
+  <script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/popper.js/dist/umd/popper.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
