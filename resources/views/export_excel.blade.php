@@ -49,7 +49,7 @@
         <div class="panel-heading">
          <h3 class="panel-title">{{ 'Budget Data'}}</h3>
         </div>
-        <table class="table table-responsive-sm table-bordered myTable">
+        <table class="table table-responsive-sm table-bordered" id="myTable">
           <thead>
             <th>Year</th>
             <th>Branch</th>
@@ -61,12 +61,12 @@
           <tbody>
          @foreach($data as $row)
            <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td align="right"></td>
-            <td></td>
+            <td align="center">{{ $row->year }}</td>
+            <td>{{ $row->branch }}</td>
+            <td>{{ $row->list }}</td>
+            <td>{{ $row->detail }}</td>
+            <td align="right">{{ number_format($row->money,2) }}</td>
+            <td>{{ $row->remark }}</td>
            </tr>
          @endforeach
           </tbody>
@@ -115,8 +115,10 @@
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
   <script type="text/javascript">
-    $('.myTable').DataTable({
-      select:true,
+  $(document).ready(function() {
+    $('#myTable').DataTable({
+      scrollX:true
     });
+  });
   </script>
   @endsection

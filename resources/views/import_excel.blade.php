@@ -1,7 +1,8 @@
 @extends('layout')
 
 @section('title')
-<title>CoreUI</title>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>Import page</title>
 @endsection
 
 @section('css')
@@ -50,13 +51,7 @@
    <div class="card-body">
    <form method="post" enctype="multipart/form-data" action="{{ url('budget/import_excel/import') }}">
     {{ csrf_field() }}
-    {{--<div class="form-group row">
-      <label class="col-md-2 col-form-label" for="date-input">Time Key</label>
-      <div class="col-md-4">
-        <input class="form-control" name="time_key" type="text" required>
 
-      </div>
-    </div>--}}
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Select File</label>
       <div class="col-md-4">
@@ -67,10 +62,20 @@
       <input type="submit" name="upload" class="btn btn-primary" value="Submit">
     </div><br>
    </form>
-   <table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
+   <div class="form-group row">
+     <label class="col-md-2 col-form-label" for="date-input">Year : </label>
+     <div class="col-md-2">
+       <select class="form-control" id="year" name="year" onchange="myFunction()">
+         @for($i=2018 ;$i <= date('Y'); $i++)
+         <option value="{{ $i }}" @if($i == date('Y')) selected @else '' @endif>{{ $i }}</option>
+         @endfor
+       </select>
+     </div>
+   </div>
+   <div id="dvTable" style="border:0px;"></div>
+   {{--<table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
      <thead>
        <tr>
-         <th>Year</th>
          <th>Branch</th>
          <th>List</th>
          <th>Detail</th>
@@ -80,14 +85,15 @@
      </thead>
      @if(!empty($data))
      <tbody>
+       @foreach($data as $value)
        <tr>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
-         <td></td>
+         <td>{{ $value['branch'] }}</td>
+         <td>{{ $value['list'] }}</td>
+         <td>{{ $value['detail'] }}</td>
+         <td>{{ $value['money'] }}</td>
+         <td>{{ $value['remark'] }}</td>
        </tr>
+       @endforeach
      </tbody>
      @else
      <tbody>
@@ -96,13 +102,142 @@
        </tr>
      </tbody>
      @endif
-   </table>
+   </table>--}}
   </div>
 </main>
 @endsection
 
 @section('js')
   <script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
+  <script>
+  $(document).ready(function() {
+    var x = document.getElementById("year").value;
+    // console.log(x);
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    $.ajax({
+        type: 'POST',
+        url: '/find/data',
+        data: {year:x},
+        dataType: "json",
+        success: function (json) {
+           var customers = new Array();
+           customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+           json.success.forEach(myforeach);
+           function myforeach(item, index) {
+             customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+           }
+           var table = document.createElement("TABLE");
+           // table.border = "1";
+
+           //Get the count of columns.
+           var columnCount = customers[0].length;
+
+           //Add the header row.
+           var row = table.insertRow(-1);
+           for (var i = 0; i < columnCount; i++) {
+               var headerCell = document.createElement("TH");
+               headerCell.innerHTML = customers[0][i];
+               row.appendChild(headerCell);
+           }
+
+           //Add the data rows.
+           for (var i = 1; i < customers.length; i++) {
+               row = table.insertRow(-1);
+               for (var j = 0; j < columnCount; j++) {
+                   var cell = row.insertCell(-1);
+                   cell.innerHTML = customers[i][j];
+                   if(j==3){
+                     cell.innerHTML = numberWithCommas(customers[i][j]);
+                     cell.style.textAlign = "right";
+                   }
+
+               }
+           }
+           function numberWithCommas(x) {
+              return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          }
+
+           var dvTable = document.getElementById("dvTable");
+           dvTable.innerHTML = "";
+           document.getElementById('dvTable').setAttribute("class", "table table-responsive-sm table-bordered");
+           document.getElementById("dvTable").style.overflowX = "scroll";
+           document.getElementById("dvTable").style.overflowY = "scroll";
+           dvTable.appendChild(table);
+        },
+        error: function (e) {
+            console.log(e.message);
+        }
+    });
+  });
+  function myFunction() {
+    var x = document.getElementById("year").value;
+    // console.log(x);
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    $.ajax({
+        type: 'POST',
+        url: '/find/data',
+        data: {year:x},
+        dataType: "json",
+        success: function (json) {
+           var customers = new Array();
+           customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+           json.success.forEach(myforeach);
+           function myforeach(item, index) {
+             customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+           }
+           var table = document.createElement("TABLE");
+           // table.border = "1";
+
+           //Get the count of columns.
+           var columnCount = customers[0].length;
+
+           //Add the header row.
+           var row = table.insertRow(-1);
+           for (var i = 0; i < columnCount; i++) {
+               var headerCell = document.createElement("TH");
+               headerCell.innerHTML = customers[0][i];
+               row.appendChild(headerCell);
+           }
+
+           //Add the data rows.
+           for (var i = 1; i < customers.length; i++) {
+               row = table.insertRow(-1);
+               for (var j = 0; j < columnCount; j++) {
+                   var cell = row.insertCell(-1);
+                   cell.innerHTML = customers[i][j];
+                   if(j==3){
+                     cell.innerHTML = numberWithCommas(customers[i][j]);
+                     cell.style.textAlign = "right";
+                   }
+
+               }
+           }
+           function numberWithCommas(x) {
+              return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          }
+
+           var dvTable = document.getElementById("dvTable");
+           dvTable.innerHTML = "";
+           document.getElementById('dvTable').setAttribute("class", "table table-responsive-sm table-bordered");
+           document.getElementById("dvTable").style.overflowX = "scroll";
+           document.getElementById("dvTable").style.overflowY = "scroll";
+           dvTable.appendChild(table);
+        },
+        error: function (e) {
+            console.log(e.message);
+        }
+    });
+
+  }
+  </script>
   <script src="{{ asset('admin/node_modules/popper.js/dist/umd/popper.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
