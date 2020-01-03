@@ -72,7 +72,7 @@
        </select>
      </div>
    </div>
-   <div id="dvTable" style="border:0px;"></div>
+   <div id="dvTable" style="border:0px;overflow: auto;" class="table table-responsive-sm table-bordered"></div>
    {{--<table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
      <thead>
        <tr>
@@ -124,49 +124,46 @@
         data: {year:x},
         dataType: "json",
         success: function (json) {
-           var customers = new Array();
-           customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
-           json.success.forEach(myforeach);
-           function myforeach(item, index) {
-             customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+          if(json.success){
+            var customers = new Array();
+            customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+            json.success.forEach(myforeach);
+            function myforeach(item, index) {
+              customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+            }
+            var table = document.createElement("TABLE");
+            // table.border = "1";
+
+            //Get the count of columns.
+            var columnCount = customers[0].length;
+
+            //Add the header row.
+            var row = table.insertRow(-1);
+            for (var i = 0; i < columnCount; i++) {
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = customers[0][i];
+                row.appendChild(headerCell);
+            }
+
+            //Add the data rows.
+            for (var i = 1; i < customers.length; i++) {
+                row = table.insertRow(-1);
+                for (var j = 0; j < columnCount; j++) {
+                    var cell = row.insertCell(-1);
+                    cell.innerHTML = customers[i][j];
+                    if(j==3){
+                      cell.innerHTML = numberWithCommas(customers[i][j]);
+                      cell.style.textAlign = "right";
+                    }
+                }
+            }
+            function numberWithCommas(x) {
+               return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
            }
-           var table = document.createElement("TABLE");
-           // table.border = "1";
-
-           //Get the count of columns.
-           var columnCount = customers[0].length;
-
-           //Add the header row.
-           var row = table.insertRow(-1);
-           for (var i = 0; i < columnCount; i++) {
-               var headerCell = document.createElement("TH");
-               headerCell.innerHTML = customers[0][i];
-               row.appendChild(headerCell);
-           }
-
-           //Add the data rows.
-           for (var i = 1; i < customers.length; i++) {
-               row = table.insertRow(-1);
-               for (var j = 0; j < columnCount; j++) {
-                   var cell = row.insertCell(-1);
-                   cell.innerHTML = customers[i][j];
-                   if(j==3){
-                     cell.innerHTML = numberWithCommas(customers[i][j]);
-                     cell.style.textAlign = "right";
-                   }
-
-               }
-           }
-           function numberWithCommas(x) {
-              return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
+            dvTable.appendChild(table);
           }
-
-           var dvTable = document.getElementById("dvTable");
-           dvTable.innerHTML = "";
-           document.getElementById('dvTable').setAttribute("class", "table table-responsive-sm table-bordered");
-           document.getElementById("dvTable").style.overflowX = "scroll";
-           document.getElementById("dvTable").style.overflowY = "scroll";
-           dvTable.appendChild(table);
         },
         error: function (e) {
             console.log(e.message);
@@ -187,55 +184,55 @@
         data: {year:x},
         dataType: "json",
         success: function (json) {
-           var customers = new Array();
-           customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
-           json.success.forEach(myforeach);
-           function myforeach(item, index) {
-             customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+          if(json.success){
+            var customers = new Array();
+            customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+            json.success.forEach(myforeach);
+            function myforeach(item, index) {
+              customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+            }
+            var table = document.createElement("TABLE");
+            // table.border = "1";
+
+            //Get the count of columns.
+            var columnCount = customers[0].length;
+
+            //Add the header row.
+            var row = table.insertRow(-1);
+            for (var i = 0; i < columnCount; i++) {
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = customers[0][i];
+                row.appendChild(headerCell);
+            }
+
+            //Add the data rows.
+            for (var i = 1; i < customers.length; i++) {
+                row = table.insertRow(-1);
+                for (var j = 0; j < columnCount; j++) {
+                    var cell = row.insertCell(-1);
+                    cell.innerHTML = customers[i][j];
+                    if(j==3){
+                      cell.innerHTML = numberWithCommas(customers[i][j]);
+                      cell.style.textAlign = "right";
+                    }
+                }
+            }
+            function numberWithCommas(x) {
+               return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
            }
-           var table = document.createElement("TABLE");
-           // table.border = "1";
 
-           //Get the count of columns.
-           var columnCount = customers[0].length;
-
-           //Add the header row.
-           var row = table.insertRow(-1);
-           for (var i = 0; i < columnCount; i++) {
-               var headerCell = document.createElement("TH");
-               headerCell.innerHTML = customers[0][i];
-               row.appendChild(headerCell);
-           }
-
-           //Add the data rows.
-           for (var i = 1; i < customers.length; i++) {
-               row = table.insertRow(-1);
-               for (var j = 0; j < columnCount; j++) {
-                   var cell = row.insertCell(-1);
-                   cell.innerHTML = customers[i][j];
-                   if(j==3){
-                     cell.innerHTML = numberWithCommas(customers[i][j]);
-                     cell.style.textAlign = "right";
-                   }
-
-               }
-           }
-           function numberWithCommas(x) {
-              return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
+            dvTable.appendChild(table);
+          }else{
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
           }
-
-           var dvTable = document.getElementById("dvTable");
-           dvTable.innerHTML = "";
-           document.getElementById('dvTable').setAttribute("class", "table table-responsive-sm table-bordered");
-           document.getElementById("dvTable").style.overflowX = "scroll";
-           document.getElementById("dvTable").style.overflowY = "scroll";
-           dvTable.appendChild(table);
         },
         error: function (e) {
             console.log(e.message);
         }
     });
-
   }
   </script>
   <script src="{{ asset('admin/node_modules/popper.js/dist/umd/popper.min.js') }}"></script>
