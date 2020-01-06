@@ -38,11 +38,11 @@ class ImportExcelController extends Controller
      $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      $data = Excel::load($path)->get();
 
-     // $insert_log = new Log_user;
-     // $insert_log->user_id = Auth::user()->emp_id;
-     // $insert_log->path = $pathreal.$name;
-     // $insert_log->type_log = 'electric';
-     // $insert_log->save();
+     $insert_log = new Log_user;
+     $insert_log->user_id = Auth::user()->emp_id;
+     $insert_log->path = $pathreal.$name;
+     $insert_log->type_log = 'electric';
+     $insert_log->save();
 
      $key_name = ['year','branch','list','detail','money','remark'];
 
