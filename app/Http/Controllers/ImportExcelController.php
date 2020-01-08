@@ -86,7 +86,7 @@ class ImportExcelController extends Controller
           return response()->json(['success' => $data]);
         }else{
           return response()->json(['error']);
-          return response()->json(['error' => '']);
+          // return response()->json(['error' => '']);
         }
     }
 

@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_data')->name('home');
   Route::post('/home', 'InputController@post_data')->name('insert');
   Route::post('/find/data', 'ImportExcelController@ajax_data');
+  Route::post('/find/branch', 'InputController@ajax_data');
   Route::group(['prefix' => 'budget'], function(){
     Route::get('/add', 'InputController@get_add')->name('add');
     Route::post('/add', 'InputController@get_add')->name('add_insert');

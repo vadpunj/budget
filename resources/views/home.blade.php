@@ -12,9 +12,21 @@
   <link href="{{ asset('admin/node_modules/simple-line-icons/css/simple-line-icons.css') }}" rel="stylesheet">
   <!-- Main styles for this application-->
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
+  <link href="{{ asset('admin/css/datepicker.css') }}" rel="stylesheet">
+  <!-- <link href="{{ asset('admin/css/main.css') }}" rel="stylesheet"> -->
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+  <script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker-thai.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.th.js') }}"></script>
+
+  <script>
+    $(document).ready(function(){
+      $(".datepicker").datepicker();
+    });
+  </script>
   <style>
     .word {
       color: #fff !important;
@@ -51,6 +63,19 @@
                   <label class="col-md-2 col-form-label">วันทำรายการ</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
+                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date"/>
+                      @error('start_date')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
+                      <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
+                          <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+                    {{--<div class="input-group">
                       <span class="input-group-text">
                         <i class="fa fa-calendar"></i>
                       </span>
@@ -60,20 +85,22 @@
                               <strong>{{ $message }}</strong>
                           </span>
                       @enderror
-                    </div>
+                    </div>--}}
                   </div>
                   <label class="col-md-2 col-form-label">ถึง</label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
-                        <span class="input-group-text">
-                          <i class="fa fa-calendar"></i>
-                        </span>
-                        <input class="form-control @error('end_date') is-invalid @enderror" type="date" name="end_date">
+                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker"/>
                         @error('end_date')
                           <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
+                              <strong>{{ $message }}</strong>
                           </span>
                         @enderror
+                        <div class="input-group-append">
+                          <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                 </div>
@@ -112,7 +139,6 @@
 @endsection
 
 @section('js')
-<script src="{{ asset('admin/node_modules/jquery/dist/jquery.min.js') }}"></script>
   <script>
   function myfunc(){
     var x = document.getElementById("branch").value;
