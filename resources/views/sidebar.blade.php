@@ -11,6 +11,10 @@
         <a class="nav-link {{ (request()->is('/home')) ? 'active' : '' }}" href="{{ route('home') }}">
           <i class="nav-icon icon-pencil"></i> ศูนย์ต้นทุน</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/event')) ? 'active' : '' }}" href="{{ route('event') }}">
+          <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
+      </li>
       <li class="nav-item nav-dropdown {{ (request()->is('buget/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
           <i class="nav-icon fa fa-money"></i> งบประมาณ</a>

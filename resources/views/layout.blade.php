@@ -15,5 +15,6 @@
         @yield('content')
       </div>
     @yield('js')
+    {!! $calendar_details->script() !!}
   </body>
 </html>
