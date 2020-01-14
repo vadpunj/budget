@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="text/html">
+
     <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/Logononame.png') }}" sizes="16x16">
     @section('title')
     @show
@@ -16,6 +17,5 @@
         @yield('content')
       </div>
     @yield('js')
-    {!! $calendar_details->script() !!}
   </body>
 </html>
