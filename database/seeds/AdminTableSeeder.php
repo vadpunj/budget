@@ -16,6 +16,9 @@ class AdminTableSeeder extends Seeder
           'name' => 'phatsirin',
           'emp_id' => '01000583',
           'type' => 1,
+          'type' => 1,
+          'field' => 'สายงานเทคโนโลยีสารสนเทศ',
+          'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ],
@@ -23,6 +26,8 @@ class AdminTableSeeder extends Seeder
           'name' => 'dumkerng',
           'emp_id' => '00368195',
           'type' => 1,
+          'field' => 'สายงานเทคโนโลยีสารสนเทศ',
+          'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ],
@@ -30,6 +35,8 @@ class AdminTableSeeder extends Seeder
           'name' => 'panicha',
           'emp_id' => '01000554',
           'type' => 1,
+          'field' => 'สายงานเทคโนโลยีสารสนเทศ',
+          'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ]

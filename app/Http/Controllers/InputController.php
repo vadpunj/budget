@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Branch;
 use App\Transaction;
 use App\Budget;
+use App\User_request;
 use App\Event;
 use DB;
 use Excel;
@@ -74,36 +75,11 @@ class InputController extends Controller
       return view('add');
     }
 
-    public function post_add(Request $request)
-    {
-      $year = $request->year;
-      $list = $request->list;
-      $detail = $request->detail;
-      $money = $request->money;
-      $branch = $request->branch;
-      $remark = $request->remark;
-
-      $this->validate($request,[
-         'year' => 'required|numeric',
-         'money' => 'required|numeric',
-         'branch' => 'required|numeric'
-      ]);
-
-      $insert = new Budget;
-      $insert->list = $list;
-      $insert->detail = $detail;
-      $insert->money = $money;
-      $insert->year = $year;
-      $insert->branch = $branch;
-      $insert->remark = $remark;
-
-      return view('add');
-    }
 
     public function get_calendar()
     {
       $events = Event::get();
-      // $event_list = [];
+      $event_list = [];
       foreach($events as $key => $event){
         $event_list[] = Calendar::event(
           $event->event_name,
@@ -112,9 +88,9 @@ class InputController extends Controller
           new \DateTime($event->end_date.' +1 day')
         );
       }
-      
+
       $calendar_details = Calendar::addEvents($event_list);
-      
+
       return view('calendar',compact('calendar_details'));
     }
 
@@ -123,20 +99,68 @@ class InputController extends Controller
       $event_name = $request->event_name;
       $start_date = date('Y-m-d',strtotime($request->start_date));
       $end_date = date('Y-m-d',strtotime($request->end_date));
-      
+
       $this->validate($request,[
         'event_name' => 'required',
         'start_date' => 'required|date',
         'end_date' => 'required|date'
      ]);
-      
+
       $event = new Event;
       $event->event_name = $event_name;
       $event->start_date = $start_date;
       $event->end_date = $end_date;
       $event->user_id = Auth::user()->emp_id;
       $event->save();
-      
+
       return Redirect::to('/event');
+    }
+
+    public function data_budget()
+    {
+
+      $number = count($_POST["list"]);
+      // return response()->json(['success' => $_POST["stat_year"]]);
+      if($number > 0)
+      {
+        $data = new User_request;
+        $data->year = $_POST["stat_year"];
+        $data->field = Auth::user()->field;
+        $data->office = Auth::user()->office;
+        $data->part = $_POST["part"];
+        $data->name = $_POST["name_reqs"];
+        $data->phone = $_POST["phone"];
+        $data->save();
+        // return response()->json(['success' => $data->id]);
+        for($i=0; $i<$number; $i++)
+        {
+          // DB::table('tbl_name')->insert(
+          //     ['name' => $_POST["name"][$i]]
+          // );
+          $insert = new Budget;
+          $insert->list = trim($_POST["list"][$i]);
+          $insert->business = trim($_POST["business"][$i]);
+          $insert->dis_business = trim($_POST["dis_business"][$i]);
+          $insert->project = trim($_POST["project"][$i]);
+          $insert->activ = trim($_POST["activ"][$i]);
+          $insert->respons = trim($_POST["respons"][$i]);
+          $insert->amount = trim($_POST["amount"][$i]);
+          $insert->price_per = trim($_POST["price_per"][$i]);
+          $insert->unit = trim($_POST["unit"][$i]);
+          $insert->unitsap = trim($_POST["unitsap"][$i]);
+          $insert->total = trim($_POST["total"][$i]);
+          $insert->explan = trim($_POST["explan"][$i]);
+          $insert->unit_t = trim($_POST["unit_t"][$i]);
+          $insert->year = trim($_POST["year"][$i]);
+          $insert->status = trim($_POST["status"][$i]);
+          $insert->field =  Auth::user()->field;
+          $insert->office = Auth::user()->office;
+          $insert->user_request_id = $data->id;
+          $insert->save();
+
+          // return response()->json(['success' => $_POST["list"][$i]]);
+        }
+            return response()->json(['success' => 'บันทึกสำเร็จ']);
+      }
     }
 }

@@ -18,6 +18,7 @@
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
     <title>Register page</title>
     <!-- Icons-->
+      <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/Logononame.png') }}" sizes="16x16">
     <link href="{{ asset('admin/node_modules/@coreui/icons/css/coreui-icons.min.css')}}" rel="stylesheet">
     <link href="{{ asset('admin/node_modules/flag-icon-css/css/flag-icon.min.css')}}" rel="stylesheet">
     <link href="{{ asset('admin/node_modules/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
@@ -76,6 +77,32 @@
                   </div>
                   <input class="form-control @error('emp_id') is-invalid @enderror" type="text" placeholder="Employee ID" name="emp_id" value="{{ old('emp_id') }}" required autocomplete="emp_id">
                   @error('emp_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-building-o"></i>
+                    </span>
+                  </div>
+                  <input class="form-control @error('field') is-invalid @enderror" type="text" placeholder="สายงาน" name="field" value="{{ old('field') }}" required autocomplete="field">
+                  @error('field')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-building-o"></i>
+                    </span>
+                  </div>
+                  <input class="form-control @error('office') is-invalid @enderror" type="text" placeholder="ฝ่าย/สำนักงาน" name="office" value="{{ old('office') }}" required autocomplete="office">
+                  @error('office')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

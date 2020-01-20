@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
           $table->string('name');
           $table->string('emp_id')->unique();
           $table->boolean('type')->default(0);
+          $table->string('field');
+          $table->string('office');
           $table->timestamps();
         });
     }

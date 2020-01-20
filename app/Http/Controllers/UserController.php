@@ -16,13 +16,18 @@ class UserController extends Controller
 
     public function postregister(Request $request)
     {
+      // dd($request->all());
       $this->validate($request, [
         'name' => 'required|min:4',
-        'emp_id' => 'required|numeric|unique:users'
+        'emp_id' => 'required|numeric|unique:users',
+        'field' => 'required',
+        'office' => 'required'
       ]);
       User::create([
         'name' => $request->name,
-        'emp_id' => $request->emp_id
+        'emp_id' => $request->emp_id,
+        'field' => $request->field,
+        'office' => $request->office
       ]);
       return redirect()->back();
     }

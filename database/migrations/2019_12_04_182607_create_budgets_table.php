@@ -15,13 +15,26 @@ class CreateBudgetsTable extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->char('list');
-            $table->text('detail');
-            $table->double('money');
+            $table->string('list');
+            $table->string('business');
+            $table->string('dis_business')->nullable();
+            $table->string('project')->nullable();
+            $table->string('activ')->nullable();
+            $table->string('respons');
+            $table->string('amount')->nullable();
+            $table->double('price_per');
+            $table->integer('unit');
+            $table->integer('unitsap');
+            $table->double('total');
+            $table->string('explan')->nullable();
+            $table->integer('unit_t');
             $table->integer('year');
-            $table->string('branch');
-            $table->char('remark')->nullable();
+            $table->string('status')->nullable();
+            $table->string('field');
+            $table->string('office');
+            $table->integer('user_request_id');
             $table->timestamps();
+
         });
     }
 

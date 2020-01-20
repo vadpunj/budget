@@ -31,7 +31,10 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/find/branch', 'InputController@ajax_data');
   Route::group(['prefix' => 'budget'], function(){
     Route::get('/add', 'InputController@get_add')->name('add');
-    Route::post('/add', 'InputController@get_add')->name('add_insert');
+    Route::post('/add', 'InputController@post_add')->name('add_insert');
+    Route::get('/edit', 'InputController@get_edit')->name('edit');
+    Route::post('/data', 'InputController@data_budget');
+    // Route::post('/edit', 'InputController@post_edit')->name('add_insert');
     Route::get('/import_excel', 'ImportExcelController@index_budget')->name('import');
     Route::post('/import_excel/import', 'ImportExcelController@import_budget');
     Route::get('/export_excel', 'ExportExcelController@index_budget')->name('export');

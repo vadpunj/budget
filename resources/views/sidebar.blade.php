@@ -15,24 +15,42 @@
         <a class="nav-link {{ (request()->is('/event')) ? 'active' : '' }}" href="{{ route('event') }}">
           <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
       </li>
-      <li class="nav-item nav-dropdown {{ (request()->is('buget/*')) ? 'show open' : '' }}">
+      <li class="nav-item nav-dropdown {{ (request()->is('budget/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
-          <i class="nav-icon fa fa-money"></i> งบประมาณ</a>
+           งบประมาณลงทุนประจำปี</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('buget/add')) ? 'active' : '' }}" href="{{ route('add') }}">
+            <a class="nav-link {{ (request()->is('budget/add')) ? 'active' : '' }}" href="{{ route('add') }}">
               <i class="nav-icon fa fa-plus"></i> Add</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('buget/import')) ? 'active' : '' }}" href="{{ route('import') }}">
-              <i class="nav-icon icon-doc"></i> import file</a>
+            <a class="nav-link {{ (request()->is('budget/edit')) ? 'active' : '' }}" href="{{ route('export') }}">
+              <i class="nav-icon icon-pencil"></i> Edit</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('buget/export_excel')) ? 'active' : '' }}" href="{{ route('export') }}">
-              <i class="nav-icon fa fa-download"></i> export file</a>
+            <a class="nav-link {{ (request()->is('budget/import')) ? 'active' : '' }}" href="{{ route('import') }}">
+              <i class="nav-icon icon-doc"></i> import file</a>
           </li>
         </ul>
       </li>
+      {{--<li class="nav-item nav-dropdown {{ (request()->is('budget/*')) ? 'show open' : '' }}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+           งบประมาณทำการประจำปี</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link " href="">
+              <i class="nav-icon fa fa-plus"></i> Add</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="">
+              <i class="nav-icon icon-doc"></i> import file</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="">
+              <i class="nav-icon fa fa-download"></i> export file</a>
+          </li>
+        </ul>
+      </li>--}}
       @if(Auth::user()->type ==1)
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="{{ route('register') }}" >
