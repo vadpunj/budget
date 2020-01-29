@@ -72,7 +72,8 @@ class InputController extends Controller
 
     public function get_add()
     {
-      return view('add');
+      $user_req = User_request::where('field',Auth::user()->field)->get();
+      return view('add',['user_req' => $user_req]);
     }
 
 
@@ -130,6 +131,7 @@ class InputController extends Controller
         $data->part = $_POST["part"];
         $data->name = $_POST["name_reqs"];
         $data->phone = $_POST["phone"];
+        $data->type = 'งบลงทุน';
         $data->save();
         // return response()->json(['success' => $data->id]);
         for($i=0; $i<$number; $i++)
@@ -158,6 +160,59 @@ class InputController extends Controller
           $insert->user_request_id = $data->id;
           $insert->save();
 
+          // return response()->json(['success' => $_POST["list"][$i]]);
+        }
+            return response()->json(['success' => 'บันทึกสำเร็จ']);
+      }
+    }
+
+    public function post_edit($num)
+    {
+      // dd($num);
+        $user_req = User_request::where('id',$num)->get();
+        $budget = Budget::where('user_request_id',$num)->get();
+        return view('edit',['user_req' => $user_req,'budget' => $budget]);
+    }
+
+    public function post_edit_data()
+    {
+      if($number > 0)
+      {
+        $data = User_request::find($_POST["id"]);
+        $data->year = $_POST["stat_year"];
+        $data->field = Auth::user()->field;
+        $data->office = Auth::user()->office;
+        $data->part = $_POST["part"];
+        $data->name = $_POST["name_reqs"];
+        $data->phone = $_POST["phone"];
+        $data->type = 'งบลงทุน';
+        $data->update();
+        // return response()->json(['success' => $data->id]);
+        for($i=0; $i<$number; $i++)
+        {
+          // DB::table('tbl_name')->insert(
+          //     ['name' => $_POST["name"][$i]]
+          // );
+          $insert = new Budget;
+          $insert->list = trim($_POST["list"][$i]);
+          $insert->business = trim($_POST["business"][$i]);
+          $insert->dis_business = trim($_POST["dis_business"][$i]);
+          $insert->project = trim($_POST["project"][$i]);
+          $insert->activ = trim($_POST["activ"][$i]);
+          $insert->respons = trim($_POST["respons"][$i]);
+          $insert->amount = trim($_POST["amount"][$i]);
+          $insert->price_per = trim($_POST["price_per"][$i]);
+          $insert->unit = trim($_POST["unit"][$i]);
+          $insert->unitsap = trim($_POST["unitsap"][$i]);
+          $insert->total = trim($_POST["total"][$i]);
+          $insert->explan = trim($_POST["explan"][$i]);
+          $insert->unit_t = trim($_POST["unit_t"][$i]);
+          $insert->year = trim($_POST["year"][$i]);
+          $insert->status = trim($_POST["status"][$i]);
+          $insert->field =  Auth::user()->field;
+          $insert->office = Auth::user()->office;
+          $insert->user_request_id = $data->id;
+          $insert->save();
           // return response()->json(['success' => $_POST["list"][$i]]);
         }
             return response()->json(['success' => 'บันทึกสำเร็จ']);

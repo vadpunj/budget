@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUserRequestsTable extends Migration
+class CreateMastersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,11 @@ class CreateUserRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_requests', function (Blueprint $table) {
+        Schema::create('masters', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('stat_year');
-            $table->string('field');
-            $table->string('office');
-            $table->string('part');
+            $table->string('account');
             $table->string('name');
-            $table->string('phone');
-            $table->string('type');
-            $table->string('center_money');
+            $table->string('remark')->nullable();
             $table->timestamps();
         });
     }
@@ -34,6 +29,6 @@ class CreateUserRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_requests');
+        Schema::dropIfExists('masters');
     }
 }

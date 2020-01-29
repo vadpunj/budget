@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use App\User;
+use App\Role;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function register()
     {
-      return view('register');
+      $role = Role::get();
+      return view('register',['role' => $role]);
     }
 
     public function postregister(Request $request)
@@ -21,13 +23,18 @@ class UserController extends Controller
         'name' => 'required|min:4',
         'emp_id' => 'required|numeric|unique:users',
         'field' => 'required',
-        'office' => 'required'
+        'office' => 'required',
+        'part' => 'required',
+        'center_money' => 'required'
       ]);
       User::create([
         'name' => $request->name,
         'emp_id' => $request->emp_id,
         'field' => $request->field,
-        'office' => $request->office
+        'office' => $request->office,
+        'part' => $request->part,
+        'center_money' => $request->center_money,
+        'type' => $request->type
       ]);
       return redirect()->back();
     }

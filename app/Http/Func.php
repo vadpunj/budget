@@ -1,6 +1,7 @@
 <?php
 // Helpers files
-
+use App\Master;
+use App\Estimate;
 
 class Func{
   public static function get_date($value)
@@ -15,7 +16,14 @@ class Func{
     return $day.' '.$month[$m].' '.$year;
 
   }
-  
+  public static function get_account($value)
+  {
+
+    $list_name  = Master::where('account',$value)->first();
+// dd($list_name->name);
+    return $list_name['name'];
+
+  }
 }
 
  ?>

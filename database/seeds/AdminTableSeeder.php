@@ -19,6 +19,8 @@ class AdminTableSeeder extends Seeder
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
+          'part' => 'ส่วนบริการด้านระบบบัญชี',
+          'center_money' => '1N00203',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ],
@@ -28,6 +30,8 @@ class AdminTableSeeder extends Seeder
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
+          'part' => 'ส่วนบริการด้านระบบบัญชี',
+          'center_money' => '1N00203',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ],
@@ -37,6 +41,8 @@ class AdminTableSeeder extends Seeder
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
+          'part' => 'ส่วนบริการด้านระบบบัญชี',
+          'center_money' => '1N00203',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ]

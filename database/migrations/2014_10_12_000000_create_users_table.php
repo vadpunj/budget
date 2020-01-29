@@ -17,9 +17,11 @@ class CreateUsersTable extends Migration
           $table->bigIncrements('id');
           $table->string('name');
           $table->string('emp_id')->unique();
-          $table->boolean('type')->default(0);
+          $table->tinyInteger('type');
           $table->string('field');
           $table->string('office');
+          $table->string('part');
+          $table->string('center_money');
           $table->timestamps();
         });
     }
