@@ -64,7 +64,7 @@
                   <td>
                     <a href="{{'/budget/post/edit/'.$value->id}}">
                       <button class="btn btn-warning" name="edit" type="submit">
-                         Edit
+                        <i class="nav-icon icon-pencil"></i> Edit
                       </button>
                     </a>
                   </td>

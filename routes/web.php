@@ -29,17 +29,18 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/home', 'InputController@post_data')->name('insert');
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');
+
   Route::group(['prefix' => 'budget'], function(){
-    Route::get('/add', 'InputController@get_add')->name('add');
-    Route::post('/add', 'InputController@post_add')->name('add_insert');
-    Route::get('/edit', 'InputController@get_edit')->name('edit');
-    Route::post('/data', 'InputController@data_budget');
-    Route::get('/post/edit/{num?}', 'InputController@post_edit');
-    Route::post('/data/edit', 'InputController@post_edit_data');
-    Route::get('/import_excel', 'ImportExcelController@index_budget')->name('import');
-    Route::post('/import_excel/import', 'ImportExcelController@import_budget');
-    Route::get('/export_excel', 'ExportExcelController@index_budget')->name('export');
-    Route::post('/export_excel/export', 'ExportExcelController@export_budget');
+    Route::get('/add', 'BudgetController@get_add')->name('add_bud');
+    Route::post('/add', 'BudgetController@post_add')->name('add_insert');
+    Route::get('/edit', 'BudgetController@get_edit')->name('edit');
+    Route::post('/data', 'BudgetController@data_budget');
+    Route::get('/post/edit/{num?}', 'BudgetController@post_edit');
+    Route::post('/data/edit', 'BudgetController@post_edit_data');
+    Route::get('/import_excel', 'BudgetController@import_index_budget')->name('import_bud');
+    Route::post('/import_excel/import', 'BudgetController@import_budget');
+    Route::get('/export_excel', 'BudgetController@export_index_budget')->name('export');
+    Route::post('/export_excel/export', 'BudgetController@export_budget');
   });
   Route::group(['prefix' => 'estimate'], function(){
     Route::get('/add', 'EstimateController@get_add')->name('add_est');

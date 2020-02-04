@@ -76,29 +76,49 @@
    {{--<table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
      <thead>
        <tr>
-         <th>Branch</th>
-         <th>List</th>
-         <th>Detail</th>
-         <th>Money</th>
-         <th>Remark</th>
+         <th>รายการ</th>
+         <th>สายงานธุรกิจ</th>
+         <th>เขตธุรกิจ</th>
+         <th>ประเภทโครงการ</th>
+         <th>กลุ่มบริการ/กลุ่มกิจกรรม</th>
+         <th>ผู้รับผิดชอบ</th>
+         <th>จำนวนหน่วย</th>
+         <th>ราคาต่อหน่วย</th>
+         <th>หน่วยนับ</th>
+         <th>หน่วยนับ SAP</th>
+         <th>รวมเงิน</th>
+         <th>คำชี้แจง</th>
+         <th>จำนวนหน่วย</th>
+         <th>ปีที่จัดซื้อ</th>
+         <th>สภาพ</th>
        </tr>
      </thead>
      @if(!empty($data))
      <tbody>
        @foreach($data as $value)
        <tr>
-         <td>{{ $value['branch'] }}</td>
          <td>{{ $value['list'] }}</td>
-         <td>{{ $value['detail'] }}</td>
-         <td>{{ $value['money'] }}</td>
-         <td>{{ $value['remark'] }}</td>
+         <td>{{ $value['business'] }}</td>
+         <td>{{ $value['dis_business'] }}</td>
+         <td>{{ $value['project'] }}</td>
+         <td>{{ $value['activ'] }}</td>
+         <td>{{ $value['respons'] }}</td>
+         <td>{{ $value['amount'] }}</td>
+         <td>{{ $value['price_per'] }}</td>
+         <td>{{ $value['unit'] }}</td>
+         <td>{{ $value['unitsap'] }}</td>
+         <td>{{ $value['total'] }}</td>
+         <td>{{ $value['explan'] }}</td>
+         <td>{{ $value['unit_t'] }}</td>
+         <td>{{ $value['year'] }}</td>
+         <td>{{ $value['status'] }}</td>
        </tr>
        @endforeach
      </tbody>
      @else
      <tbody>
        <tr>
-         <td colspan="6" align="center">{{ 'ไม่มีข้อมูล' }}</td>
+         <td colspan="14" align="center">{{ 'ไม่มีข้อมูล' }}</td>
        </tr>
      </tbody>
      @endif
