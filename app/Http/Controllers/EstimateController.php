@@ -18,25 +18,76 @@ class EstimateController extends Controller
 {
     public function get_add()
     {
+      $all = Master::get();
+        foreach ($all as $key => $value) {
+          $year4[date("Y",strtotime("-4 year"))+543][$value->account] = 0;
+          $year3[date("Y",strtotime("-3 year"))+543][$value->account] = 0;
+          $year2[date("Y",strtotime("-2 year"))+543][$value->account] = 0;
+          $year1[date("Y",strtotime("-1 year"))+543][$value->account] = 0;
+          $now[date("Y")+543][$value->account] = 0;
+          $explan[date("Y")+543][$value->account] = 0;
+        }
+        // dd($data);
       $list = DB::table('estimates')
-                ->select('stat_year','account', DB::raw('SUM(budget) as budget'))
-                ->where('stat_year','>=',(date("Y",strtotime("-3 year"))+543))
-                ->groupBy('stat_year','account')->get()->toArray();
-                $data =[];
+                ->select('stat_year','account','explanation', DB::raw('SUM(budget) as budget'))
+                ->where('stat_year','>=',(date("Y",strtotime("-4 year"))+543))
+                ->groupBy('stat_year','account','explanation')->get()->toArray();
+
                 foreach ($list as $key => $value) {
-                  $data[$value->account][$value->stat_year] = $value->budget;
+                  if($value->stat_year == date("Y",strtotime("-4 year"))+543){
+                    $year4[$value->stat_year][$value->account] = $value->budget;
+                  }elseif ($value->stat_year == date("Y",strtotime("-3 year"))+543) {
+                    $year3[$value->stat_year][$value->account] = $value->budget;
+                  }elseif ($value->stat_year == date("Y",strtotime("-2 year"))+543) {
+                    $year2[$value->stat_year][$value->account] = $value->budget;
+                  }elseif($value->stat_year == date("Y",strtotime("-1 year"))+543){
+                    $year1[$value->stat_year][$value->account] = $value->budget;
+                  }else{
+                    $now[$value->stat_year][$value->account] = $value->budget;
+                    $explan[$value->stat_year][$value->account] = $value->explanation;
+                  }
+                  // $explan[$value->stat_year][$value->account] = 'xxxx';
+                  // var_dump($value->explanation);
+                  // print "\n";
+
                 }
-// dd($data);
-      return view('add_est',['data' => $data]);
+
+                // dd($list);
+      return view('add_est',['now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3,'year4' => $year4 ,'explan' => $explan]);
     }
 
     public function post_add(Request $request)
     {
+      // dd($request->all());
       $this->validate($request,[
          'stat_year'=>'required|numeric',
          'name_reqs'=>'required',
          'phone' => 'required|numeric'
       ]);
+      foreach ($request->budget as $key => $val) {
+        if($val != null){
+          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->delete();
+          $estimate = new Estimate;
+          $estimate->stat_year = date("Y")+543;
+          $estimate->account = $key;
+          $estimate->budget = $val;
+          $estimate->center_money = Auth::user()->center_money;
+          $estimate->save();
+        }
+      }
+// dd($request->explan);
+      foreach ($request->explan as $key => $val) {
+
+        if($val != null){
+          if(!is_null($request->budget[$key])){
+            DB::table('estimates')
+              ->where('account',$key)
+              ->where('stat_year',date("Y")+543)
+              ->update(['explanation' => $val]);
+          }
+
+        }
+      }
 
       $data = new User_request;
       $data->stat_year = $request->stat_year;
@@ -48,6 +99,10 @@ class EstimateController extends Controller
       $data->center_money = Auth::user()->center_money;
       $data->type = 'งบทำการ';
       $data->save();
+
+      if($data){
+        return back()->with('success', 'Insert successfully.');
+      }
     }
 
     public function get_importfile()

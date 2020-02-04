@@ -49,6 +49,12 @@
             <form method="POST" action="{{ route('register') }}">
               @csrf
               <div class="card-body p-4">
+                @if($message = Session::get('success'))
+                <div class="alert alert-success alert-block">
+                 <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>{{ $message }}</strong>
+                </div>
+                @endif
                 <h1>Register</h1>
                 <p class="text-muted">Create your account</p>
                 <div class="input-group mb-3">

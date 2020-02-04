@@ -20,6 +20,7 @@ class CreateEstimatesTable extends Migration
             $table->double('budget');
             $table->string('center_money');
             $table->string('status')->nullable();
+            $table->text('explanation')->nullable();
             $table->timestamps();
         });
     }

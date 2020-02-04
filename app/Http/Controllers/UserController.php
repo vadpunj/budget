@@ -36,7 +36,8 @@ class UserController extends Controller
         'center_money' => $request->center_money,
         'type' => $request->type
       ]);
-      return redirect()->back();
+      // return redirect()->back();
+      return back()->with('success', 'เพิ่มผู้ใช้แล้ว');
     }
     public function login()
     {
