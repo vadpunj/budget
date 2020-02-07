@@ -29,19 +29,19 @@ class BudgetController extends Controller
   {
 
     $number = count($_POST["list"]);
-    // return response()->json(['success' => $_POST["stat_year"]]);
     if($number > 0)
     {
       $data = new User_request;
-      $data->year = $_POST["stat_year"];
+      $data->stat_year = $_POST["stat_year"];
       $data->field = Auth::user()->field;
       $data->office = Auth::user()->office;
       $data->part = $_POST["part"];
       $data->name = $_POST["name_reqs"];
       $data->phone = $_POST["phone"];
+      $data->center_money = Auth::user()->center_money;
       $data->type = 'งบลงทุน';
       $data->save();
-      // return response()->json(['success' => $data->id]);
+
       for($i=0; $i<$number; $i++)
       {
         // DB::table('tbl_name')->insert(
@@ -80,58 +80,84 @@ class BudgetController extends Controller
     // dd($num);
       $user_req = User_request::where('id',$num)->get();
       $budget = Budget::where('user_request_id',$num)->get();
-      return view('edit',['user_req' => $user_req,'budget' => $budget]);
+      return view('edit_bud',['user_req' => $user_req,'budget' => $budget]);
   }
 
-  public function post_edit_data()
+  public function post_edit_data(Request $request)
   {
+    $number = count($request->list_old);
+
     if($number > 0)
     {
-      $data = User_request::find($_POST["id"]);
-      $data->year = $_POST["stat_year"];
+      // dd($request->part);
+      $data = User_request::find($request->id);
+      $data->stat_year = $request->stat_year;
       $data->field = Auth::user()->field;
       $data->office = Auth::user()->office;
-      $data->part = $_POST["part"];
-      $data->name = $_POST["name_reqs"];
-      $data->phone = $_POST["phone"];
+      $data->part = $request->part;
+      $data->name = $request->name_reqs;
+      $data->phone = $request->phone;
       $data->type = 'งบลงทุน';
+      $data->center_money = Auth::user()->center_money;
       $data->update();
       // return response()->json(['success' => $data->id]);
-      for($i=0; $i<$number; $i++)
+        // dd('70789');
+      for($i=0; $i<count($request->list); $i++)
       {
-        // DB::table('tbl_name')->insert(
-        //     ['name' => $_POST["name"][$i]]
-        // );
         $insert = new Budget;
-        $insert->list = trim($_POST["list"][$i]);
-        $insert->business = trim($_POST["business"][$i]);
-        $insert->dis_business = trim($_POST["dis_business"][$i]);
-        $insert->project = trim($_POST["project"][$i]);
-        $insert->activ = trim($_POST["activ"][$i]);
-        $insert->respons = trim($_POST["respons"][$i]);
-        $insert->amount = trim($_POST["amount"][$i]);
-        $insert->price_per = trim($_POST["price_per"][$i]);
-        $insert->unit = trim($_POST["unit"][$i]);
-        $insert->unitsap = trim($_POST["unitsap"][$i]);
-        $insert->total = trim($_POST["total"][$i]);
-        $insert->explan = trim($_POST["explan"][$i]);
-        $insert->unit_t = trim($_POST["unit_t"][$i]);
-        $insert->year = trim($_POST["year"][$i]);
-        $insert->status = trim($_POST["status"][$i]);
+        $insert->list = $request->list[$i];
+        $insert->business = trim($request->business[$i]);
+        $insert->dis_business = trim($request->dis_business[$i]);
+        $insert->project = trim($request->project[$i]);
+        $insert->activ = trim($request->activ[$i]);
+        $insert->respons = trim($request->respons[$i]);
+        $insert->amount = trim($request->amount[$i]);
+        $insert->price_per = trim($request->price_per[$i]);
+        $insert->unit = trim($request->unit[$i]);
+        $insert->unitsap = trim($request->unitsap[$i]);
+        $insert->total = trim($request->total[$i]);
+        $insert->explan = trim($request->explan[$i]);
+        $insert->unit_t = trim($request->unit_t[$i]);
+        $insert->year = trim($request->year[$i]);
+        $insert->status = trim($request->status[$i]);
         $insert->field =  Auth::user()->field;
         $insert->office = Auth::user()->office;
-        $insert->user_request_id = $data->id;
+        $insert->user_request_id = $request->id;
         $insert->save();
-        // return response()->json(['success' => $_POST["list"][$i]]);
       }
-          return response()->json(['success' => 'บันทึกสำเร็จ']);
+      // dd('3422');
+      for($j=0 ; $j<$number ; $j++){
+        $update = Budget::find($request->id_old[$j]);
+        $update->list = trim($request->list_old[$j]);
+        $update->business = trim($request->business_old[$j]);
+        $update->dis_business = trim($request->dis_business_old[$j]);
+        $update->project = trim($request->project_old[$j]);
+        $update->activ = trim($request->activ_old[$j]);
+        $update->respons = trim($request->respons_old[$j]);
+        $update->amount = trim($request->amount_old[$j]);
+        $update->price_per = trim($request->price_per_old[$j]);
+        $update->unit = trim($request->unit_old[$j]);
+        $update->unitsap = trim($request->unitsap_old[$j]);
+        $update->total = trim($request->total_old[$j]);
+        $update->explan = trim($request->explan_old[$j]);
+        $update->unit_t = trim($request->unit_t_old[$j]);
+        $update->year = trim($request->year_old[$j]);
+        $update->status = trim($request->status_old[$j]);
+        $update->field =  Auth::user()->field;
+        $update->office = Auth::user()->office;
+        $update->user_request_id = $request->id;
+        $update->update();
+      }
+
+          return back()->with('success', 'Insert successfully.');
     }
   }
 
   public function import_index_budget()
   {
 
-    $data = Budget::where('year',date('Y'))->get()->toArray();
+    $data = Budget::where('year',(date('Y')+543))->get()->toArray();
+    // dd($data);
     // $data = DB::table('budgets')
     //       ->select(DB::raw('sum(money) as money,business_process,product,functional_area,segment'))
     //       ->whereBetween('date', date('Y'))
@@ -143,62 +169,79 @@ class BudgetController extends Controller
 
   public function import_budget(Request $request)
   {
+    config(['excel.import.heading' => 'original' ]);
     set_time_limit(0);
-    $this->validate($request, [
-      'select_file'  => 'required|mimes:xlsx'
-    ]);
+    // $this->validate($request, [
+    //   'select_file'  => 'required|mimes:xlsx'
+    // ]);
 
    $path = $request->file('select_file')->getRealPath();
    $name = $request->file('select_file')->getClientOriginalName();
+   $type = $request->file('select_file')->getClientOriginalExtension();
    // $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
-   Storage::disk('log')->put($name, File::get($request->file('select_file')));
-   $data = Excel::load($path)->get();
+   if($type == 'xlsx'){
+     Storage::disk('log')->put($name, File::get($request->file('select_file')));
+     $data = Excel::load($path)->get();
 
+// dd($data);
 
+     $key_name = ['list','business','dis_business','project','activ','respons','amount','price_per','unit','unitsap','total','explan','unit_t','year','status'];
 
-   $key_name = ['list','business','dis_business','project','activ','respons','amount','price_per','unit','unitsap','total','explan','unit_t','year','status'];
-
-   if($data->count() > 0)
-   {
-     $num = 0;
-    foreach($data->toArray() as $key => $value)
-    {
-      $i = 0;
-     foreach($value as $row)
+     if($data->count() > 0)
      {
-      $insert_data[$num][$key_name[$i]] = $row;
-      $num++;
-      $i++;
-     }
-    }
-    if(!empty($insert_data))
-    {
-      for($j = 0; $j < count($insert_data); $j++ ){
-        $insert = new Budget;
-        $insert->list = $insert_data[$j++]['list'];
-        $insert->business = $insert_data[$j++]['business'];
-        $insert->dis_business = $insert_data[$j++]['dis_business'];
-        $insert->project = $insert_data[$j++]['project'];
-        $insert->activ = $insert_data[$j++]['activ'];
-        $insert->respons = $insert_data[$j++]['respons'];
-        $insert->price_per = $insert_data[$j++]['amount'];
-        $insert->price_per = $insert_data[$j++]['price_per'];
-        $insert->unit = $insert_data[$j++]['unit'];
-        $insert->unitsap = $insert_data[$j++]['unitsap'];
-        $insert->total = $insert_data[$j++]['total'];
-        $insert->explan = $insert_data[$j++]['explan'];
-        $insert->unit_t = $insert_data[$j++]['unit_t'];
-        $insert->year = $insert_data[$j++]['year'];
-        $insert->status = $insert_data[$j++]['status'];
-        $insert->field = Auth::user()->field;
-        $insert->office = Auth::user()->office;
-        $insert->remark = $insert_data[$j]['remark'];
-        $insert->save();
+       $num = 0;
+      foreach($data->toArray() as $key => $value)
+      {
+        $i = 0;
+       foreach($value as $row)
+       {
+        $insert_data[$num][$key_name[$i]] = $row;
+        $num++;
+        $i++;
+       }
       }
+      // dd($insert_data);
+      if(!empty($insert_data))
+      {
+        $add = new User_request;
+        $add->stat_year = date('Y')+543;
+        $add->field = Auth::user()->field;
+        $add->office = Auth::user()->office;
+        $add->part = Auth::user()->part;
+        $add->name = Auth::user()->name;
+        $add->phone = Auth::user()->tel;
+        $add->type = 'งบลงทุน';
+        $add->center_money = Auth::user()->center_money;
+        $add->save();
 
-    }
+        for($j = 0; $j < count($insert_data); $j++ ){
+          $insert = new Budget;
+          $insert->list = $insert_data[$j++]['list'];
+          $insert->business = $insert_data[$j++]['business'];
+          $insert->dis_business = $insert_data[$j++]['dis_business'];
+          $insert->project = $insert_data[$j++]['project'];
+          $insert->activ = $insert_data[$j++]['activ'];
+          $insert->respons = $insert_data[$j++]['respons'];
+          $insert->amount = $insert_data[$j++]['amount'];
+          $insert->price_per = round($insert_data[$j++]['price_per']);
+          $insert->unit = $insert_data[$j++]['unit'];
+          $insert->unitsap = $insert_data[$j++]['unitsap'];
+          $insert->total = round($insert_data[$j++]['total']);
+          $insert->explan = $insert_data[$j++]['explan'];
+          $insert->unit_t = $insert_data[$j++]['unit_t'];
+          $insert->year = $insert_data[$j++]['year'];
+          $insert->status = $insert_data[$j]['status'];
+          $insert->user_request_id = $add->id;
+          $insert->field = Auth::user()->field;
+          $insert->office = Auth::user()->office;
+          $insert->save();
+        }
+
+      }
+     }
+     return back()->with('success', 'Excel Data Imported successfully.');
    }
-   return back()->with('success', 'Excel Data Imported successfully.');
+
   }
 
   public function export_index_budget()

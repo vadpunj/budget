@@ -112,7 +112,7 @@ class EstimateController extends Controller
 
     public function post_importfile(Request $request)
     {
-      // config(['excel.import.heading' => 'original' ]);
+      config(['excel.import.heading' => 'original' ]);
       set_time_limit(0);
       $this->validate($request, [
         'select_file'  => 'required|mimes:xlsx'
@@ -178,11 +178,6 @@ class EstimateController extends Controller
 
       return back()->with('success', 'Insert data successfully.');
     }
-
-    // public function get_edit_master()
-    // {
-    //   dd($id);
-    // }
 
     public function post_edit_master(Request $request)
     {

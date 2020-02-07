@@ -147,6 +147,19 @@
                     @endforeach
                   </select>
                 </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-phone"></i>
+                    </span>
+                  </div>
+                  <input class="form-control @error('tel') is-invalid @enderror" type="text" placeholder="เบอร์ติดต่อ" name="tel" value="{{ old('tel') }}" required autocomplete="center_money">
+                  @error('tel')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
                 <button class="btn btn-block btn-success" type="submit">Create Account</button>
               </div>
             </form>

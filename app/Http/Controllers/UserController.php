@@ -25,7 +25,8 @@ class UserController extends Controller
         'field' => 'required',
         'office' => 'required',
         'part' => 'required',
-        'center_money' => 'required'
+        'center_money' => 'required',
+        'tel' => 'required|numeric'
       ]);
       User::create([
         'name' => $request->name,
@@ -34,7 +35,9 @@ class UserController extends Controller
         'office' => $request->office,
         'part' => $request->part,
         'center_money' => $request->center_money,
-        'type' => $request->type
+        'type' => $request->type,
+        'tel' => $request->tel
+
       ]);
       // return redirect()->back();
       return back()->with('success', 'เพิ่มผู้ใช้แล้ว');

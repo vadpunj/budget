@@ -205,8 +205,9 @@
              data:$('#add_name').serialize(),
              dataType: "json",
              success: function (json) {
-               // console.log(json.success);
+               console.log(json.success);
                alert('บันทึกข้อมูลเรียบร้อย');
+               window.location.reload(true);
                $('#add_name')[0].reset();
              },
              error: function (e) {

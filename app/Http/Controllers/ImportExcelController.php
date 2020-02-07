@@ -15,11 +15,11 @@ class ImportExcelController extends Controller
 {
 
 
-  
+
 
     public function ajax_data()
     {
-      $year = $_POST['year'];
+      $year = $_POST['year']+543;
       $data = Budget::where('year',$year)->get()->toArray();
 
       if(!empty($data)){

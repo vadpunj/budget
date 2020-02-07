@@ -72,57 +72,8 @@
        </select>
      </div>
    </div>
-   <div id="dvTable" style="border:0px;overflow: auto;" class="table table-responsive-sm table-bordered"></div>
-   {{--<table class="table table-responsive-sm table-bordered" style="width: 50%;overflow-x: auto;">
-     <thead>
-       <tr>
-         <th>รายการ</th>
-         <th>สายงานธุรกิจ</th>
-         <th>เขตธุรกิจ</th>
-         <th>ประเภทโครงการ</th>
-         <th>กลุ่มบริการ/กลุ่มกิจกรรม</th>
-         <th>ผู้รับผิดชอบ</th>
-         <th>จำนวนหน่วย</th>
-         <th>ราคาต่อหน่วย</th>
-         <th>หน่วยนับ</th>
-         <th>หน่วยนับ SAP</th>
-         <th>รวมเงิน</th>
-         <th>คำชี้แจง</th>
-         <th>จำนวนหน่วย</th>
-         <th>ปีที่จัดซื้อ</th>
-         <th>สภาพ</th>
-       </tr>
-     </thead>
-     @if(!empty($data))
-     <tbody>
-       @foreach($data as $value)
-       <tr>
-         <td>{{ $value['list'] }}</td>
-         <td>{{ $value['business'] }}</td>
-         <td>{{ $value['dis_business'] }}</td>
-         <td>{{ $value['project'] }}</td>
-         <td>{{ $value['activ'] }}</td>
-         <td>{{ $value['respons'] }}</td>
-         <td>{{ $value['amount'] }}</td>
-         <td>{{ $value['price_per'] }}</td>
-         <td>{{ $value['unit'] }}</td>
-         <td>{{ $value['unitsap'] }}</td>
-         <td>{{ $value['total'] }}</td>
-         <td>{{ $value['explan'] }}</td>
-         <td>{{ $value['unit_t'] }}</td>
-         <td>{{ $value['year'] }}</td>
-         <td>{{ $value['status'] }}</td>
-       </tr>
-       @endforeach
-     </tbody>
-     @else
-     <tbody>
-       <tr>
-         <td colspan="14" align="center">{{ 'ไม่มีข้อมูล' }}</td>
-       </tr>
-     </tbody>
-     @endif
-   </table>--}}
+   <div id="dvTable" style="border:0px;overflow: auto;width: 100%" class="table table-responsive-sm table-bordered"></div>
+
   </div>
 </main>
 @endsection
@@ -144,14 +95,17 @@
         data: {year:x},
         dataType: "json",
         success: function (json) {
+          console.log(json);
           if(json.success){
             var customers = new Array();
-            customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+            customers.push(["list", "business", "dis_business" , "project" , "activ","respons","amount","price_per","unit","unitsap","total","explan","unit_t","year","status"]);
             json.success.forEach(myforeach);
             function myforeach(item, index) {
-              customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+              customers.push([item.list,item.business,item.dis_business,item.project,item.activ,item.respons,item.amount,item.price_per,item.unit,item.unitsap,item.total,item.explan,item.unit_t,item.year,item.status]);
             }
             var table = document.createElement("TABLE");
+            table.style.width = '100%';
+            table.style.overflow= "auto";
             // table.border = "1";
 
             //Get the count of columns.
@@ -171,17 +125,27 @@
                 for (var j = 0; j < columnCount; j++) {
                     var cell = row.insertCell(-1);
                     cell.innerHTML = customers[i][j];
-                    if(j==3){
-                      cell.innerHTML = numberWithCommas(customers[i][j]);
+                    if(j==7 || j==10){
+                      cell.innerHTML = number_format(parseFloat(customers[i][j]));
                       cell.style.textAlign = "right";
+                    }else if(j==6 || j==8 || j==9 || j==12){
+                      cell.innerHTML = numberCommas(customers[i][j]);
+                      cell.style.textAlign = "right";
+                    }else if(j==13){
+                      cell.innerHTML = customers[i][j];
+                      cell.style.textAlign = "center";
                     }
                 }
             }
-            function numberWithCommas(x) {
+            function number_format(x) {
                return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-           }
+            }
+            function numberCommas(x) {
+               return x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+            }
             var dvTable = document.getElementById("dvTable");
             dvTable.innerHTML = "";
+            // document.getElementById('dvTable').style.width= '100%';
             dvTable.appendChild(table);
           }
         },
@@ -206,12 +170,14 @@
         success: function (json) {
           if(json.success){
             var customers = new Array();
-            customers.push(["Branch", "List", "Detail" , "Money" , "Remark"]);
+          customers.push(["list", "business", "dis_business" , "project" , "activ","respons","amount","price_per","unit","unitsap","total","explan","unit_t","year","status"]);
             json.success.forEach(myforeach);
             function myforeach(item, index) {
-              customers.push([item.branch,item.list,item.detail,item.money,item.remark]);
+              customers.push([item.list,item.business,item.dis_business,item.project,item.activ,item.respons,item.amount,item.price_per,item.unit,item.unitsap,item.total,item.explan,item.unit_t,item.year,item.status]);
             }
             var table = document.createElement("TABLE");
+            table.style.width = '100%';
+            table.style.overflow= "auto";
             // table.border = "1";
 
             //Get the count of columns.
@@ -231,14 +197,23 @@
                 for (var j = 0; j < columnCount; j++) {
                     var cell = row.insertCell(-1);
                     cell.innerHTML = customers[i][j];
-                    if(j==3){
-                      cell.innerHTML = numberWithCommas(customers[i][j]);
+                    if(j==7 || j==10){
+                      cell.innerHTML = number_format(parseFloat(customers[i][j]));
                       cell.style.textAlign = "right";
+                    }else if(j==6 || j==8 || j==9 || j==12){
+                      cell.innerHTML = numberCommas(customers[i][j]);
+                      cell.style.textAlign = "right";
+                    }else if(j==13){
+                      cell.innerHTML = customers[i][j];
+                      cell.style.textAlign = "center";
                     }
                 }
             }
-            function numberWithCommas(x) {
+            function number_format(x) {
                return x.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+           }
+           function numberCommas(x) {
+              return x.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
            }
 
             var dvTable = document.getElementById("dvTable");

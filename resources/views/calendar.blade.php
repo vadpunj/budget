@@ -64,7 +64,7 @@
                   <label class="col-md-2 col-form-label">วันที่</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date"/>
+                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date" autocomplete="off"/>
                       <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
                           <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -80,7 +80,7 @@
                   <label class="col-md-2 col-form-label">ถึง</label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
-                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker"/>
+                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker" autocomplete="off"/>
                         <div class="input-group-append">
                           <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
                             <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -97,7 +97,7 @@
                 <div class="form-group row">
                   <label class="col-md-2 col-form-label">Event Name</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name">
+                    <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name" autocomplete="off">
                     @error('event_name')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

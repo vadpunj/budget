@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
           $table->string('office');
           $table->string('part');
           $table->string('center_money');
+          $table->integer('tel');
           $table->timestamps();
         });
     }

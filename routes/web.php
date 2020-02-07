@@ -33,10 +33,10 @@ Route::group(['middleware' => ['auth']], function () {
   Route::group(['prefix' => 'budget'], function(){
     Route::get('/add', 'BudgetController@get_add')->name('add_bud');
     Route::post('/add', 'BudgetController@post_add')->name('add_insert');
-    Route::get('/edit', 'BudgetController@get_edit')->name('edit');
+    Route::get('/edit', 'BudgetController@get_edit');
     Route::post('/data', 'BudgetController@data_budget');
     Route::get('/post/edit/{num?}', 'BudgetController@post_edit');
-    Route::post('/data/edit', 'BudgetController@post_edit_data');
+    Route::post('/data/edit', 'BudgetController@post_edit_data')->name('edit_bud');
     Route::get('/import_excel', 'BudgetController@import_index_budget')->name('import_bud');
     Route::post('/import_excel/import', 'BudgetController@import_budget');
     Route::get('/export_excel', 'BudgetController@export_index_budget')->name('export');
