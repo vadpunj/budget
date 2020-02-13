@@ -13,6 +13,7 @@ use App\Estimate;
 use App\Approve_log;
 use DB;
 use Excel;
+use Carbon\Carbon;
 
 class EstimateController extends Controller
 {
@@ -59,21 +60,23 @@ class EstimateController extends Controller
 
     public function post_add(Request $request)
     {
-      // dd($request->all());
       $this->validate($request,[
          'stat_year'=>'required|numeric',
          'name_reqs'=>'required',
          'phone' => 'required|numeric'
       ]);
       foreach ($request->budget as $key => $val) {
+        // ใช้วิธี delete insert
         if($val != null){
-          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->delete();
+          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
           $estimate = new Estimate;
           $estimate->stat_year = date("Y")+543;
           $estimate->account = $key;
           $estimate->budget = $val;
           $estimate->center_money = Auth::user()->center_money;
           $estimate->save();
+        }else{
+          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
         }
       }
 // dd($request->explan);
@@ -83,7 +86,7 @@ class EstimateController extends Controller
             DB::table('estimates')
               ->where('account',$key)
               ->where('stat_year',date("Y")+543)
-              ->update(['explanation' => $val]);
+              ->update(['explanation' => $val, 'updated_at' => \Carbon::now()]);
           }
         }
       }

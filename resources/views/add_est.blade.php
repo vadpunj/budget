@@ -39,13 +39,14 @@
      <div class="row">
       <div class="col-lg-12">
         <form class="" action="{{ route('insert_est') }}" method="post">
+          @if($message = Session::get('success'))
+          <div class="alert alert-success alert-block">
+           <button type="button" class="close" data-dismiss="alert">×</button>
+                  <strong>{{ $message }}</strong>
+          </div>
+          @endif
           <div class="card">
           <div class="card-header word">
-            @if (session()->has('notification'))
-              <div class="notification">
-                {!! session('notification') !!}
-              </div>
-            @endif
             <i class="fa fa-align-justify"></i> ข้อมูลผู้ขอ</div>
             <div class="card-body">
                 @csrf
@@ -150,9 +151,9 @@
                         <td align="center">{{ '-' }}</td>
                       @endif
                       @if($now[date("Y")+543][$key] != 0)
-                        <td align="center"> <input type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}">
-
-                         </td>
+                        <td align="center">
+                          <input type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}">
+                        </td>
                       @elseif($now[date("Y")+543][$key] == 0)
                         <td align="center"> <input type="text" name="budget[{{$key}}]" >
                         </td>

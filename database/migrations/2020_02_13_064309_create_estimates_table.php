@@ -33,8 +33,6 @@ class CreateEstimatesTable extends Migration
      */
     public function down()
     {
-      Schema::table('estimates', function (Blueprint $table) {
-        $table->dropSoftDeletes();
-      });
+        Schema::dropIfExists('estimates');
     }
 }

@@ -12,4 +12,5 @@ class Estimate extends Model
   protected $table = 'estimates';
 
   protected $dates = ['deleted_at'];
+  
 }
