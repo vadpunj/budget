@@ -87,7 +87,7 @@
       </div>
       <div class="modal-body">
           <div class="form-group row">
-            <label class="col-md-2 col-form-label">ปีงบประมาณ</label>
+            <label class="col-md-2 col-form-label">ปีงบประมาณ(พ.ศ.)</label>
             <div class="form-group col-sm-4">
               <div class="input-group">
                 <input class="form-control" type="text" name="stat_year">

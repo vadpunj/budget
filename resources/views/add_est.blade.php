@@ -123,51 +123,51 @@
                </tr>
              </thead>
              <tbody>
-              @foreach($now as $arr_key => $arr_val)
-                @foreach($arr_val as $key => $value)
-                  <tr>
-                    <td>{{ $key }}</td>
-                    <td>{{ Func::get_account($key) }}</td>
-                    @if($year4[date("Y",strtotime("-4 year"))+543][$key] != 0)
-                      <td align="right">{{ number_format($year4[date("Y",strtotime("-4 year"))+543][$key],2) }}</td>
-                    @elseif($year4[date("Y",strtotime("-4 year"))+543][$key] == 0)
-                      <td align="center">{{ '-' }}</td>
-                    @endif
-                    @if($year3[date("Y",strtotime("-3 year"))+543][$key] != 0)
-                      <td align="right">{{ number_format($year3[date("Y",strtotime("-3 year"))+543][$key],2) }}</td>
-                    @elseif($year3[date("Y",strtotime("-3 year"))+543][$key] == 0)
-                      <td align="center">{{ '-' }}</td>
-                    @endif
-                    <td></td>
-                    @if($year2[date("Y",strtotime("-2 year"))+543][$key] != 0)
-                      <td align="right">{{ number_format($year2[date("Y",strtotime("-2 year"))+543][$key],2) }}</td>
-                    @elseif($year2[date("Y",strtotime("-2 year"))+543][$key] == 0)
-                      <td align="center">{{ '-' }}</td>
-                    @endif
-                    @if($year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
-                      <td align="right">{{ number_format($year1[date("Y",strtotime("-1 year"))+543][$key],2) }}</td>
-                    @elseif($year1[date("Y",strtotime("-1 year"))+543][$key] == 0)
-                      <td align="center">{{ '-' }}</td>
-                    @endif
-                    @if($now[date("Y")+543][$key] != 0)
-                      <td align="center"> <input type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}">
+                @foreach($now as $arr_key => $arr_val)
+                  @foreach($arr_val as $key => $value)
+                    <tr>
+                      <td>{{ $key }}</td>
+                      <td>{{ Func::get_account($key) }}</td>
+                      @if($year4[date("Y",strtotime("-4 year"))+543][$key] != 0)
+                        <td align="right">{{ number_format($year4[date("Y",strtotime("-4 year"))+543][$key],2) }}</td>
+                      @elseif($year4[date("Y",strtotime("-4 year"))+543][$key] == 0)
+                        <td align="center">{{ '-' }}</td>
+                      @endif
+                      @if($year3[date("Y",strtotime("-3 year"))+543][$key] != 0)
+                        <td align="right">{{ number_format($year3[date("Y",strtotime("-3 year"))+543][$key],2) }}</td>
+                      @elseif($year3[date("Y",strtotime("-3 year"))+543][$key] == 0)
+                        <td align="center">{{ '-' }}</td>
+                      @endif
+                      <td></td>
+                      @if($year2[date("Y",strtotime("-2 year"))+543][$key] != 0)
+                        <td align="right">{{ number_format($year2[date("Y",strtotime("-2 year"))+543][$key],2) }}</td>
+                      @elseif($year2[date("Y",strtotime("-2 year"))+543][$key] == 0)
+                        <td align="center">{{ '-' }}</td>
+                      @endif
+                      @if($year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
+                        <td align="right">{{ number_format($year1[date("Y",strtotime("-1 year"))+543][$key],2) }}</td>
+                      @elseif($year1[date("Y",strtotime("-1 year"))+543][$key] == 0)
+                        <td align="center">{{ '-' }}</td>
+                      @endif
+                      @if($now[date("Y")+543][$key] != 0)
+                        <td align="center"> <input type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}">
 
-                       </td>
-                    @elseif($now[date("Y")+543][$key] == 0)
-                      <td align="center"> <input type="text" name="budget[{{$key}}]" >
-                      </td>
-                    @endif
-                    <td align="center"></td>
-                    @if($explan[date("Y")+543][$key] == null)
-                      <td> <textarea name="explan[{{$key}}]"></textarea>
-                      </td>
-                    @elseif($explan[date("Y")+543][$key] != null)
-                      <td> <textarea name="explan[{{$key}}]">{{ $explan[date("Y")+543][$key] }}</textarea>
-                      </td>
-                    @endif
-                 </tr>
+                         </td>
+                      @elseif($now[date("Y")+543][$key] == 0)
+                        <td align="center"> <input type="text" name="budget[{{$key}}]" >
+                        </td>
+                      @endif
+                      <td align="center"></td>
+                      @if($explan[date("Y")+543][$key] == null)
+                        <td> <textarea name="explan[{{$key}}]"></textarea>
+                        </td>
+                      @elseif($explan[date("Y")+543][$key] != null)
+                        <td> <textarea name="explan[{{$key}}]">{{ $explan[date("Y")+543][$key] }}</textarea>
+                        </td>
+                      @endif
+                   </tr>
+                  @endforeach
                 @endforeach
-              @endforeach
              </tbody>
            </table>
 

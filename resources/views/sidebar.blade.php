@@ -45,11 +45,12 @@
             <a class="nav-link {{ (request()->is('estimate/edit')) ? 'active' : '' }}" href="{{ route('export') }}">
               <i class="nav-icon icon-pencil"></i> Edit</a>
           </li>--}}
-
+          @if(Auth::user()->type ==3 || Auth::user()->type ==1)
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/add/master')) ? 'active' : '' }}" href="{{ route('add_master') }}">
               <i class="nav-icon fa fa-plus"></i> Add Master</a>
           </li>
+          @endif
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
               <i class="nav-icon icon-doc"></i> Import Estimate</a>

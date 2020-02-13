@@ -86,10 +86,8 @@ class BudgetController extends Controller
   public function post_edit_data(Request $request)
   {
     $number = count($request->list_old);
-
-    if($number > 0)
-    {
-      // dd($request->part);
+// dd($request->list_old[2]);
+    if($number > 0){
       $data = User_request::find($request->id);
       $data->stat_year = $request->stat_year;
       $data->field = Auth::user()->field;
@@ -100,8 +98,39 @@ class BudgetController extends Controller
       $data->type = 'งบลงทุน';
       $data->center_money = Auth::user()->center_money;
       $data->update();
-      // return response()->json(['success' => $data->id]);
-        // dd('70789');
+
+      // update ข้อมูลเก่า
+      for($j=0 ; $j<$number ; $j++){
+        if($request->list_old[$j] == null){
+          $delete = Budget::find($request->id_old[$j]);
+          $delete->delete();
+        }else{
+          $update = Budget::find($request->id_old[$j]);
+          $update->list = trim($request->list_old[$j]);
+          $update->business = trim($request->business_old[$j]);
+          $update->dis_business = trim($request->dis_business_old[$j]);
+          $update->project = trim($request->project_old[$j]);
+          $update->activ = trim($request->activ_old[$j]);
+          $update->respons = trim($request->respons_old[$j]);
+          $update->amount = trim($request->amount_old[$j]);
+          $update->price_per = trim($request->price_per_old[$j]);
+          $update->unit = trim($request->unit_old[$j]);
+          $update->unitsap = trim($request->unitsap_old[$j]);
+          $update->total = trim($request->total_old[$j]);
+          $update->explan = trim($request->explan_old[$j]);
+          $update->unit_t = trim($request->unit_t_old[$j]);
+          $update->year = trim($request->year_old[$j]);
+          $update->status = trim($request->status_old[$j]);
+          $update->field =  Auth::user()->field;
+          $update->office = Auth::user()->office;
+          $update->user_request_id = $request->id;
+          $update->update();
+        }
+      }
+    }
+
+    if(!is_null($request->list)){
+      // insert ข้อมูลใหม่
       for($i=0; $i<count($request->list); $i++)
       {
         $insert = new Budget;
@@ -125,45 +154,16 @@ class BudgetController extends Controller
         $insert->user_request_id = $request->id;
         $insert->save();
       }
-      // dd('3422');
-      for($j=0 ; $j<$number ; $j++){
-        $update = Budget::find($request->id_old[$j]);
-        $update->list = trim($request->list_old[$j]);
-        $update->business = trim($request->business_old[$j]);
-        $update->dis_business = trim($request->dis_business_old[$j]);
-        $update->project = trim($request->project_old[$j]);
-        $update->activ = trim($request->activ_old[$j]);
-        $update->respons = trim($request->respons_old[$j]);
-        $update->amount = trim($request->amount_old[$j]);
-        $update->price_per = trim($request->price_per_old[$j]);
-        $update->unit = trim($request->unit_old[$j]);
-        $update->unitsap = trim($request->unitsap_old[$j]);
-        $update->total = trim($request->total_old[$j]);
-        $update->explan = trim($request->explan_old[$j]);
-        $update->unit_t = trim($request->unit_t_old[$j]);
-        $update->year = trim($request->year_old[$j]);
-        $update->status = trim($request->status_old[$j]);
-        $update->field =  Auth::user()->field;
-        $update->office = Auth::user()->office;
-        $update->user_request_id = $request->id;
-        $update->update();
-      }
-
-          return back()->with('success', 'Insert successfully.');
     }
+    // dd(2323);
+      return back()->with('success', 'Successful.');
   }
 
   public function import_index_budget()
   {
 
     $data = Budget::where('year',(date('Y')+543))->get()->toArray();
-    // dd($data);
-    // $data = DB::table('budgets')
-    //       ->select(DB::raw('sum(money) as money,business_process,product,functional_area,segment'))
-    //       ->whereBetween('date', date('Y'))
-    //       ->groupBy('business_process','product','functional_area','segment')
-    //       ->get()
-    //       ->toArray();
+
     return view('import_bud',['data' => $data]);
   }
 
@@ -240,6 +240,8 @@ class BudgetController extends Controller
       }
      }
      return back()->with('success', 'Excel Data Imported successfully.');
+   }else{
+     dd("Can not insert data");
    }
 
   }

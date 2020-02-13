@@ -18,6 +18,12 @@ class EstimateController extends Controller
 {
     public function get_add()
     {
+      $year4=[];
+      $year3=[];
+      $year2=[];
+      $year1=[];
+      $now=[];
+      $explan=[];
       $all = Master::get();
         foreach ($all as $key => $value) {
           $year4[date("Y",strtotime("-4 year"))+543][$value->account] = 0;
@@ -27,32 +33,27 @@ class EstimateController extends Controller
           $now[date("Y")+543][$value->account] = 0;
           $explan[date("Y")+543][$value->account] = 0;
         }
-        // dd($data);
+        // dd($all);
       $list = DB::table('estimates')
-                ->select('stat_year','account','explanation', DB::raw('SUM(budget) as budget'))
-                ->where('stat_year','>=',(date("Y",strtotime("-4 year"))+543))
-                ->groupBy('stat_year','account','explanation')->get()->toArray();
+        ->select('stat_year','account','explanation', DB::raw('SUM(budget) as budget'))
+        ->where('stat_year','>=',(date("Y",strtotime("-4 year"))+543))
+        ->groupBy('stat_year','account','explanation')->get()->toArray();
 
-                foreach ($list as $key => $value) {
-                  if($value->stat_year == date("Y",strtotime("-4 year"))+543){
-                    $year4[$value->stat_year][$value->account] = $value->budget;
-                  }elseif ($value->stat_year == date("Y",strtotime("-3 year"))+543) {
-                    $year3[$value->stat_year][$value->account] = $value->budget;
-                  }elseif ($value->stat_year == date("Y",strtotime("-2 year"))+543) {
-                    $year2[$value->stat_year][$value->account] = $value->budget;
-                  }elseif($value->stat_year == date("Y",strtotime("-1 year"))+543){
-                    $year1[$value->stat_year][$value->account] = $value->budget;
-                  }else{
-                    $now[$value->stat_year][$value->account] = $value->budget;
-                    $explan[$value->stat_year][$value->account] = $value->explanation;
-                  }
-                  // $explan[$value->stat_year][$value->account] = 'xxxx';
-                  // var_dump($value->explanation);
-                  // print "\n";
+        foreach ($list as $key => $value) {
+          if($value->stat_year == date("Y",strtotime("-4 year"))+543){
+            $year4[$value->stat_year][$value->account] = $value->budget;
+          }elseif ($value->stat_year == date("Y",strtotime("-3 year"))+543) {
+            $year3[$value->stat_year][$value->account] = $value->budget;
+          }elseif ($value->stat_year == date("Y",strtotime("-2 year"))+543) {
+            $year2[$value->stat_year][$value->account] = $value->budget;
+          }elseif($value->stat_year == date("Y",strtotime("-1 year"))+543){
+            $year1[$value->stat_year][$value->account] = $value->budget;
+          }else{
+            $now[$value->stat_year][$value->account] = $value->budget;
+            $explan[$value->stat_year][$value->account] = $value->explanation;
+          }
+        }
 
-                }
-
-                // dd($list);
       return view('add_est',['now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3,'year4' => $year4 ,'explan' => $explan]);
     }
 
@@ -77,7 +78,6 @@ class EstimateController extends Controller
       }
 // dd($request->explan);
       foreach ($request->explan as $key => $val) {
-
         if($val != null){
           if(!is_null($request->budget[$key])){
             DB::table('estimates')
@@ -85,7 +85,6 @@ class EstimateController extends Controller
               ->where('stat_year',date("Y")+543)
               ->update(['explanation' => $val]);
           }
-
         }
       }
 

@@ -11,7 +11,7 @@
   <link href="{{ asset('admin/node_modules/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/node_modules/simple-line-icons/css/simple-line-icons.css') }}" rel="stylesheet">
   <!-- Main styles for this application-->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css" rel="stylesheet">
+  <link href="{{ asset('admin/css/fullcalendar.min.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/css/datepicker.css') }}" rel="stylesheet">
   <!-- <link href="{{ asset('admin/css/main.css') }}" rel="stylesheet"> -->
@@ -122,8 +122,8 @@
 @endsection
 
 @section('js')
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.js"></script>
+  <script src="{{ asset('admin/js/moment.min.js') }}"></script>
+  <script src="{{ asset('admin/js/fullcalendar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/popper.js/dist/umd/popper.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/bootstrap/dist/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>

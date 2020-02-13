@@ -3,8 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Estimate extends Model
 {
-    protected $table = 'estimates';
+  use SoftDeletes;
+
+  protected $table = 'estimates';
+
+  protected $dates = ['deleted_at'];
 }

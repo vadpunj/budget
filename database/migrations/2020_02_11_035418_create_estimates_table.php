@@ -14,14 +14,15 @@ class CreateEstimatesTable extends Migration
     public function up()
     {
         Schema::create('estimates', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('stat_year');
-            $table->string('account');
-            $table->double('budget');
-            $table->string('center_money');
-            $table->string('status')->nullable();
-            $table->text('explanation')->nullable();
-            $table->timestamps();
+          $table->bigIncrements('id');
+          $table->integer('stat_year');
+          $table->string('account');
+          $table->double('budget');
+          $table->string('center_money');
+          $table->string('status')->nullable();
+          $table->text('explanation')->nullable();
+          $table->timestamps();
+          $table->softDeletes();
         });
     }
 
@@ -32,6 +33,8 @@ class CreateEstimatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('estimates');
+      Schema::table('estimates', function (Blueprint $table) {
+        $table->dropSoftDeletes();
+      });
     }
 }

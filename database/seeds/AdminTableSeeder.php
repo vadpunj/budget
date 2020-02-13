@@ -16,7 +16,6 @@ class AdminTableSeeder extends Seeder
           'name' => 'phatsirin',
           'emp_id' => '01000583',
           'type' => 1,
-          'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
           'part' => 'ส่วนบริการด้านระบบบัญชี',
@@ -45,7 +44,7 @@ class AdminTableSeeder extends Seeder
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
           'part' => 'ส่วนบริการด้านระบบบัญชี',
           'center_money' => '1N00203',
-          'center_money' => '3176',
+          'tel' => '3176',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
         ]

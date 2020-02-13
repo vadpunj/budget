@@ -34,6 +34,7 @@ class CreateBudgetsTable extends Migration
             $table->string('office');
             $table->integer('user_request_id');
             $table->timestamps();
+            $table->softDeletes();
 
         });
     }
@@ -45,6 +46,8 @@ class CreateBudgetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('budgets');
+      Schema::table('budgets', function (Blueprint $table) {
+        $table->dropSoftDeletes();
+      });
     }
 }
