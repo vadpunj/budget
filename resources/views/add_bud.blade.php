@@ -152,9 +152,9 @@
                   <td><input type="text" name="respons[]" class="form-control name_list" /></td>
                   <td><input type="text" name="amount[]" class="form-control name_list" /></td>
                   <td><input type="text" name="price_per[]" class="form-control name_list" /></td>
+                  <td><input type="text" name="total[]" class="form-control name_list" /></td>
                   <td><input type="text" name="unit[]" class="form-control name_list" /></td>
                   <td><input type="text" name="unitsap[]" class="form-control name_list" /></td>
-                  <td><input type="text" name="total[]" class="form-control name_list" /></td>
                   <td><input type="text" name="explan[]" class="form-control name_list" /></td>
                   <td><input type="text" name="unit_t[]" class="form-control name_list" /></td>
                   <td><input type="text" name="year[]" class="form-control name_list" /></td>
