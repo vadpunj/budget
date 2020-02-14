@@ -210,6 +210,7 @@ class EstimateController extends Controller
 
     public function post_estimate(Request $request)
     {
+      config(['excel.import.heading' => 'original' ]);
       set_time_limit(0);
       $this->validate($request, [
         'select_file'  => 'required|mimes:xlsx'
