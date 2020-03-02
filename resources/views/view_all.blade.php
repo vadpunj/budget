@@ -2,7 +2,7 @@
 
 @section('title')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Home page</title>
+<title>View page</title>
 @endsection
 
 @section('css')
