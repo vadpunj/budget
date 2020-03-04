@@ -12,6 +12,7 @@ use App\Master;
 use App\Estimate;
 use App\Approve_log;
 use DB;
+use App\Log_user;
 use Excel;
 use Carbon\Carbon;
 
@@ -218,12 +219,15 @@ class EstimateController extends Controller
 
      $path = $request->file('select_file')->getRealPath();
      $name = $request->file('select_file')->getClientOriginalName();
-     // dd($request->file('select_file')->getClientOriginalExtension());
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
-     // $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
-     // Storage::disk('log')->put($name,$content);
+     // dd(File::get($request->file('select_file')));
      $data = Excel::load($path)->get();
      // dd(2432);
+     $insert_log = new Log_user;
+     $insert_log->user_id = Auth::user()->emp_id;
+     $insert_log->path = $path.$name;
+     $insert_log->type_log = 'งบทำการ';
+     $insert_log->save();
 
      $key_name = ['stat_year','account','budget','center_money'];
 // dd($data->count());

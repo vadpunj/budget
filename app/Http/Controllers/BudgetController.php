@@ -183,7 +183,11 @@ class BudgetController extends Controller
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
      $data = Excel::load($path)->get();
 
-// dd($data);
+     $insert_log = new Log_user;
+     $insert_log->user_id = Auth::user()->emp_id;
+     $insert_log->path = $path.$name;
+     $insert_log->type_log = 'งบลงทุน';
+     $insert_log->save();
 
      $key_name = ['list','business','dis_business','project','activ','respons','amount','price_per','unit','unitsap','total','explan','unit_t','year','status'];
 
