@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -36,8 +37,8 @@ class UserController extends Controller
         'part' => $request->part,
         'center_money' => $request->center_money,
         'type' => $request->type,
-        'tel' => $request->tel
-
+        'tel' => $request->tel,
+        'user_id' => Auth::user()->emp_id
       ]);
       // return redirect()->back();
       return back()->with('success', 'เพิ่มผู้ใช้แล้ว');

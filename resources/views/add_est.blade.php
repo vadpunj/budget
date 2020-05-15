@@ -100,7 +100,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">ศูนย์เงินทุน</label>
+                  <label class="col-md-2 col-form-label">ศูนยเงินทุน</label>
                   <div class="form-group col-sm-4">
                     <input class="form-control" type="text" name="center_money" value="{{\Auth::user()->center_money}}" disabled>
                   </div>

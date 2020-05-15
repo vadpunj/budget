@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
           $table->string('part');
           $table->string('center_money');
           $table->integer('tel');
+          $table->string('user_id',10)->nullable();
           $table->timestamps();
         });
     }

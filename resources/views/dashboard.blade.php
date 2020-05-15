@@ -28,7 +28,7 @@
       <li class="breadcrumb-item">
         <a href="#">หน้าแรก</a>
       </li>
-      <li class="breadcrumb-item active">แผนก-ฝ่าย</li>
+      <li class="breadcrumb-item active">หน้าแรก</li>
     </ol>
     <!-- end breadcrumb -->
 

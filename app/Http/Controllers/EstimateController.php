@@ -68,7 +68,7 @@ class EstimateController extends Controller
       ]);
       foreach ($request->budget as $key => $val) {
         // ใช้วิธี delete insert
-        if($val != null){
+        if($val != null){ // caseที่มีทั้งกรอกงบเพิ่มและลบงบประมาณ
           DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
           $estimate = new Estimate;
           $estimate->stat_year = date("Y")+543;
@@ -76,7 +76,7 @@ class EstimateController extends Controller
           $estimate->budget = $val;
           $estimate->center_money = Auth::user()->center_money;
           $estimate->save();
-        }else{
+        }else{ // caseที่มีการลบข้อมูลอย่างเดียวไม่มีการกรอกงบเพิ่ม
           DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
         }
       }
@@ -123,9 +123,18 @@ class EstimateController extends Controller
 
      $path = $request->file('select_file')->getRealPath();
      $name = $request->file('select_file')->getClientOriginalName();
+     $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
-     // $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      $data = Excel::load($path)->get();
+     // Storage::disk('log')->put($name, File::get($request->file('select_file')));
+     // // $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
+     // $data = Excel::load($path)->get();
+
+     $insert_log = new Log_user;
+     $insert_log->user_id = Auth::user()->emp_id;
+     $insert_log->path = $path.$name;
+     $insert_log->type_log = 'ไฟล์master';
+     $insert_log->save();
 
      $key_name = ['account','name'];
 // dd($data->toArray());
@@ -219,9 +228,12 @@ class EstimateController extends Controller
 
      $path = $request->file('select_file')->getRealPath();
      $name = $request->file('select_file')->getClientOriginalName();
+     $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
-     // dd(File::get($request->file('select_file')));
      $data = Excel::load($path)->get();
+     // Storage::disk('log')->put($name, File::get($request->file('select_file')));
+     // // dd(File::get($request->file('select_file')));
+     // $data = Excel::load($path)->get();
      // dd(2432);
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
