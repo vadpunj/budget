@@ -20,6 +20,7 @@ class CreateEventsTable extends Migration
             $table->date('end_date');
             $table->string('user_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

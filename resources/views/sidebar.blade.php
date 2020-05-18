@@ -11,9 +11,24 @@
         <a class="nav-link {{ (request()->is('/home')) ? 'active' : '' }}" href="{{ route('home') }}">
           <i class="nav-icon icon-pencil"></i> ศูนย์ต้นทุน</a>
       </li>--}}
-      <li class="nav-item">
+      {{--<li class="nav-item">
         <a class="nav-link {{ (request()->is('/event')) ? 'active' : '' }}" href="{{ route('event') }}">
           <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
+      </li>--}}
+      <li class="nav-item nav-dropdown {{ (request()->is('event/*')) ? 'show open' : '' }}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+           ปฏิทิน</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('event')) ? 'active' : '' }}" href="{{ route('event') }}">
+              <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('event/manage')) ? 'active' : '' }}" href="{{ route('manage') }}">
+              <i class="nav-icon icon-doc"></i> Manage Calendar</a>
+          </li>
+        </ul>
       </li>
       {{--<li class="nav-item nav-dropdown {{ (request()->is('budget/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">

@@ -88,8 +88,15 @@ class InputController extends Controller
       return view('calendar',compact('calendar_details'));
     }
 
+    public function get_manage()
+    {
+      $calendar = Event::where('user_id',Auth::user()->emp_id)->get();
+      return view('manage_calendar',['calendar' => $calendar]);
+    }
+
     public function post_calendar(Request $request)
     {
+      // dd(4234);
       $event_name = $request->event_name;
       $start_date = date('Y-m-d',strtotime($request->start_date));
       $end_date = date('Y-m-d',strtotime($request->end_date));
@@ -107,7 +114,40 @@ class InputController extends Controller
       $event->user_id = Auth::user()->emp_id;
       $event->save();
 
-      return Redirect::to('/event');
+      return Redirect::to('/event/manage');
+    }
+
+    public function post_edit_calendar(Request $request)
+    {
+      $event_id = $request->id;
+      $start_day = date('Y-m-d',strtotime($request->start_day));
+      $end_day = date('Y-m-d',strtotime($request->end_day));
+      $new_event = $request->new_event;
+      // dd($event_id);
+
+      $this->validate($request,[
+        'new_event' => 'required',
+        'start_day' => 'required|date',
+        'end_day' => 'required|date'
+     ]);
+
+      $update = Event::find($event_id);
+      $update->event_name = $new_event;
+      $update->start_date = $start_day;
+      $update->end_date = $end_day;
+      $update->user_id = Auth::user()->emp_id;
+      $update->update();
+
+      return Redirect::to('/event/manage');
+
+    }
+
+    public function post_delete_calendar(Request $request)
+    {
+      $delete = Event::find($request->id);
+      $delete->delete();
+
+      return Redirect::to('/event/manage');
     }
 
 

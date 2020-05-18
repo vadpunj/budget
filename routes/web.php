@@ -59,5 +59,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
   });
   Route::get('/event', 'InputController@get_calendar')->name('event');
-  Route::post('/event', 'InputController@post_calendar')->name('addevent');
+  Route::get('/event/manage', 'InputController@get_manage')->name('manage');
+  Route::post('/event/manage', 'InputController@post_calendar')->name('addevent');
+  Route::post('/event/manage/edit', 'InputController@post_edit_calendar')->name('editevent');
+  Route::post('/event/manage/delete', 'InputController@post_delete_calendar')->name('delete_event');
 });

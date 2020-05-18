@@ -45,79 +45,16 @@
       <li class="breadcrumb-item active">ปฏิทิน</li>
     </ol>
     <!-- end breadcrumb -->
-  <div class="container-fluid">
-    <div class="animated fadeIn">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-          <div class="card-header word">
-            @if (session()->has('notification'))
-              <div class="notification">
-                {!! session('notification') !!}
-              </div>
-            @endif
-          <i class="fa fa-align-justify"></i> เพิ่มกิจกรรม</div>
-            <form class="form-horizontal" action="{{ route('addevent') }}" method="post">
-              @csrf
-              <div class="card-body">
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label">วันที่</label>
-                  <div class="form-group col-sm-4">
-                    <div class="input-group">
-                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date" autocomplete="off"/>
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
-                          <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                      @error('start_date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                      @enderror
-                    </div>
-                  </div>
-                  <label class="col-md-2 col-form-label">ถึง</label>
-                    <div class="form-group col-sm-4">
-                      <div class="input-group">
-                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker" autocomplete="off"/>
-                        <div class="input-group-append">
-                          <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                        @error('end_date')
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $message }}</strong>
-                          </span>
-                        @enderror
-                      </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label">Event Name</label>
-                  <div class="form-group col-sm-4">
-                    <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name" autocomplete="off">
-                    @error('event_name')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-2 form-group form-actions">
-                <button class="btn btn-primary" type="submit">Submit</button>
-              </div>
-            </form>
+    <div class="container-fluid">
+      <div class="animated fadeIn">
+        <div class="row">
+
+          <div class="card-body">
+            {!! $calendar_details->calendar() !!}
           </div>
-        </div>
-        <div class="card-body">
-          {!! $calendar_details->calendar() !!}
         </div>
       </div>
     </div>
-  </div>
   </main>
 @endsection
 
