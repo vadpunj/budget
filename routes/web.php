@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/add/master', 'EstimateController@post_master')->name('post_add_master');
     // Route::get('/edit/master', 'EstimateController@get_edit_master')->name('edit_master');
     Route::post('/edit/master', 'EstimateController@post_edit_master')->name('post_edit_master');
+    Route::post('/delete/master', 'EstimateController@post_delete_master')->name('post_delete_master');
     Route::get('/import/estimate', 'EstimateController@get_estimate')->name('import_estimate');
     Route::post('/import/estimate', 'EstimateController@post_estimate');
     Route::post('/edit/account', 'EstimateController@post_edit_account')->name('post_edit_account');

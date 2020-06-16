@@ -72,7 +72,7 @@ class InputController extends Controller
 
     public function get_calendar()
     {
-      $events = Event::get();
+      $events = Event::where('user_id',Auth::user()->emp_id)->get();
       $event_list = [];
       foreach($events as $key => $event){
         $event_list[] = Calendar::event(

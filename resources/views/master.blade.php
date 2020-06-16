@@ -89,7 +89,8 @@
      <thead>
        <th>รายการภาระผูกพัน</th>
        <th>ชื่อ</th>
-       <th>Action</th>
+       <th>Edit</th>
+       <th>Delete</th>
      </thead>
      <tbody>
     @foreach($data as $row)
@@ -103,6 +104,11 @@
            </button>
          {{--</a>--}}
        </td>
+       <td align="center">
+         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="{{'#myDelete'.$row->id}}">
+           <i class="nav-icon icon-trash"></i> Delete
+         </button>
+       </td>
       </tr>
     @endforeach
      </tbody>
@@ -110,7 +116,7 @@
  </main>
  @foreach($data as $row)
  <div class="modal fade" id="{{'myEdit'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
+   <div class="modal-dialog modal-lg modal-warning" role="document">
      <div class="modal-content">
        <form action="{{ route('post_edit_master') }}" method="POST">
          @csrf
@@ -152,6 +158,33 @@
     </div>
   </div>
   @endforeach
+
+  @foreach($data as $row)
+  <div class="modal fade" id="{{'myDelete'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-danger" role="document">
+      <div class="modal-content">
+        <form action="{{ route('post_delete_master') }}" method="POST">
+          @csrf
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ลบข้อมูลค่าใช้จ่าย</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-body">
+           <p>ต้องการลบข้อมูลค่าใช้จ่ายนี้หรือไม่?</p>
+           <input type="hidden" name="id" value="{{ $row->id }}">
+         </div>
+         <div class="modal-footer">
+           <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+           <button class="btn btn-danger" type="submit">Delete</button>
+         </div>
+         </form>
+       </div>
+
+     </div>
+   </div>
+   @endforeach
 
 @endsection
 

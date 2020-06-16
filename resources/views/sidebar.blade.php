@@ -17,11 +17,11 @@
       </li>--}}
       <li class="nav-item nav-dropdown {{ (request()->is('event/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
-           ปฏิทิน</a>
+          <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
         <ul class="nav-dropdown-items">
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('event')) ? 'active' : '' }}" href="{{ route('event') }}">
-              <i class="nav-icon icon-calendar"></i> ปฏิทิน</a>
+              <i class="nav-icon icon-calendar"></i> Calendar</a>
           </li>
 
           <li class="nav-item">
@@ -79,7 +79,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
-              <i class="nav-icon icon-eye"></i> Approve</a>
+              <i class="nav-icon icon-check"></i> Approve and View</a>
           </li>
         </ul>
       </li>

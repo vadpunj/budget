@@ -19,6 +19,7 @@ class CreateMastersTable extends Migration
             $table->string('name');
             $table->string('remark')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

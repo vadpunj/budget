@@ -206,6 +206,14 @@ class EstimateController extends Controller
       return back()->with('success', 'Update data successfully.');
     }
 
+    public function post_delete_master(Request $request)
+    {
+      $delete = Master::find($request->id);
+      $delete->delete();
+
+      return Redirect::to('/estimate/add/master');
+    }
+
     public function get_estimate()
     {
       // SELECT * FROM `estimates` where account not in (SELECT account from masters );
