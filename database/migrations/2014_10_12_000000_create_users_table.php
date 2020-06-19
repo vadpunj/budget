@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
           $table->integer('tel');
           $table->string('user_id',10)->nullable();
           $table->timestamps();
+          $table->softDeletes();
         });
     }
 

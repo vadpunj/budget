@@ -113,6 +113,8 @@
     @endforeach
      </tbody>
    </table>
+
+  </div>
  </main>
  @foreach($data as $row)
  <div class="modal fade" id="{{'myEdit'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

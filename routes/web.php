@@ -18,7 +18,6 @@ Route::get('/', function () {
 
 Route::get('/register', "UserController@register")->middleware('admin');
 Route::post('/register', "UserController@postregister")->middleware('admin')->name('register');
-
 Route::get('/login', "UserController@login")->middleware('guest')->name('login');
 Route::post('/login', "UserController@postlogin")->middleware('guest')->name('login');
 Route::get('/logout', "UserController@logout")->name('logout');
@@ -29,7 +28,9 @@ Route::group(['middleware' => ['auth']], function () {
   // Route::post('/home', 'InputController@post_data')->name('insert');
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');
-
+  Route::get('/view_user', "UserController@list_user")->middleware('admin')->name('list_user');
+  Route::post('/view_user/edit', "UserController@edit_user")->middleware('admin')->name('list_edit_user');
+  Route::post('/view_user/del', "UserController@delete_user")->middleware('admin')->name('list_delete_user');
   Route::group(['prefix' => 'budget'], function(){
     Route::get('/add', 'BudgetController@get_add')->name('add_bud');
     Route::post('/add', 'BudgetController@post_add')->name('add_insert');

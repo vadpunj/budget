@@ -65,18 +65,18 @@
                   <label class="col-md-2 col-form-label">สายงาน</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="form-control" type="text" name="field" value="{{\Auth::user()->field}}" disabled>
+                      <input class="form-control" type="text" name="field" value="{{\Auth::user()->field}}" readonly>
                     </div>
                   </div>
                 </div>
                 <div class="form-group row">
                   <label class="col-md-2 col-form-label">ฝ่าย/สำนักงาน/ศูนย์</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control" type="text" name="office" value="{{\Auth::user()->office}}" disabled>
+                    <input class="form-control" type="text" name="office" value="{{\Auth::user()->office}}" readonly>
                   </div>
                   <label class="col-md-2 col-form-label">ส่วน/สค.</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control" type="text" name="part" value="{{\Auth::user()->part}}" disabled>
+                    <input class="form-control" type="text" name="part" value="{{\Auth::user()->part}}" readonly>
                   </div>
                 </div>
                 <div class="form-group row">
@@ -102,7 +102,7 @@
                 <div class="form-group row">
                   <label class="col-md-2 col-form-label">ศูนยเงินทุน</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control" type="text" name="center_money" value="{{\Auth::user()->center_money}}" disabled>
+                    <input class="form-control" type="text" name="center_money" value="{{\Auth::user()->center_money}}" readonly>
                   </div>
                 </div>
           </div>

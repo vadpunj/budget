@@ -42,13 +42,13 @@
     </div>
    @endif
 
-   @if($message = Session::get('success'))
-   <div class="alert alert-success alert-block">
-    <button type="button" class="close" data-dismiss="alert">×</button>
-           <strong>{{ $message }}</strong>
-   </div>
-   @endif
   <div class="card-body">
+    @if($message = Session::get('success'))
+    <div class="alert alert-success alert-block">
+     <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>{{ $message }}</strong>
+    </div>
+    @endif
    <form method="post" enctype="multipart/form-data" action="{{ url('estimate/import/estimate') }}">
     {{ csrf_field() }}
 

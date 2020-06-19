@@ -2,6 +2,7 @@
 // Helpers files
 use App\Master;
 use App\Estimate;
+use App\Role;
 
 class Func{
   public static function get_date($value)
@@ -23,6 +24,20 @@ class Func{
 // dd($list_name->name);
     return $list_name['name'];
 
+  }
+
+  public static function get_role($value)
+  {
+
+    $role = Role::where('id',$value)->first();
+    return $role['role_name'];
+  }
+
+  public static function get_role_all()
+  {
+    $role = Role::all();
+    // dd($role['0']->role_name);
+    return $role;
   }
 }
 

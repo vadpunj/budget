@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Func;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
@@ -13,7 +14,8 @@ class UserController extends Controller
 {
     public function register()
     {
-      $role = Role::get();
+      $role = Func::get_role_all();
+      // dd($role);
       return view('register',['role' => $role]);
     }
 
@@ -139,5 +141,47 @@ class UserController extends Controller
     {
         \Auth::logout();
         return redirect()->route('login');
+    }
+
+    public function list_user()
+    {
+      $list = User::get();
+      $role = Func::get_role_all();
+      return view('list_user',['list' => $list,'roles' => $role]);
+    }
+
+    public function edit_user(Request $request)
+    {
+      // dd($request->emp_id);
+      $this->validate($request, [
+        'name' => 'required|min:4',
+        'emp_id' => 'required|numeric',
+        'field' => 'required',
+        'office' => 'required',
+        'part' => 'required',
+        'type' => 'required',
+        'center_money' => 'required',
+        'tel' => 'required|numeric'
+      ]);
+
+      $update = User::find($request->id);
+      $update->name = $request->name;
+      $update->emp_id = $request->emp_id;
+      $update->field = $request->field;
+      $update->office = $request->office;
+      $update->part = $request->part;
+      $update->center_money = $request->center_money;
+      $update->type = $request->type;
+      $update->tel = $request->tel;
+      $update->update();
+
+      return back()->with('success', 'Update Successful');
+    }
+
+    public function delete_user(Request $request)
+    {
+      $delete = User::find($request->id);
+      $delete->delete();
+      return back()->with('success', 'Delete Successful');
     }
 }

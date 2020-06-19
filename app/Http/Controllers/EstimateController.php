@@ -300,14 +300,14 @@ class EstimateController extends Controller
 
     public function get_view()
     {
-      $view = Estimate::where('stat_year',(date('Y')+543))->get();
+      $view = Estimate::where('stat_year',(date('Y')+543))->get()->toArray();
 
       return view('view_all',['view' => $view,'yy' => (date('Y')+543)]);
     }
 
     public function post_view(Request $request)
     {
-      $view = Estimate::where('stat_year',$request->year)->get();
+      $view = Estimate::where('stat_year',$request->year)->get()->toArray();
       return view('view_all',['view' => $view,'yy' => $request->year]);
     }
 

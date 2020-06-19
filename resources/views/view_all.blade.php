@@ -79,17 +79,18 @@
               @php
                 $sum =0;
               @endphp
+
               @foreach($view as $data)
               @php
-                $sum += $data->budget;
+                $sum += $data['budget'];
               @endphp
               <tr>
-                <td align="center">{{$data->stat_year}}</td>
-                <td align="center">{{$data->center_money}}</td>
-                <td>{{$data->account}}</td>
-                <td>{{Func::get_account($data->account)}}</td>
-                <td align="right">{{number_format($data->budget,2)}}</td>
-                @if($data->status == 1)
+                <td align="center">{{$data['stat_year']}}</td>
+                <td align="center">{{$data['center_money']}}</td>
+                <td>{{$data['account']}}</td>
+                <td>{{Func::get_account($data['account'])}}</td>
+                <td align="right">{{number_format($data['budget'],2)}}</td>
+                @if($data['status'] == 1)
                   <td align="center"><span class="badge badge-pill badge-success">อนุมัติแล้ว</span></td>
                 @else
                   <td align="center"><span class="badge badge-pill badge-danger">ยังไม่อนุมัติ</span></td>
@@ -99,13 +100,13 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4"><b>Sum</b></td>
+                <td colspan="4" align="right"><b>Sum</b></td>
                 <td align="right"><b>{{ number_format($sum,2) }}</b></td>
                 <td></td>
               </tr>
             </tfoot>
           </table>
-          @if(Auth::user()->type ==3 || Auth::user()->type ==1 )
+          @if((Auth::user()->type == 3 || Auth::user()->type == 1) && !empty($view))
           <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
             <i class="nav-icon fa fa-check"></i> Approve log
           </button>
