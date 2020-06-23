@@ -114,7 +114,10 @@ class InputController extends Controller
       $event->user_id = Auth::user()->emp_id;
       $event->save();
 
-      return Redirect::to('/event/manage');
+      if($event){
+        return back()->with('success', 'เพิ่มกิจกรรมแล้ว');
+      }
+      // return back()->with('success', 'เพิ่มกิจกรรมแล้ว');
     }
 
     public function post_edit_calendar(Request $request)
@@ -138,7 +141,10 @@ class InputController extends Controller
       $update->user_id = Auth::user()->emp_id;
       $update->update();
 
-      return Redirect::to('/event/manage');
+      if($update){
+        return back()->with('success', 'แก้ไขกิจกรรมแล้ว');
+      }
+      // return back()->with('success', 'แก้ไขกิจกรรมแล้ว');
 
     }
 
@@ -147,7 +153,10 @@ class InputController extends Controller
       $delete = Event::find($request->id);
       $delete->delete();
 
-      return Redirect::to('/event/manage');
+      if($delete){
+        return back()->with('success', 'ลบกิจกรรมแล้ว');
+      }
+      // return back()->with('success', 'ลบกิจกรรมแล้ว');
     }
 
 

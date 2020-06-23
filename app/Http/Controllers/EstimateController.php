@@ -39,6 +39,7 @@ class EstimateController extends Controller
       $list = DB::table('estimates')
         ->select('stat_year','account','explanation', DB::raw('SUM(budget) as budget'))
         ->where('stat_year','>=',(date("Y",strtotime("-4 year"))+543))
+        ->whereNull('deleted_at')
         ->groupBy('stat_year','account','explanation')->get()->toArray();
 
         foreach ($list as $key => $value) {
@@ -66,31 +67,48 @@ class EstimateController extends Controller
          'name_reqs'=>'required',
          'phone' => 'required|numeric'
       ]);
+      // dd($request->budget);
       foreach ($request->budget as $key => $val) {
         // ใช้วิธี delete insert
+        // dd($val);
         if($val != null){ // caseที่มีทั้งกรอกงบเพิ่มและลบงบประมาณ
-          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
-          $estimate = new Estimate;
-          $estimate->stat_year = date("Y")+543;
-          $estimate->account = $key;
-          $estimate->budget = $val;
-          $estimate->center_money = Auth::user()->center_money;
-          $estimate->save();
-        }else{ // caseที่มีการลบข้อมูลอย่างเดียวไม่มีการกรอกงบเพิ่ม
-          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->update(['deleted_at' => \Carbon::now()]);
-        }
-      }
-// dd($request->explan);
-      foreach ($request->explan as $key => $val) {
-        if($val != null){
-          if(!is_null($request->budget[$key])){
-            DB::table('estimates')
+// dd('have');
+            $data_old = DB::table('estimates')
+              ->where('stat_year','>=',(date("Y")+543))
               ->where('account',$key)
-              ->where('stat_year',date("Y")+543)
-              ->update(['explanation' => $val, 'updated_at' => \Carbon::now()]);
-          }
+              ->whereNull('deleted_at')
+              ->get()->toArray();
+            if($data_old != null){ // มีข้อมูลอยู่แล้วอาจมีการแก้ไขหรือไม่ก็ได้
+              DB::table('estimates')
+                ->where('stat_year', date("Y")+543)
+                ->where('account',$key)
+                ->whereNull('deleted_at')
+                ->update(['budget' => $val,'explanation' => $request->explan[$key],'updated_at' => \Carbon::now()]);
+            }else{ //ไม่เคยมีข้อมูลมาก่อน
+              // dd($key);
+              $estimate = new Estimate;
+              $estimate->stat_year = date("Y")+543;
+              $estimate->account = $key;
+              $estimate->budget = $val;
+              $estimate->explanation = $request->explan[$key];
+              $estimate->center_money = Auth::user()->center_money;
+              $estimate->save();
+            }
+        }else{ // caseที่มีการลบข้อมูลอย่างเดียวไม่มีการกรอกงบเพิ่ม
+          DB::table('estimates')->where('stat_year', date("Y")+543)->where('account',$key)->whereNull('deleted_at')->update(['deleted_at' => \Carbon::now()]);
         }
       }
+      // foreach ($request->explan as $key => $val) {
+      //   dd($request->explan[$key]);
+      //   if($val != null){
+      //     if(!is_null($request->budget[$key])){
+      //       DB::table('estimates')
+      //         ->where('account',$key)
+      //         ->where('stat_year',date("Y")+543)
+      //         ->update(['explanation' => $val, 'updated_at' => \Carbon::now()]);
+      //     }
+      //   }
+      // }
 
       $data = new User_request;
       $data->stat_year = $request->stat_year;
@@ -104,7 +122,7 @@ class EstimateController extends Controller
       $data->save();
 
       if($data){
-        return back()->with('success', 'Insert successfully.');
+        return back()->with('success', 'บันทึกข้อมูลแล้ว');
       }
     }
 
@@ -167,7 +185,10 @@ class EstimateController extends Controller
         }
       }
      }
-     return back()->with('success', 'Excel Data Imported successfully.');
+     if($insert){
+       return back()->with('success', 'บันทึกข้อมูลแล้ว');
+     }
+     // return back()->with('success', 'Excel Data Imported successfully.');
     }
 
     public function get_master()
@@ -188,7 +209,9 @@ class EstimateController extends Controller
       $insert->name = $request->name;
       $insert->save();
 
-      return back()->with('success', 'Insert data successfully.');
+      if($insert){
+        return back()->with('success', 'บันทึกข้อมูลแล้ว');
+      }
     }
 
     public function post_edit_master(Request $request)
@@ -203,7 +226,9 @@ class EstimateController extends Controller
       $update->name = $request->name;
       $update->update();
 
-      return back()->with('success', 'Update data successfully.');
+      if($update){
+        return back()->with('success', 'บันทึกข้อมูลแล้ว');
+      }
     }
 
     public function post_delete_master(Request $request)
@@ -285,7 +310,10 @@ class EstimateController extends Controller
         }
       }
      }
-     return back()->with('success', 'Excel Data Imported successfully.');
+     if($insert){
+       return back()->with('success', 'Excel Data Imported successfully.');
+     }
+     // return back()->with('success', 'Excel Data Imported successfully.');
     }
 
     public function post_edit_account(Request $request)
@@ -295,7 +323,9 @@ class EstimateController extends Controller
       $update->account = $request->account;
       $update->update();
 
-      return back()->with('success', 'Insert successfully.');
+      if($update){
+        return back()->with('success', 'บันทึกข้อมูลแล้ว');
+      }
     }
 
     public function get_view()

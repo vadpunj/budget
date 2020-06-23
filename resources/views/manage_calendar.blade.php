@@ -49,6 +49,12 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
+          @if($message = Session::get('success'))
+          <div class="alert alert-success alert-block">
+           <button type="button" class="close" data-dismiss="alert">×</button>
+              <strong>{{ $message }}</strong>
+          </div>
+          @endif
           <div class="card">
           <div class="card-header word">
             @if (session()->has('notification'))

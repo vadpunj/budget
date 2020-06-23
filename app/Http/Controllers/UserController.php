@@ -175,6 +175,9 @@ class UserController extends Controller
       $update->tel = $request->tel;
       $update->update();
 
+      if($update){
+        return back()->with('success', 'Update Successful');
+      }
       return back()->with('success', 'Update Successful');
     }
 
@@ -182,6 +185,9 @@ class UserController extends Controller
     {
       $delete = User::find($request->id);
       $delete->delete();
-      return back()->with('success', 'Delete Successful');
+      if($delete){
+        return back()->with('success', 'Delete Successful');
+      }
+      // return back()->with('success', 'Delete Successful');
     }
 }
