@@ -156,14 +156,11 @@ class EstimateController extends Controller
 
      $key_name = ['account','name'];
 // dd($data->toArray());
-     if($data->count() > 0)
-     {
+     if($data->count() > 0){
        $num = 1;
-      foreach($data->toArray() as $key => $value)
-      {
+      foreach($data->toArray() as $key => $value){
         $i = 0;
-       foreach($value as $row)
-       {
+       foreach($value as $row){
          if(!is_null($row)){
            $insert_data[$num][$key_name[$i]] = $row;
            $num++;
@@ -174,8 +171,7 @@ class EstimateController extends Controller
        }
       }
       // dd($insert_data);
-      if(!empty($insert_data))
-      {
+      if(!empty($insert_data)){
         for($j = 1; $j <= count($insert_data); $j++ ){
           // dd($insert_data[$j++]['account']);
           $insert = new Master;
@@ -236,7 +232,10 @@ class EstimateController extends Controller
       $delete = Master::find($request->id);
       $delete->delete();
 
-      return Redirect::to('/estimate/add/master');
+      if($delete){
+        return back()->with('success', 'ลบข้อมูลแล้ว');
+      }
+      // return Redirect::to('/estimate/add/master');
     }
 
     public function get_estimate()
@@ -276,14 +275,11 @@ class EstimateController extends Controller
 
      $key_name = ['stat_year','account','budget','center_money'];
 // dd($data->count());
-     if($data->count() > 0)
-     {
+     if($data->count() > 0){
        $num = 1;
-      foreach($data->toArray() as $key => $value)
-      {
+      foreach($data->toArray() as $key => $value){
         $i = 0;
-       foreach($value as $row)
-       {
+       foreach($value as $row){
          // if(!is_null($row)){
            $insert_data[$num][$key_name[$i]] = $row;
            $num++;
@@ -294,8 +290,7 @@ class EstimateController extends Controller
        }
       }
       // dd($insert_data);
-      if(!empty($insert_data))
-      {
+      if(!empty($insert_data)){
         for($j = 1; $j <= count($insert_data); $j++ ){
           if(!empty($insert_data[$j]['stat_year'])){
             $insert = new Estimate;
