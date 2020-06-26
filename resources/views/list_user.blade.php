@@ -13,6 +13,8 @@
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
+  <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
+
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <style>
     .word {
@@ -287,4 +289,13 @@
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
+  <script src="{{ asset('admin/js/jquery.dataTables.js') }}"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('#myTable').DataTable({
+      scrollX:true
+    });
+  });
+
+  </script>
 @endsection

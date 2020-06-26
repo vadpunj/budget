@@ -15,7 +15,6 @@
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
-  <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
   <style>
     .word {
@@ -108,7 +107,7 @@
           </div>
          </div>
            <div style="overflow-x: scroll;">
-           <table class="table table-responsive-sm table-bordered" style="width: 150%" >
+           <table class="table table-responsive-sm table-bordered" style="width: 150%">
              <thead>
                <tr>
                  <th>รหัสบัญชี</th>
@@ -195,11 +194,5 @@
 <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
 <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
-  <script type="text/javascript">
-  $(document).ready(function() {
-    $('#myTable').DataTable({
-      scrollX:true
-    });
-  });
-  </script>
+
 @endsection
