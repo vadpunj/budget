@@ -2562,7 +2562,7 @@ textarea.form-control.is-invalid {
 
 .btn.disabled,
 .btn:disabled {
-    opacity: 0.65;
+    opacity: 0.55;
 }
 
 a.btn.disabled,
@@ -2578,8 +2578,8 @@ fieldset:disabled a.btn {
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #f37125;
-    border-color: #f37125;
+    background-color: #de6118;
+    border-color: #de6118;
 }
 
 .btn-primary:focus,
@@ -2685,15 +2685,15 @@ fieldset:disabled a.btn {
 }
 
 .btn-info {
-    color: #23282c;
-    background-color: #63c2de;
-    border-color: #63c2de;
+    color: #fff;
+    background-color: #63a0de;
+    border-color: #63a0de;
 }
 
 .btn-info:hover {
-    color: #23282c;
-    background-color: #43b6d7;
-    border-color: #39b2d5;
+    color: #fff;
+    background-color: #4a88c7;
+    border-color: #4a88c7;
 }
 
 .btn-info:focus,
@@ -2762,14 +2762,14 @@ fieldset:disabled a.btn {
 
 .btn-danger {
     color: #fff;
-    background-color: #f86c6b;
-    border-color: #f86c6b;
+    background-color: #f63c3a;
+    border-color: #f63c3a;
 }
 
 .btn-danger:hover {
     color: #fff;
-    background-color: #f64846;
-    border-color: #f63c3a;
+    background-color: #d61f1d;
+    border-color: #d61f1d;
 }
 
 .btn-danger:focus,
@@ -12957,12 +12957,12 @@ canvas {
 }
 
 .modal-info .modal-content {
-    border-color: #63c2de;
+    border-color: #63a0de;
 }
 
 .modal-info .modal-header {
     color: #fff;
-    background-color: #63c2de;
+    background-color: #63a0de;
 }
 
 .modal-warning .modal-content {
@@ -12975,12 +12975,12 @@ canvas {
 }
 
 .modal-danger .modal-content {
-    border-color: #f86c6b;
+    border-color: #f63c3a;
 }
 
 .modal-danger .modal-header {
     color: #fff;
-    background-color: #f86c6b;
+    background-color: #f63c3a;
 }
 
 .modal-light .modal-content {

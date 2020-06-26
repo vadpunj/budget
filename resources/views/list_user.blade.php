@@ -45,6 +45,7 @@
         <th>รหัสพนักงาน</th>
         <th>สิทธิ์</th>
         <th>เบอร์</th>
+        <th>View</th>
         <th>Edit</th>
         <th>Delete</th>
       </thead>
@@ -56,6 +57,11 @@
         <td>{{ $row->emp_id }}</td>
         <td align="center">{{ Func::get_role($row->type) }}</td>
         <td align="center">{{ ($row->tel) }}</td>
+        <td align="center">
+          <button type="button" class="btn btn-info" data-toggle="modal" data-target="{{'#myView'.$row->id}}">
+            <i class="fa fa-eye"></i> View
+          </button>
+        </td>
         <td align="center">
           <button type="button" class="btn btn-warning" data-toggle="modal" data-target="{{'#myEdit'.$row->id}}">
             <i class="nav-icon icon-pencil"></i> Edit
@@ -183,9 +189,69 @@
 
     </div>
   </div>
-  @endforeach
+  <div class="modal fade" id="{{'myView'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">ข้อมูลผู้ใช้</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+         <div class="modal-body">
+           <div class="row">
+             <div class="form-group col-sm-6">
+               <label for="city">ชื่อ</label>
+               <input class="form-control" type="text" name="name" value="{{$row->name}}" readonly>
 
-  @foreach($list as $row)
+             </div>
+             <div class="form-group col-sm-6">
+               <label for="postal-code">รหัสพนักงาน</label>
+               <input class="form-control" type="text" name="emp_id" value="{{$row->emp_id}}" readonly>
+
+             </div>
+           </div>
+           <div class="row">
+             <div class="form-group col-sm-6">
+               <label for="city">สายงาน</label>
+               <input class="form-control" type="text" name="field" value="{{$row->field}}"readonly>
+
+             </div>
+             <div class="form-group col-sm-6">
+               <label for="postal-code">ฝ่าย/สำนักงาน</label>
+               <input class="form-control" type="text" name="office" value="{{$row->office}}"readonly>
+
+             </div>
+           </div>
+           <div class="row">
+             <div class="form-group col-sm-6">
+               <label for="city">ส่วน/สค.</label>
+               <input class="form-control" type="text" name="part" value="{{$row->part}}"readonly>
+
+             </div>
+             <div class="form-group col-sm-6">
+               <label for="postal-code">ศูนย์เงินทุน</label>
+               <input class="form-control" type="text" name="center_money" value="{{$row->center_money}}"readonly>
+
+             </div>
+           </div>
+           <div class="row">
+             <div class="form-group col-sm-6">
+               <label for="city">เบอร์</label>
+               <input class="form-control" type="text" name="tel" value="{{$row->tel}}"readonly>
+
+             </div>
+             <div class="form-group col-sm-6">
+               <label for="postal-code">สิทธิ์</label>
+               <input class="form-control" type="text" name="type" value="{{ ucwords(Func::get_role($row->type)) }}"readonly>
+
+             </div>
+           </div>
+         </div>
+       </div>
+
+     </div>
+   </div>
   <div class="modal fade" id="{{'myDelete'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-danger" role="document">
       <div class="modal-content">

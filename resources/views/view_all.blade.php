@@ -18,11 +18,7 @@
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
 
-  <script>
-    $(document).ready(function(){
-      $(".datepicker").datepicker();
-    });
-  </script>
+
   <style>
     .word {
       color: #fff !important;
@@ -92,8 +88,10 @@
                 <td align="right">{{number_format($data['budget'],2)}}</td>
                 @if($data['status'] == 1)
                   <td align="center"><span class="badge badge-pill badge-success">อนุมัติแล้ว</span></td>
+                  <?php $able = 'disabled'; ?>
                 @else
                   <td align="center"><span class="badge badge-pill badge-danger">ยังไม่อนุมัติ</span></td>
+                  <?php $able = ''; ?>
                 @endif
               </tr>
               @endforeach
@@ -107,7 +105,7 @@
             </tfoot>
           </table>
           @if((Auth::user()->type == 3 || Auth::user()->type == 1) && !empty($view))
-          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal" <?php echo $able; ?>>
             <i class="nav-icon fa fa-check"></i> Approve log
           </button>
           @endif
