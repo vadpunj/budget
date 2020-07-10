@@ -107,19 +107,16 @@
           </div>
          </div>
            <div style="overflow-x: scroll;">
-           <table class="table table-responsive-sm table-bordered" style="width: 150%">
+           <table class="table table-responsive-sm table-bordered" style="width: 100%">
              <thead>
                <tr>
                  <th>รหัสบัญชี</th>
                  <th>หมวด/ประเภทรายจ่าย</th>
-                 <th>{{'รายจ่ายจริงปี '.(date("Y",strtotime("-4 year"))+543)}}</th>
-                 <th>{{'รายจ่ายจริงปี '.(date("Y",strtotime("-3 year"))+543)}}</th>
-                 <th>รายจ่ายจริง</th>
+                 <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-3 year"))+543)}}</th>
                  <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-2 year"))+543)}}</th>
                  <th>{{'งบประมาณปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
                  <th>{{'งบประมาณขอตั้งปี '.(date("Y")+543)}}</th>
                  <th>{{'% ผลรวมที่เพิ่มขึ้นจากปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
-                 <th>คำชี้แจง</th>
                </tr>
              </thead>
              <tbody>
@@ -128,17 +125,6 @@
                     <tr>
                       <td>{{ $key }}</td>
                       <td>{{ Func::get_account($key) }}</td>
-                      @if($year4[date("Y",strtotime("-4 year"))+543][$key] != 0)
-                        <td align="right">{{ number_format($year4[date("Y",strtotime("-4 year"))+543][$key],2) }}</td>
-                      @elseif($year4[date("Y",strtotime("-4 year"))+543][$key] == 0)
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                      @if($year3[date("Y",strtotime("-3 year"))+543][$key] != 0)
-                        <td align="right">{{ number_format($year3[date("Y",strtotime("-3 year"))+543][$key],2) }}</td>
-                      @elseif($year3[date("Y",strtotime("-3 year"))+543][$key] == 0)
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                      <td></td>
                       @if($year2[date("Y",strtotime("-2 year"))+543][$key] != 0)
                         <td align="right">{{ number_format($year2[date("Y",strtotime("-2 year"))+543][$key],2) }}</td>
                       @elseif($year2[date("Y",strtotime("-2 year"))+543][$key] == 0)
@@ -158,13 +144,6 @@
                         </td>
                       @endif
                       <td align="center"></td>
-                      @if($explan[date("Y")+543][$key] == null)
-                        <td> <textarea name="explan[{{$key}}]"></textarea>
-                        </td>
-                      @elseif($explan[date("Y")+543][$key] != null)
-                        <td> <textarea name="explan[{{$key}}]">{{ $explan[date("Y")+543][$key] }}</textarea>
-                        </td>
-                      @endif
                    </tr>
                   @endforeach
                 @endforeach

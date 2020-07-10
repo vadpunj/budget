@@ -56,8 +56,12 @@
           </li>
           @endif
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/add')) ? 'active' : '' }}" href="{{ route('add_est') }}">
+            <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
               <i class="nav-icon fa fa-plus"></i> Add Estimate</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('estimate/add')) ? 'active' : '' }}" href="{{ route('add_est') }}">
+              <i class="nav-icon icon-pencil"></i> Edit Estimate</a>
           </li>
           {{--<li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/edit')) ? 'active' : '' }}" href="{{ route('export') }}">
@@ -74,12 +78,8 @@
           </li>--}}
           @endif
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
-              <i class="nav-icon icon-doc"></i> Import Estimate</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
-              <i class="nav-icon icon-check"></i> Approve and View</a>
+              <i class="nav-icon icon-check"></i> Approve</a>
           </li>
         </ul>
       </li>
