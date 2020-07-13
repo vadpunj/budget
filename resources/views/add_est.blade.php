@@ -112,7 +112,6 @@
                <tr>
                  <th>รหัสบัญชี</th>
                  <th>หมวด/ประเภทรายจ่าย</th>
-                 <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-3 year"))+543)}}</th>
                  <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-2 year"))+543)}}</th>
                  <th>{{'งบประมาณปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
                  <th>{{'งบประมาณขอตั้งปี '.(date("Y")+543)}}</th>
@@ -143,7 +142,15 @@
                         <td align="center"> <input type="text" name="budget[{{$key}}]" >
                         </td>
                       @endif
-                      <td align="center"></td>
+                      @if($now[date("Y")+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
+                        @php
+                          $cal = ($now[date('Y')+543][$key] * 100 / $year1[date("Y",strtotime("-1 year"))+543][$key]) -100;
+                        @endphp
+                        <td align="center">{{round($cal,2).' %'}}</td>
+                      @else
+                        <td align="center">{{ '-' }}</td>
+                      @endif
+
                    </tr>
                   @endforeach
                 @endforeach

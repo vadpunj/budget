@@ -11,6 +11,7 @@ use App\User_request;
 use App\Master;
 use App\Estimate;
 use App\Approve_log;
+use App\Structure;
 use DB;
 use App\Log_user;
 use Excel;
@@ -25,7 +26,6 @@ class EstimateController extends Controller
       $year2=[];
       $year1=[];
       $now=[];
-      $explan=[];
       $all = Master::get();
         foreach ($all as $key => $value) {
           $year4[date("Y",strtotime("-4 year"))+543][$value->account] = 0;
@@ -33,14 +33,13 @@ class EstimateController extends Controller
           $year2[date("Y",strtotime("-2 year"))+543][$value->account] = 0;
           $year1[date("Y",strtotime("-1 year"))+543][$value->account] = 0;
           $now[date("Y")+543][$value->account] = 0;
-          $explan[date("Y")+543][$value->account] = 0;
         }
         // dd($all);
       $list = DB::table('estimates')
-        ->select('stat_year','account','explanation', DB::raw('SUM(budget) as budget'))
+        ->select('stat_year','account', DB::raw('SUM(budget) as budget'))
         ->where('stat_year','>=',(date("Y",strtotime("-4 year"))+543))
         ->whereNull('deleted_at')
-        ->groupBy('stat_year','account','explanation')->get()->toArray();
+        ->groupBy('stat_year','account')->get()->toArray();
 
         foreach ($list as $key => $value) {
           if($value->stat_year == date("Y",strtotime("-4 year"))+543){
@@ -53,11 +52,10 @@ class EstimateController extends Controller
             $year1[$value->stat_year][$value->account] = $value->budget;
           }else{
             $now[$value->stat_year][$value->account] = $value->budget;
-            $explan[$value->stat_year][$value->account] = $value->explanation;
           }
         }
 
-      return view('add_est',['now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3,'year4' => $year4 ,'explan' => $explan]);
+      return view('add_est',['now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3,'year4' => $year4]);
     }
 
     public function post_add(Request $request)
@@ -83,14 +81,13 @@ class EstimateController extends Controller
                 ->where('stat_year', date("Y")+543)
                 ->where('account',$key)
                 ->whereNull('deleted_at')
-                ->update(['budget' => $val,'explanation' => $request->explan[$key],'updated_at' => \Carbon::now()]);
+                ->update(['budget' => $val,'updated_at' => \Carbon::now()]);
             }else{ //ไม่เคยมีข้อมูลมาก่อน
               // dd($key);
               $estimate = new Estimate;
               $estimate->stat_year = date("Y")+543;
               $estimate->account = $key;
               $estimate->budget = $val;
-              $estimate->explanation = $request->explan[$key];
               $estimate->center_money = Auth::user()->center_money;
               $estimate->save();
             }
@@ -351,5 +348,68 @@ class EstimateController extends Controller
       if($update){
         return back()->with('success', 'อนุมัติแล้ว');
       }
+    }
+    public function get_struc()
+    {
+      $data = Structure::get();
+      return view('import_struc',['data' => $data]);
+    }
+    public function post_struc(Request $request)
+    {
+      config(['excel.import.heading' => 'original' ]);
+      set_time_limit(0);
+      $this->validate($request, [
+        'select_file'  => 'required|mimes:xlsx'
+      ]);
+
+     $path = $request->file('select_file')->getRealPath();
+     $name = $request->file('select_file')->getClientOriginalName();
+     $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
+     Storage::disk('log')->put($name, File::get($request->file('select_file')));
+     $data = Excel::load($path)->get();
+     // dd($data);
+     // Storage::disk('log')->put($name, File::get($request->file('select_file')));
+     // // $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
+     // $data = Excel::load($path)->get();
+
+     $insert_log = new Log_user;
+     $insert_log->user_id = Auth::user()->emp_id;
+     $insert_log->path = $path.$name;
+     $insert_log->type_log = 'ไฟลstructure';
+     $insert_log->save();
+
+     $key_name = ['Company','Division','FundsCenterID','CostCenterID','CostCenterTitle','CostCenterName'];
+// dd($data->toArray());
+     if($data->count() > 0){
+       $num = 1;
+      foreach($data->toArray() as $key => $value){
+        $i = 0;
+       foreach($value as $row){
+         if(!is_null($row)){
+           $add_data[$num][$key_name[$i]] = $row;
+           $num++;
+           $i++;
+         }else{
+           break;
+         }
+       }
+      }
+      // dd($insert_data);
+      if(!empty($add_data)){
+        for($j = 1; $j <= count($add_data); $j++ ){
+            $insert = new Structure;
+            $insert->Company = $add_data[$j++]['Company'];
+            $insert->Division = $add_data[$j++]['Division'];
+            $insert->FundsCenterID = $add_data[$j++]['FundsCenterID'];
+            $insert->CostCenterID = $add_data[$j++]['CostCenterID'];
+            $insert->CostCenterTitle = $add_data[$j++]['CostCenterTitle'];
+            $insert->CostCenterName = $add_data[$j]['CostCenterName'];
+            $insert->save();
+        }
+      }
+     }
+     if($insert){
+       return back()->with('success', 'Excel Data Imported successfully.');
+     }
     }
 }

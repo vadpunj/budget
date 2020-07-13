@@ -24,6 +24,8 @@ Route::get('/logout', "UserController@logout")->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_source')->name('dashboard');
+  Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
+  Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
   // Route::get('/home', 'InputController@get_data')->name('home');
   // Route::post('/home', 'InputController@post_data')->name('insert');
   Route::post('/find/data', 'ImportExcelController@ajax_data');

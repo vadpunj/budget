@@ -54,6 +54,10 @@
             <a class="nav-link {{ (request()->is('estimate/add/master')) ? 'active' : '' }}" href="{{ route('add_master') }}">
               <i class="nav-icon fa fa-plus"></i> Add Master</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('/import/struc')) ? 'active' : '' }}" href="{{ route('import_struc') }}">
+              <i class="nav-icon fa fa-plus"></i> Import Structure</a>
+          </li>
           @endif
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
