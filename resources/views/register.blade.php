@@ -86,58 +86,6 @@
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
                     <span class="input-group-text">
-                      <i class="fa fa-building-o"></i>
-                    </span>
-                  </div>
-                  <input class="form-control @error('field') is-invalid @enderror" type="text" placeholder="สายงาน" name="field" value="{{ old('field') }}" required autocomplete="field">
-                  @error('field')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="fa fa-building-o"></i>
-                    </span>
-                  </div>
-                  <input class="form-control @error('office') is-invalid @enderror" type="text" placeholder="ฝ่าย/สำนักงาน" name="office" value="{{ old('office') }}" required autocomplete="office">
-                  @error('office')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="fa fa-building-o"></i>
-                    </span>
-                  </div>
-                  <input class="form-control @error('part') is-invalid @enderror" type="text" placeholder="ส่วน/สค." name="part" value="{{ old('part') }}" required autocomplete="part">
-                  @error('part')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="fa fa-usd"></i>
-                    </span>
-                  </div>
-                  <input class="form-control @error('center_money') is-invalid @enderror" type="text" placeholder="ศูนย์เงินทุน" name="center_money" value="{{ old('center_money') }}" required autocomplete="center_money">
-                  @error('center_money')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
                       <i class="icon-people"></i>
                     </span>
                   </div>
@@ -146,19 +94,6 @@
                       <option value="{{$data->id}}">{{ ucfirst($data->role_name) }}</option>
                     @endforeach
                   </select>
-                </div>
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="fa fa-phone"></i>
-                    </span>
-                  </div>
-                  <input class="form-control @error('tel') is-invalid @enderror" type="text" placeholder="เบอร์ติดต่อ" name="tel" value="{{ old('tel') }}" required autocomplete="center_money">
-                  @error('tel')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
                 </div>
                 <button class="btn btn-block btn-success" type="submit">Create Account</button>
               </div>

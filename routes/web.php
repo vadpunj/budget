@@ -24,10 +24,17 @@ Route::get('/logout', "UserController@logout")->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_source')->name('dashboard');
-  Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
-  Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
-  // Route::get('/home', 'InputController@get_data')->name('home');
-  // Route::post('/home', 'InputController@post_data')->name('insert');
+  Route::post('/edit/struc', 'EstimateController@edit_struc')->name('edit_struc');
+  Route::post('/delete/struc', 'EstimateController@delete_struc')->name('delete_struc');
+  Route::post('/add/struc', 'EstimateController@post_add_struc')->name('post_add_struc');
+  Route::get('/status', 'EstimateController@get_status')->name('get_status');
+  Route::get('/export/sap', 'EstimateController@get_export')->name('get_export');
+  Route::post('/export/sap', 'EstimateController@export_sap')->name('export_sap');
+  Route::get('/view/all', 'EstimateController@get_view')->name('get_view');
+  Route::post('/view/all', 'EstimateController@post_view')->name('post_view');
+  Route::get('/view/version', 'EstimateController@get_version')->name('get_version');
+  Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
+
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');
   Route::get('/view_user', "UserController@list_user")->middleware('admin')->name('list_user');
@@ -58,9 +65,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/import/estimate', 'EstimateController@get_estimate')->name('import_estimate');
     Route::post('/import/estimate', 'EstimateController@post_estimate');
     Route::post('/edit/account', 'EstimateController@post_edit_account')->name('post_edit_account');
-    Route::get('/view/all', 'EstimateController@get_view')->name('get_view');
-    Route::post('/view/all', 'EstimateController@post_view')->name('post_view');
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
+    Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
+    Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
   });
   Route::get('/event', 'InputController@get_calendar')->name('event');
   Route::get('/event/manage', 'InputController@get_manage')->name('manage');

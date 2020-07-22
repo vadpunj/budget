@@ -15,12 +15,15 @@ class CreateEstimatesTable extends Migration
     {
         Schema::create('estimates', function (Blueprint $table) {
           $table->bigIncrements('id');
+          $table->integer('version');
           $table->integer('stat_year');
           $table->string('account');
           $table->double('budget');
           $table->string('center_money');
           $table->string('status')->nullable();
-          $table->text('explanation')->nullable();
+          $table->string('created_by');
+          $table->string('approve_by1')->nullable();
+          $table->string('approve_by2')->nullable();
           $table->timestamps();
           $table->softDeletes();
         });

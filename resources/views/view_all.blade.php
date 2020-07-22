@@ -17,6 +17,7 @@
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
   <style>
@@ -49,17 +50,28 @@
           <form action="{{ route('post_view') }}" method="post">
             @csrf
           <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="date-input">Year : </label>
+            <label class="col-md-1 col-form-label" for="date-input">ปี : </label>
             <div class="col-md-2">
-                <select class="form-control" name="year" onchange="myFunction()">
-                  @for($i = (date('Y')+543) ;$i > (date('Y',strtotime("-5 year"))+543) ; $i--)
+                <select class="form-control" name="year">
+                  @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
                   <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
                   @endfor
+                </select>
+            </div>
+            <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
+            <div class="col-md-2">
+                <select class="form-control" name="center_money">
+                  @foreach($center_money as $data_center)
+                  <option value="{{ $data_center->center_money }}" @if($center == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
+                  @endforeach
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
+        @if(isset($views))
+        <form action="{{route('post_approve')}}" method="post">
+          @csrf
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
@@ -68,6 +80,12 @@
                 <th>หมวดค่าใช้จ่าย</th>
                 <th>รายการภาระผูกพัน</th>
                 <th>งบประมาณ</th>
+                @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                <th>ฝ่าย/เขต</th>
+                @endif
+                @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                <th>วง.</th>
+                @endif
                 <th>สถานะ</th>
               </tr>
             </thead>
@@ -76,7 +94,7 @@
                 $sum =0;
               @endphp
 
-              @foreach($view as $data)
+              @foreach($views as $data)
               @php
                 $sum += $data['budget'];
               @endphp
@@ -86,12 +104,35 @@
                 <td>{{$data['account']}}</td>
                 <td>{{Func::get_account($data['account'])}}</td>
                 <td align="right">{{number_format($data['budget'],2)}}</td>
-                @if($data['status'] == 1)
-                  <td align="center"><span class="badge badge-pill badge-success">อนุมัติแล้ว</span></td>
-                  <?php $able = 'disabled'; ?>
-                @else
-                  <td align="center"><span class="badge badge-pill badge-danger">ยังไม่อนุมัติ</span></td>
-                  <?php $able = ''; ?>
+                @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                <?php
+                  $able = '';
+                  if($data['status'] == "1"){
+                    $able = 'disabled';
+                  }
+                 ?>
+                  <td align="center"><input type="checkbox" name="approve1[]" value="{{$data['account']}}" <?php echo $able; ?>></td>
+                @endif
+
+                @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                <?php
+                  $able = 'disabled';
+                  if($data['status'] == "0" || $data['status'] == "1"){
+                    $able = '';
+                  }
+                 ?>
+                  <td align="center"><input type="checkbox" name="approve2[]" value="{{$data['account']}}" <?php echo $able; ?>></td>
+                @endif
+                <input type="hidden" name="year" value="{{$yy}}">
+                <input type="hidden" name="center_money" value="{{$center}}">
+                @if($data['status'] == "0")
+                  <td align="center"><span class="badge badge-pill badge-warning">ฝ่าย/เขต อนุมัติแล้ว</span></td>
+                @elseif($data['status'] == "1")
+                  <td align="center"><span class="badge badge-pill badge-success">งบประมาณอนุมัติแล้ว</span></td>
+                @elseif($data['status'] == NULL)
+                  <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
+                @elseif($data['status'] == "4")
+                  <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
                 @endif
               </tr>
               @endforeach
@@ -100,24 +141,34 @@
               <tr>
                 <td colspan="4" align="right"><b>Sum</b></td>
                 <td align="right"><b>{{ number_format($sum,2) }}</b></td>
+                @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                  <td>Select All <input type="checkbox" id="all1" onclick='selectAll1()'></td>
+                @endif
+                @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                  <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
+                @endif
                 <td></td>
               </tr>
             </tfoot>
           </table>
-          @if((Auth::user()->type == 3 || Auth::user()->type == 1) && !empty($view))
-          <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal" <?php echo $able; ?>>
+          @endif
+          @if((Auth::user()->type == 5 || Auth::user()->type == 4 || Auth::user()->type == 1) && !empty($views))
+          <button type="submit" class="btn btn-success" name="btn" value="true">
             <i class="nav-icon fa fa-check"></i> Approve log
           </button>
+          <button type="submit" class="btn btn-danger" name="btn" value="false">
+            <i class="nav-icon fa fa-times"></i> Unapprove log
+          </button>
           @endif
+        </form>
         </div>
       </div>
     </div>
   </div>
   </main>
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
-        <form action="{{route('post_approve')}}" method="post">
           @csrf
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Approve log</h5>
@@ -129,16 +180,14 @@
           <p>ต้องการอนุมัติข้อมูลงบประมาณใช่หรือไม่?</p>
         </div>
         <div class="modal-footer">
-          <input type="hidden" name="budget" value="{{$sum}}">
           <input type="hidden" name="year" value="{{$yy}}">
           <input type="hidden" name="user_approve" value="{{Auth::user()->emp_id}}">
           <button class="btn btn-primary" type="submit">Yes</button>
           {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
         </div>
-      </form>
       </div>
     </div>
-  </div>
+  </div> -->
 @endsection
 
 @section('js')
@@ -154,6 +203,40 @@
       $('.myTable').DataTable({
         select:true,
       });
+      function selectAll1() {
+        // console.log($('#all1').is(':checked'));
+        if($('#all1').is(':checked') == true){
+          var items = document.getElementsByName('approve1[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = true;
+          }
+        }else{
+          var items = document.getElementsByName('approve1[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = false;
+          }
+        }
+      }
+      function selectAll2() {
+        // console.log($('#all1').is(':checked'));
+        if($('#all2').is(':checked') == true){
+          var items = document.getElementsByName('approve2[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = true;
+          }
+        }else{
+          var items = document.getElementsByName('approve2[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = false;
+          }
+        }
+      }
+
   </script>
+
 
 @endsection

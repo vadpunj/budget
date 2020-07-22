@@ -3,8 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Structure extends Model
 {
+    use SoftDeletes;
     protected $table = 'structures';
+    protected $dates = ['deleted_at'];
 }

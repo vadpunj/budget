@@ -22,6 +22,7 @@ class CreateStructuresTable extends Migration
             $table->string('CostCenterTitle');
             $table->string('CostCenterName');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -7,6 +7,7 @@ use Func;
 use Illuminate\Http\Request;
 use App\User;
 use App\Role;
+use App\Structure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,22 +25,12 @@ class UserController extends Controller
       // dd($request->all());
       $this->validate($request, [
         'name' => 'required|min:4',
-        'emp_id' => 'required|numeric|unique:users',
-        'field' => 'required',
-        'office' => 'required',
-        'part' => 'required',
-        'center_money' => 'required',
-        'tel' => 'required|numeric'
+        'emp_id' => 'required|numeric'
       ]);
       User::create([
         'name' => $request->name,
         'emp_id' => $request->emp_id,
-        'field' => $request->field,
-        'office' => $request->office,
-        'part' => $request->part,
-        'center_money' => $request->center_money,
         'type' => $request->type,
-        'tel' => $request->tel,
         'user_id' => Auth::user()->emp_id
       ]);
       // return redirect()->back();
@@ -81,6 +72,8 @@ class UserController extends Controller
           );
 
         $make_call =  $Controller->callAPI('POST', $urlApi, json_encode($data_array));
+        // dd($make_call);
+        $key = json_decode($make_call, true);
 
         if($make_call  == 'bad request'){
           return redirect()->back()->with('message', 'กรุณาloginใหม่อีกครั้ง'); //user timeout
@@ -88,6 +81,31 @@ class UserController extends Controller
         $response = json_decode($make_call, true);
 
         if($response['Result'] == 'Pass'){
+
+          if(is_null($user->field)){
+            $key_json = json_decode($make_call);
+            $key = $key_json->ClientKey;
+
+            $data_profile =  array(
+              "ClientKey" => $key,
+              "ServiceName" => 'GetQrUserProfile',
+              "ServiceParams" => array(
+                      "emp_code" => $request->emp_id,
+                      "pw" => $request->password,
+                      ),
+              );
+            $make_data =  $Controller->callAPI('POST', $urlApi, json_encode($data_profile));
+            // dd($make_data);
+            $jsodata = json_decode($make_data);
+            $line = Structure::where('CostCenterName',$jsodata->div_name)->first();
+            // dd($line->Division);
+            $update = DB::table('users')
+                ->where('emp_id',$request->emp_id)
+                ->update(['field' => $line->Division,'center_money' => $line->CostCenterID,
+                'office'=> $jsodata->dept_name ,'part' => $jsodata->div_name ,'tel' => $jsodata->phone_no,
+                'updated_at' => date('Y-m-d H:i:s')]);
+          }
+
           \Auth::login($user);
           return redirect()->route('dashboard'); // รหัส login ผ่าน
         }else{
@@ -128,7 +146,8 @@ class UserController extends Controller
 
       // EXECUTE:
       $result = curl_exec($curl);
-      // dd($result);
+      // $key = json_decode($result);
+      // dd($dd->ClientKey);
       if(!$result){
         die("Connection Failure");
       }

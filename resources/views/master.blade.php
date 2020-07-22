@@ -118,7 +118,7 @@
  </main>
  @foreach($data as $row)
  <div class="modal fade" id="{{'myEdit'.$row->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-lg modal-warning" role="document">
+   <div class="modal-dialog modal-warning" role="document">
      <div class="modal-content">
        <form action="{{ route('post_edit_master') }}" method="POST">
          @csrf

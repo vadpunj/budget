@@ -45,20 +45,25 @@
           </li>
         </ul>
       </li>--}}
+      @if(Auth::user()->type == 2 || Auth::user()->type == 3 || Auth::user()->type == 1)
       <li class="nav-item nav-dropdown {{ (request()->is('estimate/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
            งบประมาณทำการประจำปี</a>
         <ul class="nav-dropdown-items">
           @if(Auth::user()->type ==1)
           <li class="nav-item">
+            <a class="nav-link {{ (request()->is('estimate/import/struc')) ? 'active' : '' }}" href="{{ route('import_struc') }}">
+              <i class="nav-icon icon-doc"></i> Import Structure</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('estimate/master')) ? 'active' : '' }}" href="{{ route('import_master') }}">
+              <i class="nav-icon icon-doc"></i> Import Master</a>
+          </li>
+          @endif
+          <li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/add/master')) ? 'active' : '' }}" href="{{ route('add_master') }}">
               <i class="nav-icon fa fa-plus"></i> Add Master</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('/import/struc')) ? 'active' : '' }}" href="{{ route('import_struc') }}">
-              <i class="nav-icon fa fa-plus"></i> Import Structure</a>
-          </li>
-          @endif
           <li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
               <i class="nav-icon fa fa-plus"></i> Add Estimate</a>
@@ -72,21 +77,36 @@
               <i class="nav-icon icon-pencil"></i> Edit</a>
           </li>--}}
           @if(Auth::user()->type ==1)
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/master')) ? 'active' : '' }}" href="{{ route('import_master') }}">
-              <i class="nav-icon icon-doc"></i> Import Master</a>
-          </li>
           {{--<li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/import')) ? 'active' : '' }}" href="{{ route('import') }}">
               <i class="nav-icon icon-doc"></i> Import file</a>
           </li>--}}
           @endif
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
-              <i class="nav-icon icon-check"></i> Approve</a>
-          </li>
         </ul>
       </li>
+      @endif
+      @if(Auth::user()->type == 4 || Auth::user()->type == 5 || Auth::user()->type == 1)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
+          <i class="nav-icon icon-check"></i> Approve</a>
+      </li>
+      @endif
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">
+          <i class="nav-icon fa fa-eye"></i> View Report Status</a>
+      </li>
+      @if(Auth::user()->type ==2 || Auth::user()->type ==3 || Auth::user()->type ==1)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/view/version')) ? 'active' : '' }}" href="{{ route('get_version') }}">
+          <i class="nav-icon fa fa-eye"></i> View Report Version</a>
+      </li>
+      @endif
+      @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">
+          <i class="nav-icon fa fa-download"></i> Export File To SAP</a>
+      </li>
+      @endif
       @if(Auth::user()->type ==1)
       <li class="nav-item">
         <a class="nav-link" target="_blank" href="{{ route('register') }}" >

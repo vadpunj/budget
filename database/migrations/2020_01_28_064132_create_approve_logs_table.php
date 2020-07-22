@@ -17,7 +17,8 @@ class CreateApproveLogsTable extends Migration
             $table->bigIncrements('id');
             $table->string('user_approve');
             $table->string('stat_year');
-            $table->double('budget');
+            $table->string('version');
+            $table->string('center_money');
             $table->timestamps();
         });
     }

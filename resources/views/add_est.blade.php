@@ -16,6 +16,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
+  <script src="~/Scripts/autoNumeric/autoNumeric.min.js" type="text/javascript"></script>
   <style>
     .word {
       color: #fff !important;
@@ -53,7 +54,7 @@
                   <label class="col-md-2 col-form-label">ปีงบประมาณ(พ.ศ.)</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="form-control @error('stat_year') is-invalid @enderror" type="text" name="stat_year">
+                      <input class="form-control @error('stat_year') is-invalid @enderror" type="text" name="stat_year" value="{{ date('Y')+543 }}" readonly>
                       @error('stat_year')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -79,18 +80,13 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">ชื่อผู้ขอ</label>
-                  <div class="form-group col-sm-4">
-                    <input class="form-control @error('name_reqs') is-invalid @enderror" type="text" name="name_reqs" value="{{\Auth::user()->name}}">
-                    @error('name_reqs')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
+                    <label class="col-md-2 col-form-label">ศูนยเงินทุน</label>
+                    <div class="form-group col-sm-4">
+                      <input class="form-control" type="text" name="center_money" value="{{\Auth::user()->center_money}}" readonly>
+                    </div>
                   <label class="col-md-2 col-form-label">เบอร์ติดต่อ</label>
                   <div class="form-group col-sm-4">
-                    <input class="form-control @error('phone') is-invalid @enderror" type="text" name="phone" placeholder="ตัวเลขเท่านั้น">
+                    <input class="form-control @error('phone') is-invalid @enderror" type="text" name="phone" value="{{\Auth::user()->tel}}" placeholder="ตัวเลขเท่านั้น">
                     @error('phone')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -98,12 +94,7 @@
                     @enderror
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label">ศูนยเงินทุน</label>
-                  <div class="form-group col-sm-4">
-                    <input class="form-control" type="text" name="center_money" value="{{\Auth::user()->center_money}}" readonly>
-                  </div>
-                </div>
+
           </div>
          </div>
            <div style="overflow-x: scroll;">
@@ -112,18 +103,25 @@
                <tr>
                  <th>รหัสบัญชี</th>
                  <th>หมวด/ประเภทรายจ่าย</th>
+                 <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-3 year"))+543)}}</th>
                  <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-2 year"))+543)}}</th>
-                 <th>{{'งบประมาณปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
+                 <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
                  <th>{{'งบประมาณขอตั้งปี '.(date("Y")+543)}}</th>
                  <th>{{'% ผลรวมที่เพิ่มขึ้นจากปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
                </tr>
              </thead>
              <tbody>
+               @if(!empty($list))
                 @foreach($now as $arr_key => $arr_val)
                   @foreach($arr_val as $key => $value)
                     <tr>
                       <td>{{ $key }}</td>
                       <td>{{ Func::get_account($key) }}</td>
+                      @if($year3[date("Y",strtotime("-3 year"))+543][$key] != 0)
+                        <td align="right">{{ number_format($year3[date("Y",strtotime("-3 year"))+543][$key],2) }}</td>
+                      @elseif($year3[date("Y",strtotime("-3 year"))+543][$key] == 0)
+                        <td align="center">{{ '-' }}</td>
+                      @endif
                       @if($year2[date("Y",strtotime("-2 year"))+543][$key] != 0)
                         <td align="right">{{ number_format($year2[date("Y",strtotime("-2 year"))+543][$key],2) }}</td>
                       @elseif($year2[date("Y",strtotime("-2 year"))+543][$key] == 0)
@@ -134,12 +132,19 @@
                       @elseif($year1[date("Y",strtotime("-1 year"))+543][$key] == 0)
                         <td align="center">{{ '-' }}</td>
                       @endif
+                      <?php
+                      $able = '';
+                      if($status[date("Y")+543][$key] == "0" || $status[date("Y")+543][$key] == "1"){
+                        $able = 'readonly';
+                      }
+                       ?>
                       @if($now[date("Y")+543][$key] != 0)
                         <td align="center">
-                          <input type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}">
+                          <input class="form-control" type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}" <?php echo $able; ?>>
                         </td>
                       @elseif($now[date("Y")+543][$key] == 0)
-                        <td align="center"> <input type="text" name="budget[{{$key}}]" >
+                        <td align="center">
+                          <input class="form-control" type="text" name="budget[{{$key}}]"  <?php echo $able; ?>>
                         </td>
                       @endif
                       @if($now[date("Y")+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
@@ -150,10 +155,14 @@
                       @else
                         <td align="center">{{ '-' }}</td>
                       @endif
-
                    </tr>
                   @endforeach
                 @endforeach
+              @else
+              <tr>
+                <td colspan="7" align="center">ยังไม่ได้ทำการตั้งงบ</td>
+              </tr>
+              @endif
              </tbody>
            </table>
 
