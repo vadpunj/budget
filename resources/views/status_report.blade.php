@@ -46,6 +46,7 @@
               <tr>
                 <th>ปีงบประมาณ</th>
                 <th>ศูนย์ต้นทุน</th>
+                <th>งบประมาณ</th>
                 <th>ตั้งงบ</th>
                 <th>ฝ่าย/เขต อนุมัติ</th>
                 <th>วง. อนุมัติ</th>
@@ -56,6 +57,7 @@
               <tr>
                 <td align="center">{{ $value["year"] }}</td>
                 <td align="center">{{ $value["center_money"] }}</td>
+                <td align="right">{{ number_format($value["budget"],2) }}</td>
                 @if($value["status"] == NULL || $value["status"] == "1" || $value["status"] == "0")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                 @elseif($value["status"] == "4")

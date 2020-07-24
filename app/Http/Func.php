@@ -44,9 +44,9 @@ class Func{
     $last_ver  = Estimate::where('stat_year',$date)->where('center_money',$center_money)->latest()->first();
     // dd($last_ver);
     if($last_ver == NULL){
-      return dd('ไม่มีข้อมูลงบประมาณ');
+      return NULL;
     }else{
-      return $last_ver;
+      return $last_ver->version;
     }
   }
 }

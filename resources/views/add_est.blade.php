@@ -147,7 +147,7 @@
                           <input class="form-control" type="text" name="budget[{{$key}}]"  <?php echo $able; ?>>
                         </td>
                       @endif
-                      @if($now[date("Y")+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
+                      @if($now[date("Y")+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] < $now[date("Y")+543][$key])
                         @php
                           $cal = ($now[date('Y')+543][$key] * 100 / $year1[date("Y",strtotime("-1 year"))+543][$key]) -100;
                         @endphp
