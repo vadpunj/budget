@@ -37,6 +37,7 @@
       <li class="breadcrumb-item active">สถานะข้อมูลงบประมาณทำการ</li>
     </ol>
     <!-- end breadcrumb -->
+    <div class="card-body">
   <div class="container-fluid">
     <div class="animated fadeIn">
       <div class="row">
@@ -53,6 +54,7 @@
               </tr>
             </thead>
             <tbody>
+              @if($status != NULL)
               @foreach($status as $key => $value)
               <tr>
                 <td align="center">{{ $value["year"] }}</td>
@@ -77,12 +79,13 @@
                 @endif
               </tr>
               @endforeach
-
+              @endif
             </tbody>
           </table>
         </div>
       </div>
     </div>
+  </div>
   </div>
   </main>
 

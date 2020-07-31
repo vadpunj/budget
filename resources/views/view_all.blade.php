@@ -37,7 +37,7 @@
       <li class="breadcrumb-item active">ข้อมูลงบประมาณทำการประจำปี</li>
     </ol>
     <!-- end breadcrumb -->
-  <div class="container-fluid">
+<div class="card-body">
     @if($message = Session::get('success'))
     <div class="alert alert-success alert-block">
      <button type="button" class="close" data-dismiss="alert">×</button>
@@ -61,9 +61,13 @@
             <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
             <div class="col-md-2">
                 <select class="form-control" name="center_money">
-                  @foreach($center_money as $data_center)
-                  <option value="{{ $data_center->center_money }}" @if($center == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
-                  @endforeach
+                  @if(isset($views))
+                    @foreach($center_money as $data_center)
+                    <option value="{{ $data_center->center_money }}" @if($center == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
+                    @endforeach
+                  @else
+                    <option value="{{ 0 }}" selected >{{ 'ไม่มีข้อมูล' }}</option>
+                  @endif
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -164,30 +168,9 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
   </main>
-  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-          @csrf
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Approve log</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>ต้องการอนุมัติข้อมูลงบประมาณใช่หรือไม่?</p>
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" name="year" value="{{$yy}}">
-          <input type="hidden" name="user_approve" value="{{Auth::user()->emp_id}}">
-          <button class="btn btn-primary" type="submit">Yes</button>
-          {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
-        </div>
-      </div>
-    </div>
-  </div> -->
+
 @endsection
 
 @section('js')

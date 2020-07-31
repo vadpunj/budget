@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/view/all', 'EstimateController@post_view')->name('post_view');
   Route::get('/view/version', 'EstimateController@get_version')->name('get_version');
   Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
+  Route::get( '/download/{filename}', 'InputController@download');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');

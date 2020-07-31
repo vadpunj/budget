@@ -159,6 +159,23 @@ class InputController extends Controller
       // return back()->with('success', 'ลบกิจกรรมแล้ว');
     }
 
-
+    public function download( $filename = '' )
+   {
+       // Check if file exists in app/storage/file folder
+       $file_path = storage_path() . "/file/" . $filename;
+       // dd($file_path);
+       $headers = array(
+           'Content-Type: application/vnd.ms-excel',
+           'Content-Disposition: attachment; filename='.$filename,
+       );
+       // dd($headers);
+       if ( file_exists( $file_path ) ) {
+           // Send Download
+           return \Response::download( $file_path, $filename, $headers );
+       } else {
+           // Error
+           exit( 'Requested file does not exist on our server!' );
+       }
+   }
 
 }

@@ -37,6 +37,7 @@
            <strong>{{ $message }}</strong>
    </div>
    @endif
+   <div class="card-body">
     <div class="panel-body">
       <div class="card-body">
        <h3 align="center">Export File</h3>
@@ -44,10 +45,9 @@
           <button class="btn btn-primary mb-1" type="button" data-toggle="modal" data-target="#myModal">Export</button>
           {{--<a class="btn btn-primary" href="">Export</a>--}}
         </div>
-
-
       </div>
     </div>
+  </div>
   </main>
 
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

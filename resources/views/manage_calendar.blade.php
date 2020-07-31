@@ -119,7 +119,7 @@
           </div>
         </div>
         <div class="card-body">
-           ลบ/แก้ไขกิจกรรม
+           ข้อมูลกิจกรรม
           <table class="table table-responsive-sm table-bordered" >
             <thead>
               <tr>

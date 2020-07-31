@@ -70,6 +70,8 @@ class EstimateController extends Controller
                   $status[$value->stat_year][$value->account] = $value->status;
                 }
               }
+          }else{
+            $list = NULL;
           }
         }
 // dd($now);
@@ -342,20 +344,30 @@ class EstimateController extends Controller
       }else{
         $center_money = Estimate::select('center_money')->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
       }
-      $last_ver = Func::get_last_version(date('Y')+543,$center_money->first()->center_money);
+      // dd($center_money);
+      if(!$center_money){
+        $center = $center_money->first()->center_money;
+        $last_ver = Func::get_last_version(date('Y')+543,$center_money->first()->center_money);
+        $view = Estimate::select(DB::raw('status,version, center_money,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
+          ->where('stat_year',(date('Y')+543))
+          ->where('version',$last_ver)
+          ->where('center_money',$center)
+          ->groupBy('status', 'center_money','stat_year','version','account','approve_by1','approve_by2')
+          ->get()->toArray();
+      }else{
+        $last_ver = NULL;
+        $view = NULL;
+        $center_money = NULL;
+        $center = NULL;
+      }
       // $last_ver  = Estimate::where('center_money',$center_money->first()->center_money)->latest()->first();
 
       // dd($center_money->first()->center_money);
-      $view = Estimate::select(DB::raw('status,version, center_money,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-        ->where('stat_year',(date('Y')+543))
-        ->where('version',$last_ver)
-        ->where('center_money',$center_money->first()->center_money)
-        ->groupBy('status', 'center_money','stat_year','version','account','approve_by1','approve_by2')
-        ->get()->toArray();
+
       // dd($view[0]["version"]);
 
 
-      return view('view_all',['views' => $view,'yy' => (date('Y')+543) , 'center_money' => $center_money, 'center'=> $center_money->first()->center_money]);
+      return view('view_all',['views' => $view,'yy' => (date('Y')+543) , 'center_money' => $center_money, 'center'=> $center]);
     }
 
     public function post_view(Request $request)
@@ -615,6 +627,9 @@ class EstimateController extends Controller
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
       }
       // dd($center_money);
+      $version_array = [];
+      $status_arr = [];
+      $status = NULL;
       foreach ($center as $key => $value) {
         // dd($value->center_money);
         $last_ver = Func::get_last_version(date('Y')+543,$value->center_money);
@@ -629,27 +644,34 @@ class EstimateController extends Controller
           }
       }
       // dd($version_array);
-      foreach ($version_array as $key => $version) {
-        $get_status = Estimate::select('center_money','status',DB::raw('SUM(budget) as budget'))
-        ->where('center_money',$key)
-        ->where('stat_year',date('Y')+543)
-        ->where('version',$version)
-        ->groupBy('status','center_money')
-        ->get()->toArray();
+      if(!$version_array){
+        foreach ($version_array as $key => $version) {
+          $get_status = Estimate::select('center_money','status',DB::raw('SUM(budget) as budget'))
+          ->where('center_money',$key)
+          ->where('stat_year',date('Y')+543)
+          ->where('version',$version)
+          ->groupBy('status','center_money')
+          ->get()->toArray();
 
-        $status_arr[] = $get_status;
-      }
-      // dd($status_arr);
-      foreach ($status_arr as $key => $cent) {
-        foreach ($cent as $value) {
-          $status[] = array(
-            'year' => date('Y')+543,
-            'center_money' => $value["center_money"],
-            'status' => $value["status"],
-            'budget' => $value["budget"]
-           );
+          $status_arr[] = $get_status;
         }
       }
+
+      if(!$status_arr){
+        // dd($status_arr);
+        foreach ($status_arr as $key => $cent) {
+          foreach ($cent as $value) {
+            $status[] = array(
+              'year' => date('Y')+543,
+              'center_money' => $value["center_money"],
+              'status' => $value["status"],
+              'budget' => $value["budget"]
+             );
+          }
+        }
+      }
+
+
 
       return view('status_report',['status' => $status]);
     }

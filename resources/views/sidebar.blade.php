@@ -98,7 +98,7 @@
       @if(Auth::user()->type ==2 || Auth::user()->type ==3 || Auth::user()->type ==1)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/view/version')) ? 'active' : '' }}" href="{{ route('get_version') }}">
-          <i class="nav-icon fa fa-eye"></i> เวอร์ชันงบประมาณ</a>
+          <i class="nav-icon fa fa-eye"></i> Version งบประมาณ</a>
       </li>
       @endif
       @if(Auth::user()->type == 5 || Auth::user()->type == 1)

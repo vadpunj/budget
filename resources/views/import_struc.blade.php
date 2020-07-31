@@ -119,7 +119,9 @@
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Select File</label>
       <div class="col-md-4">
-        <input id="file-input" type="file" name="select_file"><span class="text-muted">.xslx</span>
+        <input id="file-input" type="file" name="select_file"><span class="text-muted">.xslx<a href="{{ url('/download/struct.xlsx') }}" target="_blank">
+    ตัวอย่างไฟล์ที่อัพโหลด
+</a></span>
       </div>
         <input type="submit" name="upload" class="btn btn-primary" value="Submit">
     </div>
@@ -243,7 +245,7 @@
        </div>
      </div>
      @endforeach
-
+     </div>
 </main>
 @endsection
 
