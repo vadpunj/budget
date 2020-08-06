@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/delete/struc', 'EstimateController@delete_struc')->name('delete_struc');
   Route::post('/add/struc', 'EstimateController@post_add_struc')->name('post_add_struc');
   Route::get('/status', 'EstimateController@get_status')->name('get_status');
+  Route::post('/status', 'EstimateController@post_status')->name('post_status');
   Route::get('/export/sap', 'EstimateController@get_export')->name('get_export');
   Route::post('/export/sap', 'EstimateController@export_sap')->name('export_sap');
   Route::get('/view/all', 'EstimateController@get_view')->name('get_view');

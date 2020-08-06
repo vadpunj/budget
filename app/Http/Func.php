@@ -41,7 +41,7 @@ class Func{
   }
   public static function get_last_version($date,$center_money)
   {
-    $last_ver  = Estimate::where('stat_year',$date)->where('center_money',$center_money)->latest()->first();
+    $last_ver  = Estimate::where('stat_year',$date)->where('center_money',$center_money)->orderBy('version','DESC')->first();
     // dd($last_ver);
     if($last_ver == NULL){
       return NULL;

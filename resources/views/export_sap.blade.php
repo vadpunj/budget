@@ -51,7 +51,7 @@
   </main>
 
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
          <h4 class="modal-title">เลือกข้อมูล Export ข้อมูล</h4>
@@ -63,25 +63,12 @@
           {{ csrf_field() }}
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="email-input">ปีบัญชี (พ.ศ.)</label>
+              <label class="col-md-4 col-form-label" for="email-input">ปีบัญชี (พ.ศ.)</label>
               <div class="col-md-4">
                 <input class="form-control" type="number" name="stat_year" value="{{ date('Y')+543 }}">
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label">ศูนย์ต้นทุน</label>
-              <div class="form-group col-sm-4">
-                <div class="input-group">
-                  <input class="form-control" type="text" name="center_money1">
-                </div>
-              </div>
-              <label class="col-md-1 col-form-label">ถึง</label>
-              <div class="form-group col-sm-4">
-                <div class="input-group">
-                  <input class="form-control" type="text" name="center_money2">
-                </div>
-              </div>
-            </div>
+
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Submit</button>

@@ -42,6 +42,32 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
+          <form action="{{ route('post_status') }}" method="post">
+            @csrf
+          <div class="form-group row">
+            <label class="col-md-1 col-form-label" for="date-input">ปี : </label>
+            <div class="col-md-2">
+                <select class="form-control" name="year">
+                  @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
+                  <option value="{{ $i }}" @if($i == $year) selected @else '' @endif>{{ $i }}</option>
+                  @endfor
+                </select>
+            </div>
+            <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
+            <div class="col-md-2">
+                <select class="form-control" name="center_money">
+                  @if($status)
+                    @foreach($center as $data_center)
+                    <option value="{{ $data_center->center_money }}" @if($first == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
+                    @endforeach
+                  @else
+                    <option value="{{ 0 }}" selected >{{ 'ไม่มีข้อมูล' }}</option>
+                  @endif
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
@@ -57,7 +83,7 @@
               @if($status != NULL)
               @foreach($status as $key => $value)
               <tr>
-                <td align="center">{{ $value["year"] }}</td>
+                <td align="center">{{ $value["stat_year"] }}</td>
                 <td align="center">{{ $value["center_money"] }}</td>
                 <td align="right">{{ number_format($value["budget"],2) }}</td>
                 @if($value["status"] == NULL || $value["status"] == "1" || $value["status"] == "0")

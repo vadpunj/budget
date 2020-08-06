@@ -85,12 +85,10 @@
         </ul>
       </li>
       @endif
-      @if(Auth::user()->type == 4 || Auth::user()->type == 5 || Auth::user()->type == 1)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
           <i class="nav-icon icon-check"></i> อนุมัติงบประมาณ</a>
       </li>
-      @endif
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">
           <i class="nav-icon fa fa-eye"></i> สถานะงบประมาณ</a>

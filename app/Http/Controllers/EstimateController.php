@@ -12,6 +12,7 @@ use App\Master;
 use App\Estimate;
 use App\Approve_log;
 use App\Structure;
+use App\Export_estimate;
 use DB;
 use Func;
 use App\Log_user;
@@ -56,7 +57,7 @@ class EstimateController extends Controller
               ->where('version', $last_ver)
               ->where('center_money',\Auth::user()->center_money)
               ->groupBy('stat_year','account','version','status')->get()->toArray();
-              $arr[] = $list;
+              // $arr[] = $list;
               foreach ($list as $key => $value) {
                 // dd($value[$i]->stat_year);
                 if ($value->stat_year == date("Y",strtotime("-3 year"))+543) {
@@ -285,7 +286,7 @@ class EstimateController extends Controller
      $insert_log->type_log = 'งบทำการ';
      $insert_log->save();
 
-     $key_name = ['stat_year','account','budget','center_money'];
+     $key_name = ['stat_year','account','budget','center_money','fund_center'];
 // dd($data->count());
      if($data->count() > 0){
        $num = 1;
@@ -310,7 +311,8 @@ class EstimateController extends Controller
             $insert->version = 1;
             $insert->account = $insert_data[$j++]['account'];
             $insert->budget = $insert_data[$j++]['budget'];
-            $insert->center_money = $insert_data[$j]['center_money'];
+            $insert->center_money = $insert_data[$j++]['center_money'];
+            $insert->fund_center = $insert_data[$j]['fund_center'];
             $insert->created_by = Auth::user()->emp_id;
             $insert->save();
           }else{
@@ -345,7 +347,8 @@ class EstimateController extends Controller
         $center_money = Estimate::select('center_money')->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
       }
       // dd($center_money);
-      if(!$center_money){
+      if($center_money->count()){
+        // dd($center_money);
         $center = $center_money->first()->center_money;
         $last_ver = Func::get_last_version(date('Y')+543,$center_money->first()->center_money);
         $view = Estimate::select(DB::raw('status,version, center_money,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
@@ -360,6 +363,7 @@ class EstimateController extends Controller
         $center_money = NULL;
         $center = NULL;
       }
+      // dd(4444);
       // $last_ver  = Estimate::where('center_money',$center_money->first()->center_money)->latest()->first();
 
       // dd($center_money->first()->center_money);
@@ -441,6 +445,18 @@ class EstimateController extends Controller
           $approve->version = $last_ver;
           $approve->center_money = $request->center_money;
           $approve->save();
+// dd($request->approve2[0]);
+          for($i=0 ;$i < count($request->approve2) ; $i++){
+            $export = new Export_estimate;
+            $export->version = 1;
+            $export->year = $request->year;
+            $export->fund_center = substr_replace($request->center_money,"00",5);
+            $export->center_money = $request->center_money;
+            $export->account = $request->approve2[$i];
+            $export->budget = $request->budget[$i];
+            $export->user_id = Auth::user()->emp_id;
+            $export->save();
+          }
           if($update){
             return back()->with('success', 'อนุมัติแล้ว');
           }
@@ -451,6 +467,12 @@ class EstimateController extends Controller
             ->where('version',$last_ver)
             ->where('center_money',$request->center_money)
             ->update(['status' => 0,'approve_by2' => NULL]);
+
+              Export_estimate::where('year',$request->year)
+              ->whereIn('account', $request->approve2)
+              ->where('center_money',$request->center_money)
+              ->delete();
+
             if($update){
               return back()->with('success', 'ยกเลิกการอนุมัติแล้ว');
             }
@@ -571,46 +593,26 @@ class EstimateController extends Controller
     public function export_sap(Request $request)
     {
       // $data_array[] = 0;
-      for($i = $request->center_money1 ; $i <= $request->center_money2 ; $i++){
-        $last_ver = Estimate::where('center_money',$i)
-          ->where('status',1)
-          ->where('stat_year',date('Y')+543)
-          ->latest()
-          ->first();
-
-          if(!is_null($last_ver)){
-            $version_array[$i] = $last_ver->version;
-          }
-      }
-      $data=array();
-      foreach ($version_array as $key => $value) {
-        $read = Estimate::where('center_money',$key)
-        ->where('status',1)
-        ->where('version',$value)
-        ->where('stat_year',$request->stat_year)
+      $sap = Export_estimate::select('year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
+        ->where('year', $request->stat_year)
+        ->groupBy('year','version','fund_center','account')
         ->get()->toArray();
-        // dd($read);
-        // $ss = $read;
-        // array_push($read,$data);
-          $data_array[] = $read;
-      }
-      // dd($data_array);
-      foreach ($data_array as $key => $value) {
-        foreach ($value as $key1) {
-            $data[] = array(
-              'year' => $key1['stat_year']-543,
-              '1' => 1,
-              '2' => 1,
-              '3' => 1,
-              '4' => 'oper',
-              '5' => 'z0',
-              '6' => $key1['center_money'],
-              '7' => $key1['account'],
-              '8' => $key1['budget']
-            );
+        // dd($sap);
+        foreach ($sap as $key => $value) {
+              $data[] = array(
+                'year' => $value['year']-543,
+                'from' => 1,
+                'to' => 1,
+                'version' => $value['version'],
+                'fund' => 'oper',
+                'func.a' => 'z0',
+                'fund_center' => $value['fund_center'],
+                'cmmt' => $value['account'],
+                'amount' => $value['budget']
+              );
         }
-      }
-      Excel::create('Estimate'.$request->center_money1.'-'.$request->center_money2,function($excel) use ($data){
+        // dd($data);
+      Excel::create('Estimate'.$request->stat_year,function($excel) use ($data){
         $excel->setTitle('Estimate');
         $excel->sheet('Estimate',function($sheet) use ($data){
           $sheet->fromArray($data,null,'A1',false,false);
@@ -622,58 +624,47 @@ class EstimateController extends Controller
     public function get_status()
     {
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
-        $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->groupBy('center_money')->get();
+        $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->groupBy('center_money')->orderBy('center_money','ASC')->get();
       }else{
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
       }
-      // dd($center_money);
-      $version_array = [];
-      $status_arr = [];
-      $status = NULL;
-      foreach ($center as $key => $value) {
-        // dd($value->center_money);
-        $last_ver = Func::get_last_version(date('Y')+543,$value->center_money);
+      // dd($center);
+      $first = $center->first();
+      // dd($first->center_money);
+      $last_ver = Func::get_last_version(date('Y')+543,$first->center_money);
+// dd($last_ver);
+      $get_status = Estimate::select('stat_year','center_money','status',DB::raw('SUM(budget) as budget'))
+      ->where('center_money',$first->center_money)
+      ->where('stat_year',date('Y')+543)
+      ->where('version',$last_ver)
+      ->groupBy('status','center_money','stat_year')
+      ->get()->toArray();
+// dd($get_status);
 
-        // $last_ver = Estimate::where('center_money',$value->center_money)
-        //   ->where('stat_year',date('Y')+543)
-        //   ->latest()
-        //   ->first();
+// dd($status);
+      return view('status_report',['status' => $get_status,'year' => date('Y')+543,'center' => $center,'first'=> $first->center_money]);
+    }
 
-          if(!is_null($last_ver)){
-            $version_array[$value->center_money] = $last_ver;
-          }
-      }
-      // dd($version_array);
-      if(!$version_array){
-        foreach ($version_array as $key => $version) {
-          $get_status = Estimate::select('center_money','status',DB::raw('SUM(budget) as budget'))
-          ->where('center_money',$key)
-          ->where('stat_year',date('Y')+543)
-          ->where('version',$version)
-          ->groupBy('status','center_money')
-          ->get()->toArray();
-
-          $status_arr[] = $get_status;
-        }
+    public function post_status(Request $request)
+    {
+      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+        $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->groupBy('center_money')->orderBy('center_money','ASC')->get();
+      }else{
+        $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',$request->center_money)->groupBy('center_money')->get();
       }
 
-      if(!$status_arr){
-        // dd($status_arr);
-        foreach ($status_arr as $key => $cent) {
-          foreach ($cent as $value) {
-            $status[] = array(
-              'year' => date('Y')+543,
-              'center_money' => $value["center_money"],
-              'status' => $value["status"],
-              'budget' => $value["budget"]
-             );
-          }
-        }
-      }
+      $first = $request->center_money;
+      $last_ver = Func::get_last_version(date('Y')+543,$first);
+// dd($last_ver);
+      $get_status = Estimate::select('stat_year','center_money','status',DB::raw('SUM(budget) as budget'))
+      ->where('center_money',$first)
+      ->where('stat_year',date('Y')+543)
+      ->where('version',$last_ver)
+      ->groupBy('status','center_money','stat_year')
+      ->get()->toArray();
+        // dd($get_status);
 
-
-
-      return view('status_report',['status' => $status]);
+      return view('status_report',['status' => $get_status,'year' => date('Y')+543,'center' => $center,'first' => $first]);
     }
 
     public function get_version()

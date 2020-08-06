@@ -13,8 +13,9 @@
   <!-- Main styles for this application-->
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
-  <!-- Global site tag (gtag.js) - Google Analytics-->
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+
+
+
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -60,7 +61,7 @@
             </div>
             <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
             <div class="col-md-2">
-                <select class="form-control" name="center_money">
+                <select class="form-control selectpicker" data-live-search="true" name="center_money">
                   @if(isset($views))
                     @foreach($center_money as $data_center)
                     <option value="{{ $data_center->center_money }}" @if($center == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
@@ -126,6 +127,7 @@
                   }
                  ?>
                   <td align="center"><input type="checkbox" name="approve2[]" value="{{$data['account']}}" <?php echo $able; ?>></td>
+                  <input type="hidden" name="budget[]" value="{{$data['budget']}}" <?php echo $able; ?>>
                 @endif
                 <input type="hidden" name="year" value="{{$yy}}">
                 <input type="hidden" name="center_money" value="{{$center}}">
@@ -182,6 +184,7 @@
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
+
   <script type="text/javascript">
       $('.myTable').DataTable({
         select:true,

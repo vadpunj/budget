@@ -101,7 +101,7 @@ class UserController extends Controller
             // dd($line->Division);
             $update = DB::table('users')
                 ->where('emp_id',$request->emp_id)
-                ->update(['field' => $line->Division,'center_money' => $line->CostCenterID,
+                ->update(['field' => $line->Division,'center_money' => $line->CostCenterID,'fund_center' => $line->FundsCenterID,
                 'office'=> $jsodata->dept_name ,'part' => $jsodata->div_name ,'tel' => $jsodata->phone_no,
                 'updated_at' => date('Y-m-d H:i:s')]);
           }
