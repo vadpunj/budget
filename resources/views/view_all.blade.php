@@ -13,10 +13,8 @@
   <!-- Main styles for this application-->
   <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
-
-
-
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('admin/css/bootstrap-select.min.css')}}">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -24,6 +22,11 @@
   <style>
     .word {
       color: #fff !important;
+    }
+    .selectpicker+button {
+      color: #23282c;
+      background-color: #fff;
+      border-color: #e4e7ea;
     }
   </style>
 @endsection
@@ -184,6 +187,11 @@
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
+    <!-- Latest compiled and minified JavaScript -->
+  <script src="{{ asset('admin/js/bootstrap-select.min.js')}}"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <!-- <script src="{{ asset('admin/js/i18n/defaults-*.min.js') }}"></script> -->
 
   <script type="text/javascript">
       $('.myTable').DataTable({

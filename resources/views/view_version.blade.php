@@ -72,7 +72,13 @@
               </tr>
             </thead>
             <tbody>
+              @php
+                $sum = 0;
+              @endphp
               @foreach($data as $key)
+              @php
+                $sum += round($key->budget,2);
+              @endphp
               <tr>
                 <td align="center">{{ $key->stat_year }}</td>
                 <td align="center">{{ $key->center_money }}</td>
@@ -82,6 +88,10 @@
               </tr>
               @endforeach
             </tbody>
+            <tfoot>
+              <td align="right" colspan="4"><b>Sum</b></td>
+              <td align="right"><b>{{ number_format($sum,2) }}</b></td>
+            </tfoot>
           </table>
         </div>
       </div>

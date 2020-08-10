@@ -16,6 +16,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('admin/css/bootstrap-select.min.css')}}">
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -23,6 +24,11 @@
   <style>
     .word {
       color: #fff !important;
+    }
+    .selectpicker+button {
+      color: #23282c;
+      background-color: #fff;
+      border-color: #e4e7ea;
     }
   </style>
 @endsection
@@ -55,7 +61,7 @@
             </div>
             <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
             <div class="col-md-2">
-                <select class="form-control" name="center_money">
+                <select class="form-control selectpicker" data-live-search="true" name="center_money">
                   @if($status)
                     @foreach($center as $data_center)
                     <option value="{{ $data_center->center_money }}" @if($first == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
@@ -126,6 +132,8 @@
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
+      <!-- Latest compiled and minified JavaScript -->
+  <script src="{{ asset('admin/js/bootstrap-select.min.js')}}"></script>
   <script type="text/javascript">
       $('.myTable').DataTable({
         select:true,
