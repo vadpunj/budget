@@ -158,31 +158,41 @@ class EstimateController extends Controller
 
      $key_name = ['account','name'];
 // dd($data->toArray());
-     if($data->count() > 0){
-       $num = 1;
-      foreach($data->toArray() as $key => $value){
-        $i = 0;
-       foreach($value as $row){
-         if(!is_null($row)){
-           $insert_data[$num][$key_name[$i]] = $row;
-           $num++;
-           $i++;
-         }else{
-           break;
-         }
-       }
+    foreach($data->toArray() as $value){
+      // dd($value['รายการภาระผูกพัน']);
+      if($value['รายการภาระผูกพัน']){
+        $insert = new Master;
+        $insert->account = $value['รายการภาระผูกพัน'];
+        $insert->name = $value['ชื่อ'];
+        $insert->save();
       }
-      // dd($insert_data);
-      if(!empty($insert_data)){
-        for($j = 1; $j <= count($insert_data); $j++ ){
-          // dd($insert_data[$j++]['account']);
-          $insert = new Master;
-          $insert->account = $insert_data[$j++]['account'];
-          $insert->name = $insert_data[$j]['name'];
-          $insert->save();
-        }
-      }
-     }
+
+    }
+     // if($data->count() > 0){
+     //   $num = 1;
+     //  foreach($data->toArray() as $key => $value){
+     //    $i = 0;
+     //   foreach($value as $row){
+     //     if(!is_null($row)){
+     //       $insert_data[$num][$key_name[$i]] = $row;
+     //       $num++;
+     //       $i++;
+     //     }else{
+     //       break;
+     //     }
+     //   }
+     //  }
+     //  // dd($insert_data);
+     //  if(!empty($insert_data)){
+     //    for($j = 1; $j <= count($insert_data); $j++ ){
+     //      // dd($insert_data[$j++]['account']);
+     //      $insert = new Master;
+     //      $insert->account = $insert_data[$j++]['account'];
+     //      $insert->name = $insert_data[$j]['name'];
+     //      $insert->save();
+     //    }
+     //  }
+     // }
      if($insert){
        return back()->with('success', 'บันทึกข้อมูลแล้ว');
      }
@@ -275,41 +285,22 @@ class EstimateController extends Controller
      $insert_log->type_log = 'งบทำการ';
      $insert_log->save();
 
-     $key_name = ['stat_year','account','budget','center_money','fund_center'];
+     // $key_name = ['stat_year','account','budget','center_money','fund_center'];
 // dd($data->count());
-     if($data->count() > 0){
-       $num = 1;
-      foreach($data->toArray() as $key => $value){
-        $i = 0;
-       foreach($value as $row){
-         // if(!is_null($row)){
-           $insert_data[$num][$key_name[$i]] = $row;
-           $num++;
-           $i++;
-         // }else{
-         //   break;
-         // }
-       }
+    foreach($data->count() as $value){
+      if($value['stat_year']){
+       $insert = new Estimate;
+       $insert->stat_year = $value['ปีงบ'];
+       $insert->version = 1;
+       $insert->account = $value['บัญชี'];
+       $insert->budget = $value['เงิน'];
+       $insert->center_money = $value['ศูนย์ต้นทุน'];
+       $insert->fund_center = $value['ศูนย์เงินทุน'];
+       $insert->created_by = Auth::user()->emp_id;
+       $insert->save();
       }
-      // dd($insert_data);
-      if(!empty($insert_data)){
-        for($j = 1; $j <= count($insert_data); $j++ ){
-          if(!empty($insert_data[$j]['stat_year'])){
-            $insert = new Estimate;
-            $insert->stat_year = $insert_data[$j++]['stat_year'];
-            $insert->version = 1;
-            $insert->account = $insert_data[$j++]['account'];
-            $insert->budget = $insert_data[$j++]['budget'];
-            $insert->center_money = $insert_data[$j++]['center_money'];
-            $insert->fund_center = $insert_data[$j]['fund_center'];
-            $insert->created_by = Auth::user()->emp_id;
-            $insert->save();
-          }else{
-            break;
-          }
-        }
-      }
-     }
+    }
+
      if($insert){
        return back()->with('success', 'Excel Data Imported successfully.');
      }
@@ -500,34 +491,20 @@ class EstimateController extends Controller
 
      $key_name = ['Company','Division','FundsCenterID','CostCenterID','CostCenterTitle','CostCenterName'];
 // dd($data->toArray());
-     if($data->count() > 0){
-       $num = 1;
-      foreach($data->toArray() as $key => $value){
-        $i = 0;
-       foreach($value as $row){
-         if(!is_null($row)){
-           $add_data[$num][$key_name[$i]] = $row;
-           $num++;
-           $i++;
-         }else{
-           break;
-         }
-       }
+    foreach($data->toArray() as $value){
+      if($value['Company']){
+        $insert = new Structure;
+        $insert->Company = $value['Company'];
+        $insert->Division = $value['Division'];
+        $insert->FundsCenterID = $value['FundsCenterID'];
+        $insert->CostCenterID = $value['CostCenterID'];
+        $insert->CostCenterTitle = $value['CostCenterTitle'];
+        $insert->CostCenterName = $value['CostCenterName'];
+        $insert->save();
       }
-      // dd($insert_data);
-      if(!empty($add_data)){
-        for($j = 1; $j <= count($add_data); $j++ ){
-            $insert = new Structure;
-            $insert->Company = $add_data[$j++]['Company'];
-            $insert->Division = $add_data[$j++]['Division'];
-            $insert->FundsCenterID = $add_data[$j++]['FundsCenterID'];
-            $insert->CostCenterID = $add_data[$j++]['CostCenterID'];
-            $insert->CostCenterTitle = $add_data[$j++]['CostCenterTitle'];
-            $insert->CostCenterName = $add_data[$j]['CostCenterName'];
-            $insert->save();
-        }
-      }
-     }
+
+    }
+
      if($insert){
        return back()->with('success', 'Excel Data Imported successfully.');
      }
