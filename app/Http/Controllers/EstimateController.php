@@ -287,8 +287,8 @@ class EstimateController extends Controller
 
      // $key_name = ['stat_year','account','budget','center_money','fund_center'];
 // dd($data->count());
-    foreach($data->count() as $value){
-      if($value['stat_year']){
+    foreach($data->toArray() as $value){
+      if($value['ปีงบ']){
        $insert = new Estimate;
        $insert->stat_year = $value['ปีงบ'];
        $insert->version = 1;
@@ -489,7 +489,7 @@ class EstimateController extends Controller
      $insert_log->type_log = 'ไฟลstructure';
      $insert_log->save();
 
-     $key_name = ['Company','Division','FundsCenterID','CostCenterID','CostCenterTitle','CostCenterName'];
+     // $key_name = ['Company','Division','FundsCenterID','CostCenterID','CostCenterTitle','CostCenterName'];
 // dd($data->toArray());
     foreach($data->toArray() as $value){
       if($value['Company']){
