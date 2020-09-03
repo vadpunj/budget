@@ -24,6 +24,8 @@ Route::get('/logout', "UserController@logout")->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_source')->name('dashboard');
+  Route::post('/home', 'InputController@post_information')->name('inform');
+  Route::post('/home/del', 'InputController@delete_infor')->name('delete_infor');
   Route::post('/edit/struc', 'EstimateController@edit_struc')->name('edit_struc');
   Route::post('/delete/struc', 'EstimateController@delete_struc')->name('delete_struc');
   Route::post('/add/struc', 'EstimateController@post_add_struc')->name('post_add_struc');
@@ -36,6 +38,9 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/view/version', 'EstimateController@get_version')->name('get_version');
   Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
   Route::get( '/download/{filename}', 'InputController@download');
+  Route::get( '/open/{filename}', 'InputController@open');
+  Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->name('get_view_estimate');
+  Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');

@@ -446,7 +446,7 @@ class EstimateController extends Controller
             ->whereIn('account', $request->approve2)
             ->where('version',$last_ver)
             ->where('center_money',$request->center_money)
-            ->update(['status' => 0,'approve_by2' => NULL]);
+            ->update(['status' => 3,'approve_by2' => NULL]);
 
               Export_estimate::where('year',$request->year)
               ->whereIn('account', $request->approve2)
@@ -670,5 +670,37 @@ class EstimateController extends Controller
         ->get();
 
       return view('view_version', ['data' => $data,'versions' => $last_ver ,'version' => $request->version]);
+    }
+
+    public function get_view_estimate()
+    {
+      // dd(998);
+      return view('view_estimate');
+    }
+    public function post_view_estimate(Request $request)
+    {
+      if(Auth::user()->type == "5"){
+        $this->validate($request, [
+          'account'  => 'required',
+          'center_money' => 'required'
+        ]);
+        $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+          ->where('account','like','%'.$request->account.'%')
+          ->where('center_money','%'.$request->center_money.'%')
+          ->where('stat_year','>=',date('Y')+542)
+          ->groupBy('account','stat_year')->get();
+      }else{
+        $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+          ->where('account','like','%'.$request->account.'%')
+          ->where('center_money',Auth::user()->center_money)
+          ->where('stat_year','>=',date('Y')+542)
+          ->groupBy('account','stat_year')->get();
+      }
+      $data =[];
+      foreach($view as $value){
+        $data[$value->account][$value->stat_year] = $value->budget;
+      }
+      // dd($data);
+      return view('view_estimate',['data' => $data]);
     }
 }

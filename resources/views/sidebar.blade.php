@@ -84,10 +84,14 @@
           @endif
         </ul>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/view/estimate')) ? 'active' : '' }}" href="{{ route('get_view_estimate') }}">
+          <i class="nav-icon icon-doc"></i> ดูข้อมูลงบประมาณ</a>
+      </li>
       @endif
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
-          <i class="nav-icon icon-check"></i> อนุมัติงบประมาณ</a>
+          <i class="nav-icon icon-check"></i> ขออนุมัติงบประมาณ</a>
       </li>
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">

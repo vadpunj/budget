@@ -92,21 +92,25 @@
                 <td align="center">{{ $value["stat_year"] }}</td>
                 <td align="center">{{ $value["center_money"] }}</td>
                 <td align="right">{{ number_format($value["budget"],2) }}</td>
-                @if($value["status"] == NULL || $value["status"] == "1" || $value["status"] == "0")
+                @if($value["status"] == NULL)
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                  <td align="center">{{ '-' }}</td>
+                  <td align="center">{{ '-' }}</td>
+                @elseif($value["status"] == "3")
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                  <td align="center">{{ 'วง.ขอแก้ไขงบ' }}</td>
+                  <td align="center">{{ '-' }}</td>
+                @elseif($value["status"] == "1")
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                 @elseif($value["status"] == "4")
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center">{{ 'ปรับแก้งบประมาณ' }}</td>
-                @else
                   <td align="center">{{ '-' }}</td>
-                @endif
-                @if($value["status"] == "0" || $value["status"] == "1")
+                @elseif($value["status"] == "0")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                @else
-                  <td align="center">{{ '-' }}</td>
-                @endif
-                @if($value["status"] == "1")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                @else
                   <td align="center">{{ '-' }}</td>
                 @endif
               </tr>

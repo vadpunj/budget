@@ -8,8 +8,12 @@ use App\Imports\FileImport;
 use App\Exports\FileExport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use App\Branch;
 use App\Transaction;
+use App\Estimate;
+use App\Information;
 use App\Budget;
 use App\User_request;
 use App\Event;
@@ -22,10 +26,108 @@ class InputController extends Controller
 {
     public function get_source()
     {
+      $data = Information::orderBy('id','DESC')->get();
+      $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('stat_year',date('Y')+543)->groupBy('status')->get();
+      // dd($group_status);
+      $stat= array(''=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
 
-      return view('dashboard');
+      foreach ($group_status as $key) {
+        $stat[$key->status] = $key->budget;
+      }
+// dd(count($stat));
+      if(Auth::user()->type == 2 ||Auth::user()->type == 3){
+        $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
+        $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
+        $stat= array(''=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+
+        foreach ($group_status as $key) {
+          $stat[$key->status] = $key->budget;
+        }
+      // dd($center);
+      if($center->count()){
+        // dd(9999);
+        $first = $center->first();
+        // dd($first->center_money);
+        $firstcen = $first->center_money;
+        $last_ver = Func::get_last_version(date('Y')+543,$firstcen);
+  // dd($last_ver);
+        $get_status = Estimate::select('stat_year','center_money','status',DB::raw('SUM(budget) as budget'))
+        ->where('center_money',$firstcen)
+        ->where('stat_year',date('Y')+543)
+        ->where('version',$last_ver)
+        ->groupBy('status','center_money','stat_year')
+        ->get()->toArray();
+  // dd($get_status);
+      }else{
+        $firstcen = NULL;
+        $center = NULL;
+        $get_status = NULL;
+      }
+      return view('dashboard',['stat'=>$stat ,'data' => $data,'status' => $get_status,'year' => date('Y')+543,'center' => $center,'first'=> $firstcen]);
 
     }
+      return view('dashboard',['stat'=>$stat ,'data' => $data]);
+// dd($status);
+      // return view('status_report',['status' => $get_status,'year' => date('Y')+543,'center' => $center,'first'=> $firstcen]);
+    }
+
+    public function delete_infor(Request $request)
+    {
+      // dd();
+      $del = Information::find($request->id);
+      $del->delete();
+
+      if($del){
+        return back()->with('success', 'ลบประกาศแล้ว');
+      }
+
+    }
+
+    public function open( $filename = '' )
+    {
+         // Check if file exists in app/storage/file folder
+         $file_path = storage_path() . "/log_info/" . $filename;
+         // dd($file_path);
+         $headers = array(
+             'Content-Type: application/pdf',
+             'Content-Disposition: attachment; filename='.$filename,
+         );
+         // dd($headers);
+         if ( file_exists( $file_path ) ) {
+             // Send Download
+             return \Response::download( $file_path, $filename, $headers );
+         } else {
+             // Error
+             exit( 'Requested file does not exist on our server!' );
+         }
+    }
+
+    public function post_information(Request $request)
+    {
+      // dd($request->all());
+      $this->validate($request, [
+        'name' => 'required',
+        'select_file'  => 'required'
+      ]);
+      // dd($request->file('select_file'));
+
+     $path = $request->file('select_file')->getRealPath();
+     $name = $request->file('select_file')->getClientOriginalName();
+     $pathreal = Storage::disk('info_log')->getAdapter()->getPathPrefix();
+     Storage::disk('info_log')->put($name, File::get($request->file('select_file')));
+
+
+     $add = new Information;
+     $add->name = $request->name;
+     $add->path_file = $name;
+     $add->save();
+
+     if($add){
+       return back()->with('success', 'เพิ่มประกาศแล้ว');
+     }
+
+    }
+
     public function get_data()
     {
 
@@ -160,22 +262,22 @@ class InputController extends Controller
     }
 
     public function download( $filename = '' )
-   {
-       // Check if file exists in app/storage/file folder
-       $file_path = storage_path() . "/file/" . $filename;
-       // dd($file_path);
-       $headers = array(
-           'Content-Type: application/vnd.ms-excel',
-           'Content-Disposition: attachment; filename='.$filename,
-       );
-       // dd($headers);
-       if ( file_exists( $file_path ) ) {
-           // Send Download
-           return \Response::download( $file_path, $filename, $headers );
-       } else {
-           // Error
-           exit( 'Requested file does not exist on our server!' );
-       }
-   }
+    {
+         // Check if file exists in app/storage/file folder
+         $file_path = storage_path() . "/file/" . $filename;
+         // dd($file_path);
+         $headers = array(
+             'Content-Type: application/vnd.ms-excel',
+             'Content-Disposition: attachment; filename='.$filename,
+         );
+         // dd($headers);
+         if ( file_exists( $file_path ) ) {
+             // Send Download
+             return \Response::download( $file_path, $filename, $headers );
+         } else {
+             // Error
+             exit( 'Requested file does not exist on our server!' );
+         }
+    }
 
 }

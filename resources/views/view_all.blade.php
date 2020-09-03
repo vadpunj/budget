@@ -142,6 +142,8 @@
                   <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
                 @elseif($data['status'] == "4")
                   <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
+                @elseif($data['status'] == "3")
+                  <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
                 @endif
               </tr>
               @endforeach
