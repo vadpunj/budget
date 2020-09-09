@@ -103,7 +103,7 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
-          สถานะงบประมาณ
+          สถานะอนุมัติงบประมาณ
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
