@@ -703,4 +703,47 @@ class EstimateController extends Controller
       // dd($data);
       return view('view_estimate',['data' => $data]);
     }
+
+    public function print_all(Request $request)
+    {
+      // $center_money = Estimate::select('center_money')->groupBy('center_money')->get();
+      $last_ver = Func::get_last_version($request->year,$request->center_money);
+      // $last_ver  = Estimate::where('center_money',$request->center_money)->latest()->first();
+      $view = Estimate::select(DB::raw('status, center_money,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
+        ->where('stat_year',$request->year)
+        ->where('version',$last_ver)
+        ->where('center_money',$request->center_money)
+        ->groupBy('status', 'center_money','stat_year','account','approve_by1','approve_by2')
+        ->get()->toArray();
+      foreach ($view as $key => $value) {
+        if($value['status'] == "0"){
+          $status = 'ฝ่าย/เขต อนุมัติแล้ว';
+        }elseif($value['status'] == "1"){
+          $status = 'งบประมาณอนุมัติแล้ว';
+        }elseif($value['status'] == NULL){
+          $status = 'งบประมาณรอพิจารณา';
+        }elseif($value['status'] == "4"){
+          $status = 'แก้ไขงบประมาณ';
+        }elseif($value['status'] == "3"){
+          $status = 'วง.ขอแก้ไขงบ';
+        }
+        $data[] = array(
+          'year' => $value['stat_year'],
+          'center' => $value['center_money'],
+          'account' => $value['account'],
+          'amount' => $value['budget'],
+          'status' => $status
+        );
+      }
+      if(!isset($data)){
+        dd('ไม่มีข้อมูล');
+      }
+      // dd($data);
+      Excel::create('View Estimate',function($excel) use ($data){
+        $excel->setTitle('Estimate');
+        $excel->sheet('Estimate',function($sheet) use ($data){
+          $sheet->fromArray($data,null,'A1',false,false);
+        });
+      })->download('xlsx');
+    }
 }

@@ -74,9 +74,16 @@
                   @endif
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
+          </form>
+            <form action="{{ route('print_view') }}" method="post">
+              @csrf
+              <input type="hidden" name="year" value="{{ $yy }}">
+              <input type="hidden" name="center_money" value="{{ $center }}">
+              <button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Submit</button>
+            </form>
           </div>
-        </form>
+
         @if(isset($views))
         <form action="{{route('post_approve')}}" method="post">
           @csrf

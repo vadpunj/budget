@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
     Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
     Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
+    Route::post('/print/view', 'EstimateController@print_all')->name('print_view');
   });
   Route::get('/event', 'InputController@get_calendar')->name('event');
   Route::get('/event/manage', 'InputController@get_manage')->name('manage');
