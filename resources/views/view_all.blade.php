@@ -80,7 +80,7 @@
               @csrf
               <input type="hidden" name="year" value="{{ $yy }}">
               <input type="hidden" name="center_money" value="{{ $center }}">
-              <button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Submit</button>
+              <button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
             </form>
           </div>
 
