@@ -715,6 +715,7 @@ class EstimateController extends Controller
         ->where('center_money',$request->center_money)
         ->groupBy('status', 'center_money','stat_year','account','approve_by1','approve_by2')
         ->get()->toArray();
+        $data[]  = array('year' => 'ปีงบประมาณ' ,'center' => 'ศูนย์ต้นทุน','account' => 'หมวดค่าใช้จ่าย','name' => 'รายการภาระผูกพัน','amount' => 'งบประมาณ' ,'status' => 'สถานะ');
       foreach ($view as $key => $value) {
         if($value['status'] == "0"){
           $status = 'ฝ่าย/เขต อนุมัติแล้ว';
@@ -731,6 +732,7 @@ class EstimateController extends Controller
           'year' => $value['stat_year'],
           'center' => $value['center_money'],
           'account' => $value['account'],
+          'name' => Func::get_account($value['account']),
           'amount' => $value['budget'],
           'status' => $status
         );
@@ -739,7 +741,7 @@ class EstimateController extends Controller
         dd('ไม่มีข้อมูล');
       }
       // dd($data);
-      Excel::create('View Estimate',function($excel) use ($data){
+      Excel::create('View Estimate '.$request->year.'-'.$request->center_money,function($excel) use ($data){
         $excel->setTitle('Estimate');
         $excel->sheet('Estimate',function($sheet) use ($data){
           $sheet->fromArray($data,null,'A1',false,false);
