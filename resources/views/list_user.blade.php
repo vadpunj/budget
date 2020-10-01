@@ -57,7 +57,7 @@
         <td align="center">{{ $loop->iteration }}</td>
         <td>{{ $row->name }}</td>
         <td>{{ $row->emp_id }}</td>
-        <td align="center">{{ Func::get_role($row->type) }}</td>
+        <td align="center">{{ ucwords(Func::get_role($row->type)) }}</td>
         <td align="center">{{ ($row->tel) }}</td>
         <td align="center">
           <button type="button" class="btn btn-info" data-toggle="modal" data-target="{{'#myView'.$row->id}}">
@@ -168,7 +168,6 @@
             </div>
             <div class="form-group col-sm-6">
               <label for="postal-code">สิทธิ์</label>
-
               <select class="form-control" name="type">
                 @foreach($roles as $data)
                 {{ 'edeee'.$data->id }}

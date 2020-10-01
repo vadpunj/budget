@@ -16,8 +16,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/register', "UserController@register")->middleware('admin');
-Route::post('/register', "UserController@postregister")->middleware('admin')->name('register');
+Route::get('/register', "UserController@register")->middleware('superadmin');
+Route::post('/register', "UserController@postregister")->middleware('superadmin')->name('register');
 Route::get('/login', "UserController@login")->middleware('guest')->name('login');
 Route::post('/login', "UserController@postlogin")->middleware('guest')->name('login');
 Route::get('/logout', "UserController@logout")->name('logout');
@@ -31,22 +31,22 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/add/struc', 'EstimateController@post_add_struc')->name('post_add_struc');
   Route::get('/status', 'EstimateController@get_status')->name('get_status');
   Route::post('/status', 'EstimateController@post_status')->name('post_status');
-  Route::get('/export/sap', 'EstimateController@get_export')->name('get_export');
-  Route::post('/export/sap', 'EstimateController@export_sap')->name('export_sap');
+  Route::get('/export/sap', 'EstimateController@get_export')->middleware('ApproveAuth')->name('get_export');
+  Route::post('/export/sap', 'EstimateController@export_sap')->middleware('ApproveAuth')->name('export_sap');
   Route::get('/view/all', 'EstimateController@get_view')->name('get_view');
   Route::post('/view/all', 'EstimateController@post_view')->name('post_view');
   Route::get('/view/version', 'EstimateController@get_version')->name('get_version');
   Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
   Route::get( '/download/{filename}', 'InputController@download');
   Route::get( '/open/{filename}', 'InputController@open');
-  Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->name('get_view_estimate');
-  Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
+  Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->middleware('UserAuth')->name('get_view_estimate');
+  Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->middleware('UserAuth')->name('post_view_estimate');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');
-  Route::get('/view_user', "UserController@list_user")->middleware('admin')->name('list_user');
-  Route::post('/view_user/edit', "UserController@edit_user")->middleware('admin')->name('list_edit_user');
-  Route::post('/view_user/del', "UserController@delete_user")->middleware('admin')->name('list_delete_user');
+  Route::get('/view_user', "UserController@list_user")->name('list_user');
+  Route::post('/view_user/edit', "UserController@edit_user")->name('list_edit_user');
+  Route::post('/view_user/del', "UserController@delete_user")->name('list_delete_user');
   Route::group(['prefix' => 'budget'], function(){
     Route::get('/add', 'BudgetController@get_add')->name('add_bud');
     Route::post('/add', 'BudgetController@post_add')->name('add_insert');
@@ -60,17 +60,17 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/export_excel/export', 'BudgetController@export_budget');
   });
   Route::group(['prefix' => 'estimate'], function(){
-    Route::get('/add', 'EstimateController@get_add')->name('add_est');
-    Route::post('/add', 'EstimateController@post_add')->name('insert_est');
+    Route::get('/add', 'EstimateController@get_add')->middleware('UserAuth')->name('add_est');
+    Route::post('/add', 'EstimateController@post_add')->middleware('UserAuth')->name('insert_est');
     Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
     Route::post('/master', 'EstimateController@post_importfile');
-    Route::get('/add/master', 'EstimateController@get_master')->name('add_master');
-    Route::post('/add/master', 'EstimateController@post_master')->name('post_add_master');
+    Route::get('/add/master', 'EstimateController@get_master')->middleware('UserAuth')->name('add_master');
+    Route::post('/add/master', 'EstimateController@post_master')->middleware('UserAuth')->name('post_add_master');
     // Route::get('/edit/master', 'EstimateController@get_edit_master')->name('edit_master');
-    Route::post('/edit/master', 'EstimateController@post_edit_master')->name('post_edit_master');
-    Route::post('/delete/master', 'EstimateController@post_delete_master')->name('post_delete_master');
-    Route::get('/import/estimate', 'EstimateController@get_estimate')->name('import_estimate');
-    Route::post('/import/estimate', 'EstimateController@post_estimate');
+    Route::post('/edit/master', 'EstimateController@post_edit_master')->middleware('UserAuth')->name('post_edit_master');
+    Route::post('/delete/master', 'EstimateController@post_delete_master')->middleware('UserAuth')->name('post_delete_master');
+    Route::get('/import/estimate', 'EstimateController@get_estimate')->middleware('UserAuth')->name('import_estimate');
+    Route::post('/import/estimate', 'EstimateController@post_estimate')->middleware('UserAuth');
     Route::post('/edit/account', 'EstimateController@post_edit_account')->name('post_edit_account');
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
     Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');

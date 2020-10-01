@@ -1,12 +1,12 @@
 <?php
-//ไว้checkว่าเป็นสิทธิ์adminไหม ถ้าเป็นadminให้สามารถเข้าregisterได้
+
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 
-class AuthAdministrator
+class ApproveAuth
 {
     /**
      * Handle an incoming request.
@@ -17,9 +17,9 @@ class AuthAdministrator
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->isSuperAdmin()){
-            return $next($request);
-        }
-        return redirect('home');
+      if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isApprove2())){
+          return $next($request);
+      }
+      return redirect('home');
     }
 }
