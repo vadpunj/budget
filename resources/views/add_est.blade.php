@@ -168,7 +168,7 @@
 
            <div class="form-group row">
              <div class="col-md-2 form-group">
-               <button class="btn btn-primary" type="submit">Submit</button>
+               <button class="btn btn-primary" type="submit" <?php $button; ?> >Submit</button>
              </div>
            </div>
          </div>
