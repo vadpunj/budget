@@ -29,6 +29,17 @@ class EstimateController extends Controller
       $year1=[];
       $now=[];
       $status=[];
+        
+       $check_button = Estimate::select('status')->where('stat_year',date('Y')+543)->groupBy('status')->get();
+       if(count($check_button) == 1){
+           $button = '';
+          if($check_button->status == 1){
+              $button = 'distable';
+          }
+       }else{
+           $button = '';
+       
+       }
        $all = Master::get();
       // $all = DB::table('masters')
       //       ->join('estimates', 'masters.account', '=', 'estimates.account')
@@ -80,7 +91,7 @@ class EstimateController extends Controller
 // dd($now);
 
 // dd($year1);
-      return view('add_est',['status' => $status,'list' => $list, 'now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3]);
+      return view('add_est',['button' => $button,'status' => $status,'list' => $list, 'now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3]);
     }
 
     public function post_add(Request $request)
