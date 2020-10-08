@@ -168,7 +168,11 @@
 
            <div class="form-group row">
              <div class="col-md-2 form-group">
+<<<<<<< HEAD
                <button class="btn btn-primary" type="submit" <?php echo $btn; ?>>Submit</button>
+=======
+               <button class="btn btn-primary" type="submit" <?php $button; ?> >Submit</button>
+>>>>>>> ee468c2b7437bf76a225880f63a5ea9d7bae8f29
              </div>
            </div>
          </div>
