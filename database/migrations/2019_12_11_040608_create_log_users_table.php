@@ -16,8 +16,8 @@ class CreateLogUsersTable extends Migration
         Schema::create('log_users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('user_id',10);
-            $table->char('path');
-            $table->char('type_log');
+            $table->string('path');
+            $table->string('type_log');
             $table->timestamps();
         });
     }

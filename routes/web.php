@@ -39,8 +39,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
   Route::get( '/download/{filename}', 'InputController@download');
   Route::get( '/open/{filename}', 'InputController@open');
-  Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->middleware('UserAuth')->name('get_view_estimate');
-  Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->middleware('UserAuth')->name('post_view_estimate');
+  Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->name('get_view_estimate');
+  Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');

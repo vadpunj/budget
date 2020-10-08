@@ -84,6 +84,8 @@
           @endif
         </ul>
       </li>
+      @endif
+      @if(Auth::user()->type == 1 || Auth::user()->type ==2 || Auth::user()->type ==3 || Auth::user()->type ==5)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/view/estimate')) ? 'active' : '' }}" href="{{ route('get_view_estimate') }}">
           <i class="nav-icon icon-doc"></i> ดูข้อมูลงบประมาณ</a>
@@ -95,9 +97,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">
-          <i class="nav-icon fa fa-eye"></i> สถานะงบประมาณ</a>
+          <i class="nav-icon fa fa-eye"></i> ขั้นตอนงบประมาณ</a>
       </li>
-      @if(Auth::user()->type ==2 || Auth::user()->type ==3 || Auth::user()->type ==1)
+      @if(Auth::user()->type ==2 || Auth::user()->type ==3)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/view/version')) ? 'active' : '' }}" href="{{ route('get_version') }}">
           <i class="nav-icon fa fa-eye"></i> Version งบประมาณ</a>

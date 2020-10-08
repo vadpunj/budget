@@ -38,7 +38,7 @@
 
 <div class="card-body">
   <div class="container-fluid">
-    @if(Auth::user()->type == 5)
+    @if(Auth::user()->type == 5 || Auth::user()->type == 1)
     <button class="btn btn-info mb-1" type="button" data-toggle="modal" data-target="#myModal">+ เพิ่มข่าวสาร</button>
     <table class="table table-responsive-sm table-bordered">
       <tr>

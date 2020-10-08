@@ -50,7 +50,7 @@
                   </span>
                 @enderror
               </div>
-              @if(Auth::user()->type == "5")
+              @if(Auth::user()->type == "5" || Auth::user()->type == "1")
               <label class="col-md-2 col-form-label">ศูนย์ต้นทุน</label>
               <div class="col-md-3">
                 <div class="input-group">

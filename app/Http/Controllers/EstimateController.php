@@ -29,6 +29,19 @@ class EstimateController extends Controller
       $year1=[];
       $now=[];
       $status=[];
+
+      $check_button = Estimate::select('status')->where('stat_year',date('Y')+543)->groupBy('status')->get();
+      // dd($check_button[0]->status);
+      if(count($check_button) == 1){
+          $btn = '';
+         if($check_button[0]->status == 0 || $check_button[0]->status == 1){
+             $btn = 'disabled';
+         }
+      }else{
+          $btn = '';
+
+      }
+      // dd($button);
        $all = Master::get();
       // $all = DB::table('masters')
       //       ->join('estimates', 'masters.account', '=', 'estimates.account')
@@ -80,7 +93,7 @@ class EstimateController extends Controller
 // dd($now);
 
 // dd($year1);
-      return view('add_est',['status' => $status,'list' => $list, 'now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3]);
+      return view('add_est',['btn' => $btn,'status' => $status,'list' => $list, 'now' => $now,'year1' => $year1,'year2' => $year2,'year3' => $year3]);
     }
 
     public function post_add(Request $request)
@@ -679,16 +692,17 @@ class EstimateController extends Controller
     }
     public function post_view_estimate(Request $request)
     {
-      if(Auth::user()->type == "5"){
+      if(Auth::user()->type == "5" || Auth::user()->type == "1"){
         $this->validate($request, [
           'account'  => 'required',
           'center_money' => 'required'
         ]);
         $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
           ->where('account','like','%'.$request->account.'%')
-          ->where('center_money','%'.$request->center_money.'%')
+          ->where('center_money','like','%'.$request->center_money.'%')
           ->where('stat_year','>=',date('Y')+542)
           ->groupBy('account','stat_year')->get();
+          // dd($view);
       }else{
         $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
           ->where('account','like','%'.$request->account.'%')
