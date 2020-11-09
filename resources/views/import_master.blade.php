@@ -49,7 +49,7 @@
             <strong>{{ $message }}</strong>
     </div>
     @endif
-   <form method="post" enctype="multipart/form-data" action="{{ url('estimate/master') }}">
+   <form method="post" enctype="multipart/form-data" action="{{ route('post_import_master') }}">
     {{ csrf_field() }}
 
     <div class="form-group row">
@@ -57,7 +57,7 @@
       <div class="col-md-10">
         <input id="file-input" type="file" name="select_file"><span class="text-muted">.xlsx<a href="{{ url('/download/Comitment.xlsx') }}" target="_blank">
     ตัวอย่างไฟล์ที่อัพโหลด
-</a></span>
+    </a></span>
       </div>
     </div>
     <div class="col-md-4">

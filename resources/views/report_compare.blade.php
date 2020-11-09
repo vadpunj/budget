@@ -28,10 +28,9 @@
 <main class="main">
   <!-- Breadcrumb-->
   <ol class="breadcrumb">
-    <li class="breadcrumb-item">
-      <a href="#">หน้าแรก</a>
-    </li>
-    <li class="breadcrumb-item active">ดูข้อมูลงบประมาณ</li>
+    <li class="breadcrumb-item"><a href="#">หน้าแรก</a></li>
+    <li class="breadcrumb-item"><a href="#">รายงาน</a></li>
+    <li class="breadcrumb-item active" aria-current="page">เปรียบเทียบงบประมาณ</li>
   </ol>
   <!-- end breadcrumb -->
   <div class="container-fluid">
@@ -40,7 +39,7 @@
         <div class="card-header word">
           <i class="fa fa-align-justify"></i> เปรียบเทียบงบประมาณ</div>
           <div class="card-body">
-            <form action="{{ route('post_view_estimate') }}" method="post">
+            <form action="{{ route('post_compare') }}" method="post">
                 @csrf
               <div class="form-group row">
                 @if(Auth::user()->type == "5" || Auth::user()->type == "1")
@@ -78,9 +77,31 @@
                     @enderror
                   </div>
                 </div>
+                <label class="col-md-2 col-form-label">ปี (พ.ศ.) :</label>
+                  <div class="col-md-4">
+                    <select class="form-control" name="stat_year">
+                      @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
+                        <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
+                      @endfor
+                    </select>
+                  </div>
               </div>
-              <button class="btn btn-primary" type="submit">Submit</button>
-            </form>
+              <div class="form-group row">
+                <div class="form-group col-sm-4">
+                  <div class="input-group">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                    <form action="{{ route('print_compare') }}" method="post">
+                      @csrf
+                        <input type="hidden" name="fundcenter" value="{{ $fund }}">
+                        <input type="hidden" name="centermoney" value="{{ $center }}">
+                        <input type="hidden" name="statyear" value="{{ $yy }}">
+                        <input type="hidden" name="account" value="{{ $account }}">
+                      &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
           </div>
       </div>
     </div>
@@ -99,17 +120,17 @@
         @foreach($data as $key_acc => $arr_value)
           <tr>
             <td align="center">{{ $key_acc }}</td>
-            @if(isset($data_old[$key_acc][date("Y")+542]))
+            @if(isset($data_old[$key_acc][$yy-1]))
               @php
-                $sum2 += $data_old[$key_acc][date("Y")+542];
+                $sum1 += $data_old[$key_acc][$yy-1];
               @endphp
               <td align="right">{{ number_format($data_old[$key_acc][date("Y")+542],2) }}</td>
             @else
               <td align="center">{{ '-' }}</td>
             @endif
-            @if(isset($data[$key_acc][date("Y")+543]))
+            @if(isset($data[$key_acc][$yy]))
               @php
-                $sum2 += $data[$key_acc][date("Y")+543];
+                $sum2 += $data[$key_acc][$yy];
               @endphp
               <td align="right">{{ number_format($data[$key_acc][date("Y")+543],2) }}</td>
             @else

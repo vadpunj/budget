@@ -3,6 +3,7 @@
 use App\Master;
 use App\Estimate;
 use App\Role;
+use App\Structure;
 
 class Func{
   public static function get_date($value)
@@ -47,6 +48,15 @@ class Func{
       return NULL;
     }else{
       return $last_ver->version;
+    }
+  }
+  public static function get_cost_title($center_money)
+  {
+    $name = Structure::where('CostCenterID',$center_money)->first();
+    if($name == NULL){
+      return NULL;
+    }else{
+      return $name->CostCenterTitle;
     }
   }
 }

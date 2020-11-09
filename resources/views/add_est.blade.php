@@ -15,8 +15,10 @@
   <link href="{{ asset('admin/vendors/pace-progress/css/pace.min.css') }}" rel="stylesheet">
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
+  <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
+
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
-  <script src="~/Scripts/autoNumeric/autoNumeric.min.js" type="text/javascript"></script>
+  {{--<script src="~/Scripts/autoNumeric/autoNumeric.min.js" type="text/javascript"></script>--}}
   <style>
     .word {
       color: #fff !important;
@@ -94,11 +96,10 @@
                     @enderror
                   </div>
                 </div>
-
           </div>
          </div>
            <div style="overflow-x: scroll;">
-           <table class="table table-responsive-sm table-bordered" style="width: 100%">
+           <table class="table table-responsive-sm table-bordered" style="width: 100%" id="myTable">
              <thead>
                <tr>
                  <th>รหัสบัญชี</th>
@@ -111,68 +112,76 @@
                </tr>
              </thead>
              <tbody>
-               @if(!empty($list))
-                @foreach($now as $arr_key => $arr_val)
-                  @foreach($arr_val as $key => $value)
-                    <tr>
-                      <td>{{ $key }}</td>
-                      <td>{{ Func::get_account($key) }}</td>
-                      @if($year3[date("Y",strtotime("-3 year"))+543][$key] != 0)
-                        <td align="right">{{ number_format($year3[date("Y",strtotime("-3 year"))+543][$key],2) }}</td>
-                      @elseif($year3[date("Y",strtotime("-3 year"))+543][$key] == 0)
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                      @if($year2[date("Y",strtotime("-2 year"))+543][$key] != 0)
-                        <td align="right">{{ number_format($year2[date("Y",strtotime("-2 year"))+543][$key],2) }}</td>
-                      @elseif($year2[date("Y",strtotime("-2 year"))+543][$key] == 0)
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                      @if($year1[date("Y",strtotime("-1 year"))+543][$key] != 0)
-                        <td align="right">{{ number_format($year1[date("Y",strtotime("-1 year"))+543][$key],2) }}</td>
-                      @elseif($year1[date("Y",strtotime("-1 year"))+543][$key] == 0)
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                      <?php
-                      $able = '';
-                      if($status[date("Y")+543][$key] == "0" || $status[date("Y")+543][$key] == "1"){
-                        $able = 'readonly';
-                      }
-                       ?>
-                      @if($now[date("Y")+543][$key] != 0)
-                        <td align="center">
-                          <input class="form-control" type="text" name="budget[{{$key}}]" value="{{$now[date('Y')+543][$key]}}" <?php echo $able; ?>>
-                        </td>
-                      @elseif($now[date("Y")+543][$key] == 0)
-                        <td align="center">
-                          <input class="form-control" type="text" name="budget[{{$key}}]"  <?php echo $able; ?>>
-                        </td>
-                      @endif
-                      @if($now[date("Y")+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] != 0 && $year1[date("Y",strtotime("-1 year"))+543][$key] < $now[date("Y")+543][$key])
-                        @php
-                          $cal = ($now[date('Y')+543][$key] * 100 / $year1[date("Y",strtotime("-1 year"))+543][$key]) /100;
-                        @endphp
-                        <td align="center">{{round($cal,2).' %'}}</td>
-                      @else
-                        <td align="center">{{ '-' }}</td>
-                      @endif
-                   </tr>
-                  @endforeach
+              @foreach($status as $key =>$arr_year)
+                @foreach($arr_year as $account => $value)
+                <tr>
+                  <td>{{ $account }}</td>
+                  <td>{{ Func::get_account($account) }}</td>
+                  @if(isset($year3[date("Y")+540][$account]))
+                    <td align="right">{{ number_format($year3[date("Y")+540][$account],2) }}</td>
+                  @else
+                    <td align="center">{{ '-' }}</td>
+                  @endif
+                  @if(isset($year2[date("Y")+541][$account]))
+                    <td align="right">{{ number_format($year2[date("Y")+541][$account],2) }}</td>
+                  @else
+                    <td align="center">{{ '-' }}</td>
+                  @endif
+                  @if(isset($year1[date("Y")+542][$account]))
+                    <td align="right">{{ number_format($year1[date("Y")+542][$account],2) }}</td>
+                  @else
+                    <td align="center">{{ '-' }}</td>
+                  @endif
+                  @if($status[$key][$account] >= 3)
+                  <td align="center">
+                    <input class="form-control" type="text" name="budget[{{$account}}]" value="{{ $now[$key][$account] }}">
+                  </td>
+                  @else
+                  <td align="center">
+                    <input class="form-control" type="text" name="budget[{{$account}}]" value="{{ $now[$key][$account] }}" readonly>
+                  </td>
+                  @endif
+                  @if($now[date("Y")+543][$account] != 0 && isset($year1[date("Y")+542][$account]) && $year1[date("Y")+542][$account] < $now[date("Y")+543][$account])
+                    @php
+                      $cal = ($now[date('Y')+543][$account] * 100 / $year1[date("Y")+542][$account]) /100;
+                    @endphp
+                    <td align="center">{{round($cal,2).' %'}}</td>
+                  @else
+                    <td align="center">{{ '-' }}</td>
+                  @endif
+                </tr>
                 @endforeach
-              @else
+              @endforeach
+              @foreach($test as $id)
               <tr>
-                <td colspan="7" align="center">ยังไม่ได้ทำการตั้งงบ</td>
+                <td>{{ $id->account }}</td>
+                <td>{{ Func::get_account($id->account) }}</td>
+                @if(isset($year3[date("Y")+540][$id->account]))
+                  <td align="right">{{ number_format($year3[date("Y")+540][$id->account],2) }}</td>
+                @else
+                  <td align="center">{{ '-' }}</td>
+                @endif
+                @if(isset($year2[date("Y")+541][$id->account]))
+                  <td align="right">{{ number_format($year2[date("Y")+541][$id->account],2) }}</td>
+                @else
+                  <td align="center">{{ '-' }}</td>
+                @endif
+                @if(isset($year1[date("Y")+542][$id->account]))
+                  <td align="right">{{ number_format($year1[date("Y")+542][$id->account],2) }}</td>
+                @else
+                  <td align="center">{{ '-' }}</td>
+                @endif
+                <td align="center">
+                  <input class="form-control" type="text" name="budget[{{$id->account}}]">
+                </td>
+                <td align="center">{{ '-' }}</td>
               </tr>
-              @endif
+              @endforeach
              </tbody>
            </table>
-
            <div class="form-group row">
              <div class="col-md-2 form-group">
-<<<<<<< HEAD
                <button class="btn btn-primary" type="submit" <?php echo $btn; ?>>Submit</button>
-=======
-               <button class="btn btn-primary" type="submit" <?php $button; ?> >Submit</button>
->>>>>>> ee468c2b7437bf76a225880f63a5ea9d7bae8f29
              </div>
            </div>
          </div>
@@ -193,5 +202,13 @@
 <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
 <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
-
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#myTable').DataTable({
+    "paging":   false,
+    "ordering": false,
+    scrollX:true
+  });
+});
+</script>
 @endsection

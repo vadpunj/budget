@@ -122,7 +122,7 @@
                 <td align="center">{{ $value["stat_year"] }}</td>
                 <td align="center">{{ $value["center_money"] }}</td>
                 <td align="right">{{ number_format($value["budget"],2) }}</td>
-                @if($value["status"] == NULL)
+                @if($value["status"] == "5")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center">{{ '-' }}</td>
                   <td align="center">{{ '-' }}</td>
@@ -152,6 +152,7 @@
       </div>
     </div>
   @endif
+  @if(Auth::user()->type == 2 ||Auth::user()->type == 3 || Auth::user()->type == 4)
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-lg-12">
@@ -171,7 +172,7 @@
             @if(count($stat) > 0)
             <tr>
               <td align="center">{{ date('Y')+543 }}</td>
-              <td align="right">{{ number_format($stat[""],) }}</td>
+              <td align="right">{{ number_format($stat["5"],) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
               <td align="right">{{ number_format($stat["1"],2) }}</td>
               <td align="right">{{ number_format($stat["4"],2) }}</td>
@@ -183,6 +184,7 @@
       </div>
     </div>
   </div>
+  @endif
   </div>
 </div>
 </main>

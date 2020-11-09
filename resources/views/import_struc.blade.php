@@ -62,13 +62,13 @@
                 <form action="{{ route('post_add_struc') }}" method="post">
                   @csrf
                   <div class="form-group row">
-                    <label class="col-md-2 col-form-label">บริษัท</label>
+                    <label class="col-md-2 col-form-label">บริษัท <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('Company') is-invalid @enderror" type="text" name="Company">
                       </div>
                     </div>
-                    <label class="col-md-2 col-form-label">สายงาน</label>
+                    <label class="col-md-2 col-form-label">สายงาน <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('Division') is-invalid @enderror" type="text" name="Division">
@@ -76,13 +76,13 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-2 col-form-label">ศูนย์เงินทุน</label>
+                    <label class="col-md-2 col-form-label">ศูนย์เงินทุน <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('FundsCenterID') is-invalid @enderror" type="text" name="FundsCenterID">
                       </div>
                     </div>
-                    <label class="col-md-2 col-form-label">ศูนย์ต้นทุน</label>
+                    <label class="col-md-2 col-form-label">ศูนย์ต้นทุน <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('CostCenterID') is-invalid @enderror" type="text" name="CostCenterID">
@@ -90,13 +90,13 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-2 col-form-label">ฝ่าย</label>
+                    <label class="col-md-2 col-form-label">ฝ่าย <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('CostCenterTitle') is-invalid @enderror" type="text" name="CostCenterTitle">
                       </div>
                     </div>
-                    <label class="col-md-2 col-form-label">ส่วน</label>
+                    <label class="col-md-2 col-form-label">ส่วน <font color="red">*</font></label>
                     <div class="form-group col-sm-4">
                       <div class="input-group">
                         <input class="form-control @error('CostCenterName') is-invalid @enderror" type="text" name="CostCenterName">

@@ -51,47 +51,41 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
-          <form action="{{ route('post_view') }}" method="post">
-            @csrf
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="date-input">ปี : </label>
-            <div class="col-md-2">
-                <select class="form-control" name="year">
-                  @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
-                  <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
-                  @endfor
-                </select>
-            </div>
-            <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
-            <div class="col-md-2">
-                <select class="form-control selectpicker" data-live-search="true" name="center_money">
-                  @if(isset($views))
-                    @foreach($center_money as $data_center)
-                    <option value="{{ $data_center->center_money }}" @if($center == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
-                    @endforeach
-                  @else
-                    <option value="{{ 0 }}" selected >{{ 'ไม่มีข้อมูล' }}</option>
-                  @endif
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>&nbsp;&nbsp;
-          </form>
-            <form action="{{ route('print_view') }}" method="post">
+          @if(Auth::user()->type == "5" || Auth::user()->type == "1")
+            <form action="{{ route('post_view') }}" method="post">
+              <div class="form-group row">
               @csrf
-              <input type="hidden" name="year" value="{{ $yy }}">
-              <input type="hidden" name="center_money" value="{{ $center }}">
-              <button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
+              <label class="col-md-2 col-form-label" for="date-input">ชื่อฝ่าย(ย่อ) : <font color="red">*</font></label>
+                <div class="col-sm-4">
+                  <div class="input-group">
+                    <input class="form-control @error('fund_center') is-invalid @enderror" type="text" name="cost_title">
+                    @error('fund_center')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
             </form>
-          </div>
+          @endif
+            {{--<form action="{{ route('print_view') }}" method="post">
+              @csrf
+              <input type="hidden" name="year" value="{{ date('Y') }}">
+              <input type="hidden" name="center_money" value="{{ $center }}">
+              &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
+            </form>--}}
 
-        @if(isset($views))
         <form action="{{route('post_approve')}}" method="post">
           @csrf
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
                 <th>ปีงบประมาณ</th>
+                <th>ศูนย์เงินทุน</th>
                 <th>ศูนย์ต้นทุน</th>
+                <th>ฝ่าย</th>
                 <th>หมวดค่าใช้จ่าย</th>
                 <th>รายการภาระผูกพัน</th>
                 <th>งบประมาณ</th>
@@ -105,69 +99,73 @@
               </tr>
             </thead>
             <tbody>
+            @if(isset($views))
               @php
                 $sum =0;
               @endphp
-
-              @foreach($views as $data)
-              @php
-                $sum += $data['budget'];
-              @endphp
-              <tr>
-                <td align="center">{{$data['stat_year']}}</td>
-                <td align="center">{{$data['center_money']}}</td>
-                <td>{{$data['account']}}</td>
-                <td>{{Func::get_account($data['account'])}}</td>
-                <td align="right">{{number_format($data['budget'],2)}}</td>
-                @if(Auth::user()->type == 4 || Auth::user()->type == 1)
-                <?php
-                  $able = '';
-                  if($data['status'] == "1"){
-                    $able = 'disabled';
-                  }
-                 ?>
-                  <td align="center"><input type="checkbox" name="approve1[]" value="{{$data['account']}}" <?php echo $able; ?>></td>
-                @endif
-
-                @if(Auth::user()->type == 5 || Auth::user()->type == 1)
-                <?php
-                  $able = 'disabled';
-                  if($data['status'] == "0" || $data['status'] == "1"){
+              @foreach($views as $key => $arr_value)
+                @foreach($arr_value as $value)
+                @php
+                  $sum += $value['budget'];
+                  unset($center_money1);
+                @endphp
+                <tr>
+                  <td align="center">{{$value['stat_year']}}</td>
+                  <td align="center">{{$value['fund_center']}}</td>
+                  <td align="center">{{$value['center_money']}}</td>
+                  <td align="center">{{$value['cost_title']}}</td>
+                  <td align="center">{{$value['account']}}</td>
+                  <td>{{Func::get_account($value['account'])}}</td>
+                  <td align="right">{{number_format($value['budget'],2)}}</td>
+                  @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                  <?php
                     $able = '';
-                  }
-                 ?>
-                  <td align="center"><input type="checkbox" name="approve2[]" value="{{$data['account']}}" <?php echo $able; ?>></td>
-                  <input type="hidden" name="budget[]" value="{{$data['budget']}}" <?php echo $able; ?>>
-                @endif
-                <input type="hidden" name="year" value="{{$yy}}">
-                <input type="hidden" name="center_money" value="{{$center}}">
-                @if($data['status'] == "0")
-                  <td align="center"><span class="badge badge-pill badge-warning">ฝ่าย/เขต อนุมัติแล้ว</span></td>
-                @elseif($data['status'] == "1")
-                  <td align="center"><span class="badge badge-pill badge-success">งบประมาณอนุมัติแล้ว</span></td>
-                @elseif($data['status'] == NULL)
-                  <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
-                @elseif($data['status'] == "4")
-                  <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
-                @elseif($data['status'] == "3")
-                  <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
-                @endif
-              </tr>
+                    if($value['status'] == "1"){
+                      $able = 'disabled';
+                    }
+                   ?>
+                    <td align="center"><input type="checkbox" name="approve1[]" value="{{$value['account']."-".$value['center_money']}}" <?php echo $able; ?>></td>
+
+                  @endif
+
+                  @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                  <?php
+                    $able = 'disabled';
+                    if($value['status'] == "0" || $value['status'] == "1"){
+                      $able = '';
+                    }
+                   ?>
+                    <td align="center"><input type="checkbox" name="approve2[]" value="{{$value['account']."-".$value['center_money']}}" <?php echo $able; ?>></td>
+                    <input type="hidden" name="budget[]" value="{{$value['budget']}}" <?php echo $able; ?>>
+                  @endif
+                  {{--<input type="hidden" name="year[]" value="{{date('Y')+543}}">
+                  <input type="hidden" name="center_money[]" value="{{$value['center_money']}}">--}}
+                  @if($value['status'] == "0")
+                    <td align="center"><span class="badge badge-pill badge-warning">ฝ่าย/เขต อนุมัติแล้ว</span></td>
+                  @elseif($value['status'] == "1")
+                    <td align="center"><span class="badge badge-pill badge-success">งบประมาณอนุมัติแล้ว</span></td>
+                  @elseif($value['status'] == 5)
+                    <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
+                  @elseif($value['status'] == "4")
+                    <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
+                  @elseif($value['status'] == "3")
+                    <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
+                  @endif
+                </tr>
+                @endforeach
               @endforeach
             </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="4" align="right"><b>Sum</b></td>
-                <td align="right"><b>{{ number_format($sum,2) }}</b></td>
-                @if(Auth::user()->type == 4 || Auth::user()->type == 1)
-                  <td>Select All <input type="checkbox" id="all1" onclick='selectAll1()'></td>
-                @endif
-                @if(Auth::user()->type == 5 || Auth::user()->type == 1)
-                  <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
-                @endif
-                <td></td>
-              </tr>
-            </tfoot>
+            <tr>
+              <td colspan="6" align="right"><b>Sum</b></td>
+              <td align="right"><b>{{ number_format($sum,2) }}</b></td>
+              @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                <td>Select All <input type="checkbox" id="all1" onclick='selectAll1()'></td>
+              @endif
+              @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
+              @endif
+              <td></td>
+            </tr>
           </table>
           @endif
           @if((Auth::user()->type == 5 || Auth::user()->type == 4 || Auth::user()->type == 1) && !empty($views))
@@ -205,6 +203,8 @@
   <script type="text/javascript">
       $('.myTable').DataTable({
         select:true,
+        scrollX:true,
+        order:[[ 2, "asc" ]]
       });
       function selectAll1() {
         // console.log($('#all1').is(':checked'));

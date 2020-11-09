@@ -67,7 +67,7 @@
               @csrf
               <div class="card-body">
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">วันที่</label>
+                  <label class="col-md-2 col-form-label">วันที่ <font color="red">*</font></label>
                   <div class="form-group col-md-4">
                     <div class="input-group">
                       <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date" autocomplete="off"/>
@@ -83,7 +83,7 @@
                       @enderror
                     </div>
                   </div>
-                  <label class="col-md-2 col-form-label">ถึง</label>
+                  <label class="col-md-2 col-form-label">ถึง <font color="red">*</font></label>
                     <div class="form-group col-md-4">
                       <div class="input-group">
                         <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker" autocomplete="off"/>
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">Event Name</label>
+                  <label class="col-md-2 col-form-label">Event Name <font color="red">*</font></label>
                   <div class="form-group col-md-4">
                     <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name" autocomplete="off">
                     @error('event_name')
@@ -169,7 +169,7 @@
         </div>
          <div class="modal-body">
              <div class="form-group row">
-               <label class="col-md-2 col-form-label">วันที่</label>
+               <label class="col-md-2 col-form-label">วันที่ <font color="red">*</font></label>
                <div class="form-group col-md-4">
                  <div class="input-group">
                    <input type='hidden' name="id" value="{{ $list->id }}" />
@@ -186,7 +186,7 @@
                    @enderror
                  </div>
                </div>
-               <label class="col-md-2 col-form-label">ถึง</label>
+               <label class="col-md-2 col-form-label">ถึง <font color="red">*</font></label>
                  <div class="form-group col-md-4">
                    <div class="input-group">
                      <input class="datepicker form-control @error('end_day') is-invalid @enderror" name="end_day" type='text' data-provide="datepicker" value="{{ date("m/d/Y", strtotime($list->end_date)) }}" autocomplete="off"/>
@@ -204,7 +204,7 @@
                  </div>
              </div>
              <div class="form-group row">
-               <label class="col-md-2 col-form-label">Event Name</label>
+               <label class="col-md-2 col-form-label">Event Name <font color="red">*</font></label>
                <div class="form-group col-md-4">
                  <input class="form-control @error('new_event') is-invalid @enderror" type="text" name="new_event" value="{{ $list->event_name }}" autocomplete="off">
                  @error('event_name')

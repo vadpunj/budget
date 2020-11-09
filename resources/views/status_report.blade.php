@@ -48,36 +48,24 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
+          @if(Auth::user()->type == 5)
           <form action="{{ route('post_status') }}" method="post">
             @csrf
           <div class="form-group row">
-            <label class="col-md-1 col-form-label" for="date-input">ปี : </label>
-            <div class="col-md-2">
-                <select class="form-control" name="year">
-                  @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
-                  <option value="{{ $i }}" @if($i == $year) selected @else '' @endif>{{ $i }}</option>
-                  @endfor
-                </select>
+            <label class="col-md-2 col-form-label" for="date-input">ชื่อฝ่าย(ย่อ) : <font color="red">*</font></label>
+              <div class="col-md-3">
+                <input class="form-control"  type="text" name="cost_title">
+
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-            <label class="col-md-2 col-form-label" for="date-input">ศูนย์ต้นทุน : </label>
-            <div class="col-md-2">
-                <select class="form-control selectpicker" data-live-search="true" name="center_money">
-                  @if($status)
-                    @foreach($center as $data_center)
-                    <option value="{{ $data_center->center_money }}" @if($first == $data_center->center_money) selected @else '' @endif>{{ $data_center->center_money }}</option>
-                    @endforeach
-                  @else
-                    <option value="{{ 0 }}" selected >{{ 'ไม่มีข้อมูล' }}</option>
-                  @endif
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
+          </form>
+          @endif
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
                 <th>ปีงบประมาณ</th>
+                <th>ฝ่าย</th>
                 <th>ศูนย์ต้นทุน</th>
                 <th>งบประมาณ</th>
                 <th>ตั้งงบ</th>
@@ -86,35 +74,38 @@
               </tr>
             </thead>
             <tbody>
-              @if($status != NULL)
-              @foreach($status as $key => $value)
-              <tr>
-                <td align="center">{{ $value["stat_year"] }}</td>
-                <td align="center">{{ $value["center_money"] }}</td>
-                <td align="right">{{ number_format($value["budget"],2) }}</td>
-                @if($value["status"] == NULL)
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center">{{ '-' }}</td>
-                  <td align="center">{{ '-' }}</td>
-                @elseif($value["status"] == "3")
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center">{{ 'วง.ขอแก้ไขงบ' }}</td>
-                  <td align="center">{{ '-' }}</td>
-                @elseif($value["status"] == "1")
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                @elseif($value["status"] == "4")
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center">{{ 'ปรับแก้งบประมาณ' }}</td>
-                  <td align="center">{{ '-' }}</td>
-                @elseif($value["status"] == "0")
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center">{{ '-' }}</td>
-                @endif
-              </tr>
-              @endforeach
+              @if(isset($status))
+                @foreach($status as $key => $arr_value)
+                  @foreach($arr_value as $key2 => $value)
+                  <tr>
+                    <td align="center">{{ $value["stat_year"] }}</td>
+                    <td align="center">{{ $value["cost_title"] }}</td>
+                    <td align="center">{{ $value["center_money"] }}</td>
+                    <td align="right">{{ number_format($value["budget"],2) }}</td>
+                    @if($value["status"] == "5")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center">{{ '-' }}</td>
+                      <td align="center">{{ '-' }}</td>
+                    @elseif($value["status"] == "3")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center">{{ 'วง.ขอแก้ไขงบ' }}</td>
+                      <td align="center">{{ '-' }}</td>
+                    @elseif($value["status"] == "1")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                    @elseif($value["status"] == "4")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center">{{ 'ปรับแก้งบประมาณ' }}</td>
+                      <td align="center">{{ '-' }}</td>
+                    @elseif($value["status"] == "0")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center">{{ '-' }}</td>
+                    @endif
+                  </tr>
+                  @endforeach
+                @endforeach
               @endif
             </tbody>
           </table>

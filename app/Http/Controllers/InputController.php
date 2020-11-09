@@ -27,22 +27,40 @@ class InputController extends Controller
     public function get_source()
     {
       $data = Information::orderBy('id','DESC')->get();
-      $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('stat_year',date('Y')+543)->groupBy('status')->get();
-      // dd($group_status);
-      $stat= array(''=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+      if(Auth::user()->type == 4){
+      $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
+      // dd($center->count());
+      for($i=0 ;$i< $center->count() ; $i++){
+        $last = Func::get_last_version(date('Y')+543,$center[$i]->center_money);
+        $group_status[] = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('center_money',$center[$i]->center_money)->where('fund_center',Auth::user()->fund_center)->where('version',$last)->where('stat_year',date('Y')+543)->groupBy('status')->get();
 
-      foreach ($group_status as $key) {
-        $stat[$key->status] = $key->budget;
       }
+      // dd($group_status);
+      $stat= array('5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+
+      foreach ($group_status as $key => $arr_val) {
+        foreach($arr_val as $key2 => $val){
+          // dd($val);
+          $stat[$val->status] += $val->budget;
+        }
+      }
+// dd($stat);
+        return view('dashboard',['stat'=>$stat ,'data' => $data]);
+      }
+
 // dd(count($stat));
       if(Auth::user()->type == 2 ||Auth::user()->type == 3){
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
-        $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
-        $stat= array(''=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+        $last_version = Func::get_last_version(date('Y')+543,Auth::user()->center_money);
+        // dd($last_version);
+        $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('version',$last_version)->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
+        $stat= array('5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+        // dd($group_status);
 
         foreach ($group_status as $key) {
           $stat[$key->status] = $key->budget;
         }
+
       // dd($center);
       if($center->count()){
         // dd(9999);
@@ -66,8 +84,9 @@ class InputController extends Controller
       return view('dashboard',['stat'=>$stat ,'data' => $data,'status' => $get_status,'year' => date('Y')+543,'center' => $center,'first'=> $firstcen]);
 
     }
-      return view('dashboard',['stat'=>$stat ,'data' => $data]);
 // dd($status);
+    return view('dashboard',['data' => $data]);
+
       // return view('status_report',['status' => $get_status,'year' => date('Y')+543,'center' => $center,'first'=> $firstcen]);
     }
 
@@ -174,7 +193,7 @@ class InputController extends Controller
 
     public function get_calendar()
     {
-      $events = Event::where('user_id',Auth::user()->emp_id)->get();
+      $events = Event::where('user_id',Auth::user()->emp_id)->orwhere('role',5)->get();
       $event_list = [];
       foreach($events as $key => $event){
         $event_list[] = Calendar::event(
@@ -214,6 +233,7 @@ class InputController extends Controller
       $event->start_date = $start_date;
       $event->end_date = $end_date;
       $event->user_id = Auth::user()->emp_id;
+      $event->role = Auth::user()->type;
       $event->save();
 
       if($event){
@@ -241,6 +261,7 @@ class InputController extends Controller
       $update->start_date = $start_day;
       $update->end_date = $end_day;
       $update->user_id = Auth::user()->emp_id;
+      $update->role = Auth::user()->type;
       $update->update();
 
       if($update){

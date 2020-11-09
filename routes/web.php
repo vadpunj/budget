@@ -41,6 +41,12 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get( '/open/{filename}', 'InputController@open');
   Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->name('get_view_estimate');
   Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
+  Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
+  Route::post('/master', 'EstimateController@post_importfile')->name('post_import_master');
+  Route::get('/add/master', 'EstimateController@get_master')->name('add_master');
+  Route::post('/add/master', 'EstimateController@post_master')->name('post_add_master');
+  Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
+  Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');
@@ -62,20 +68,21 @@ Route::group(['middleware' => ['auth']], function () {
   Route::group(['prefix' => 'estimate'], function(){
     Route::get('/add', 'EstimateController@get_add')->middleware('UserAuth')->name('add_est');
     Route::post('/add', 'EstimateController@post_add')->middleware('UserAuth')->name('insert_est');
-    Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
-    Route::post('/master', 'EstimateController@post_importfile');
-    Route::get('/add/master', 'EstimateController@get_master')->middleware('UserAuth')->name('add_master');
-    Route::post('/add/master', 'EstimateController@post_master')->middleware('UserAuth')->name('post_add_master');
     // Route::get('/edit/master', 'EstimateController@get_edit_master')->name('edit_master');
-    Route::post('/edit/master', 'EstimateController@post_edit_master')->middleware('UserAuth')->name('post_edit_master');
-    Route::post('/delete/master', 'EstimateController@post_delete_master')->middleware('UserAuth')->name('post_delete_master');
+    Route::post('/edit/master', 'EstimateController@post_edit_master')->name('post_edit_master');
+    Route::post('/delete/master', 'EstimateController@post_delete_master')->name('post_delete_master');
     Route::get('/import/estimate', 'EstimateController@get_estimate')->middleware('UserAuth')->name('import_estimate');
     Route::post('/import/estimate', 'EstimateController@post_estimate')->middleware('UserAuth');
     Route::post('/edit/account', 'EstimateController@post_edit_account')->name('post_edit_account');
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
-    Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
-    Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
     Route::post('/print/view', 'EstimateController@print_all')->name('print_view');
+  });
+  Route::group(['prefix' => 'report'], function(){
+    Route::get('/approve', 'EstimateController@get_approve')->name('get_approve');
+    Route::post('/approve', 'EstimateController@post_report_apv')->name('post_report_apv');
+    Route::get('/compare', 'EstimateController@get_compare')->name('get_compare');
+    Route::post('/compare', 'EstimateController@post_compare')->name('post_compare');
+    Route::post('/print/compare', 'EstimateController@print_compare')->name('print_compare');
   });
   Route::get('/event', 'InputController@get_calendar')->name('event');
   Route::get('/event/manage', 'InputController@get_manage')->name('manage');

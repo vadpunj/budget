@@ -35,6 +35,7 @@
     </ol>
     <!-- end breadcrumb -->
   <div class="container-fluid">
+    @if(Auth::user()->type == 1 || Auth::user()->type == 5)
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
@@ -51,7 +52,7 @@
               <form action="{{ route('post_add_master') }}" method="post">
                 @csrf
                 <div class="form-group row">
-                  <label class="col-md-2 col-form-label">รายการภาระผูกพัน</label>
+                  <label class="col-md-2 col-form-label">รายการภาระผูกพัน <font color="red">*</font></label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
                       <input class="form-control @error('account') is-invalid @enderror" type="text" name="account">
@@ -62,7 +63,7 @@
                       @enderror
                     </div>
                   </div>
-                  <label class="col-md-2 col-form-label">ชื่อ</label>
+                  <label class="col-md-2 col-form-label">ชื่อ <font color="red">*</font></label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
                       <input class="form-control @error('name') is-invalid @enderror" type="text" name="name">
@@ -85,6 +86,7 @@
        </div>
      </div>
    </div>
+   @endif
    <table class="table table-responsive-sm table-bordered" id="myTable">
      <thead>
        <th>รายการภาระผูกพัน</th>
@@ -131,7 +133,7 @@
         <div class="modal-body">
           <div class="row">
             <div class="form-group col-sm-6">
-              <label for="city">รายการภาระผูกพัน</label>
+              <label for="city">รายการภาระผูกพัน <font color="red">*</font></label>
               <input class="form-control @error('account') is-invalid @enderror" type="text" name="account" value="{{$row->account}}">
               @error('account')
                 <span class="invalid-feedback" role="alert">
@@ -140,7 +142,7 @@
               @enderror
             </div>
             <div class="form-group col-sm-6">
-              <label for="postal-code">ชื่อ</label>
+              <label for="postal-code">ชื่อ <font color="red">*</font></label>
               <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{$row->name}}">
               <input class="form-control" type="hidden" name="id" value="{{$row->id}}">
               @error('name')

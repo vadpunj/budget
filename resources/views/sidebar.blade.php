@@ -30,47 +30,34 @@
           </li>
         </ul>
       </li>
-      {{--<li class="nav-item nav-dropdown {{ (request()->is('budget/*')) ? 'show open' : '' }}">
-        <a class="nav-link nav-dropdown-toggle" href="#">
-           งบประมาณลงทุนประจำปี</a>
-        <ul class="nav-dropdown-items">
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('budget/add')) ? 'active' : '' }}" href="{{ route('add_bud') }}">
-              <i class="nav-icon fa fa-plus"></i> Add Budget</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('budget/import')) ? 'active' : '' }}" href="{{ route('import_bud') }}">
-              <i class="nav-icon icon-doc"></i> import file</a>
-          </li>
-        </ul>
-      </li>--}}
+      @if(Auth::user()->type ==1)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('import/struc')) ? 'active' : '' }}" href="{{ route('import_struc') }}">
+          <i class="nav-icon icon-doc"></i> อัพโหลดข้อมูลโครงสร้าง</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('master')) ? 'active' : '' }}" href="{{ route('import_master') }}">
+          <i class="nav-icon icon-doc"></i> อัพโหลดข้อมูลค่าใช้จ่าย</a>
+      </li>
+      @endif
+      @if(Auth::user()->type != 4)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('add/master')) ? 'active' : '' }}" href="{{ route('add_master') }}">
+          <i class="nav-icon fa fa-plus"></i> ข้อมูลค่าใช้จ่าย</a>
+      </li>
+      @endif
       @if(Auth::user()->type == 2 || Auth::user()->type == 3 || Auth::user()->type == 1)
       <li class="nav-item nav-dropdown {{ (request()->is('estimate/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
            งบประมาณทำการประจำปี</a>
         <ul class="nav-dropdown-items">
-          @if(Auth::user()->type ==1)
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/import/struc')) ? 'active' : '' }}" href="{{ route('import_struc') }}">
-              <i class="nav-icon icon-doc"></i> อัพโหลดข้อมูลโครงสร้าง</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/master')) ? 'active' : '' }}" href="{{ route('import_master') }}">
-              <i class="nav-icon icon-doc"></i> อัพโหลดข้อมูลค่าใช้จ่าย</a>
-          </li>
-          @endif
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/add/master')) ? 'active' : '' }}" href="{{ route('add_master') }}">
-              <i class="nav-icon fa fa-plus"></i> เพิ่มข้อมูลค่าใช้จ่าย</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
+            <a class="nav-link {{ (request()->is('estimate/add')) ? 'active' : '' }}" href="{{ route('add_est') }}">
               <i class="nav-icon fa fa-plus"></i> ตั้งงบประมาณทำการ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ (request()->is('estimate/add')) ? 'active' : '' }}" href="{{ route('add_est') }}">
-              <i class="nav-icon icon-pencil"></i> แก้ไขงบประมาณทำการ</a>
+            <a class="nav-link {{ (request()->is('estimate/import/estimate')) ? 'active' : '' }}" href="{{ route('import_estimate') }}">
+              <i class="nav-icon icon-doc"></i> อัพโหลดงบประมาณทำการ</a>
           </li>
           {{--<li class="nav-item">
             <a class="nav-link {{ (request()->is('estimate/edit')) ? 'active' : '' }}" href="{{ route('export') }}">
@@ -105,6 +92,22 @@
           <i class="nav-icon fa fa-eye"></i> Version งบประมาณ</a>
       </li>
       @endif
+      <li class="nav-item nav-dropdown {{ (request()->is('report/*')) ? 'show open' : '' }}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+          <i class="nav-icon fa fa-file"></i> รายงาน</a>
+        <ul class="nav-dropdown-items">
+          @if(Auth::user()->type != 4)
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('report/compare')) ? 'active' : '' }}" href="{{ route('get_compare') }}">
+              <i class="nav-icon fa fa-file"></i> เปรียบเทียบงบประมาณ</a>
+          </li>
+          @endif
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('report/approve')) ? 'active' : '' }}" href="{{ route('get_approve') }}">
+              <i class="nav-icon fa fa-file"></i> สถานะอนุมัติงบประมาณ</a>
+          </li>
+        </ul>
+      </li>
       @if(Auth::user()->type == 5 || Auth::user()->type == 1)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">

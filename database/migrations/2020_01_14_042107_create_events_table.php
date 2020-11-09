@@ -19,6 +19,7 @@ class CreateEventsTable extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('user_id');
+            $table->integer('role');
             $table->timestamps();
             $table->softDeletes();
         });

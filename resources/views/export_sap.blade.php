@@ -63,7 +63,7 @@
           {{ csrf_field() }}
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-4 col-form-label" for="email-input">ปีบัญชี (พ.ศ.)</label>
+              <label class="col-md-4 col-form-label" for="email-input">ปีบัญชี (พ.ศ.) <font color="red">*</font></label>
               <div class="col-md-4">
                 <input class="form-control" type="number" name="stat_year" value="{{ date('Y')+543 }}">
               </div>
