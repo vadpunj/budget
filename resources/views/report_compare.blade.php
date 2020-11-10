@@ -54,7 +54,7 @@
                     @enderror
                   </div>
                 </div>
-                <label class="col-md-2 col-form-label">ศูนยต้นทุน <font color="red">*</font></label>
+                <label class="col-md-2 col-form-label">ศูนย์ต้นทุน <font color="red">*</font></label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
                     <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money">
@@ -109,8 +109,8 @@
     <table class="table table-responsive-sm table-bordered">
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
-        <th>ปีงบประมาณ {{ date("Y")+542 }}</th>
-        <th>ปีงบประมาณ {{ date("Y")+543 }}</th>
+        <th>ปีงบประมาณ {{ $yy-1 }}</th>
+        <th>ปีงบประมาณ {{ $yy }}</th>
       </tr>
       @if(isset($data))
         @php
@@ -124,7 +124,7 @@
               @php
                 $sum1 += $data_old[$key_acc][$yy-1];
               @endphp
-              <td align="right">{{ number_format($data_old[$key_acc][date("Y")+542],2) }}</td>
+              <td align="right">{{ number_format($data_old[$key_acc][$yy-1],2) }}</td>
             @else
               <td align="center">{{ '-' }}</td>
             @endif
@@ -132,7 +132,7 @@
               @php
                 $sum2 += $data[$key_acc][$yy];
               @endphp
-              <td align="right">{{ number_format($data[$key_acc][date("Y")+543],2) }}</td>
+              <td align="right">{{ number_format($data[$key_acc][$yy],2) }}</td>
             @else
               <td align="center">{{ '-' }}</td>
             @endif

@@ -42,11 +42,11 @@ class EstimateController extends Controller
 // dd($check_button);
       if(count($check_button) == 1){
         $btn = '';
-        if($check_button[0]->status == 0 || $check_button[0]->status == 1){
+        if($check_button[0]->status == 0 || $check_button[0]->status == 1 || $check_button[0]->status == 3){
           $btn = 'disabled';
         }
       }else{
-        $btn = '';
+        $btn = 'disabled';
       }
 
       $test = DB::table('masters')
@@ -398,7 +398,7 @@ class EstimateController extends Controller
     public function post_approve(Request $request)
     {
 // เขต/ฝ่าย Approve
-
+// dd($request->all());
       if(Auth::user()->type == 4 || Auth::user()->type == 1){
         for($i=0 ;$i<count($request->approve1) ;$i++){
           $arr = explode("-",$request->approve1[$i]);
@@ -455,16 +455,6 @@ class EstimateController extends Controller
             $approve->version = $last_ver;
             $approve->center_money = $arr[1];
             $approve->save();
-//
-            $export = new Export_estimate;
-            $export->version = 1;
-            $export->year = date('Y')+543;
-            $export->fund_center = substr_replace($arr[1],"00",5);
-            $export->center_money = $arr[1];
-            $export->account = $arr[0];
-            $export->budget = $arr[1];
-            $export->user_id = Auth::user()->emp_id;
-            $export->save();
             $msg = 'อนุมัติสำเร็จ';
 
           }elseif($request->btn == "false"){
@@ -475,10 +465,6 @@ class EstimateController extends Controller
               ->where('center_money',$arr[1])
               ->update(['status' => 3,'approve_by2' => NULL]);
 
-                Export_estimate::where('year',date('Y')+543)
-                ->where('account', $arr[0])
-                ->where('center_money',$arr[1])
-                ->delete();
                 $msg = 'ยกเลิกการอนุมัติแล้ว';
             }
           }
@@ -587,14 +573,15 @@ class EstimateController extends Controller
     public function export_sap(Request $request)
     {
       // $data_array[] = 0;
-      $sap = Export_estimate::select('year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
-        ->where('year', $request->stat_year)
-        ->groupBy('year','version','fund_center','account')
+      $sap = Estimate::select('stat_year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
+        ->where('stat_year', $request->stat_year)
+        ->where('status',1)
+        ->groupBy('stat_year','version','fund_center','account')
         ->get()->toArray();
         // dd($sap);
         foreach ($sap as $key => $value) {
               $data[] = array(
-                'year' => $value['year']-543,
+                'year' => $value['stat_year']-543,
                 'from' => 1,
                 'to' => 1,
                 'version' => $value['version'],
@@ -840,7 +827,7 @@ class EstimateController extends Controller
 
     public function get_approve()
     {
-
+// dd(343);
       if(Auth::user()->type == 1 || Auth::user()->type == 5 || Auth::user()->type == 4){
         $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
       }else{
@@ -863,17 +850,23 @@ class EstimateController extends Controller
         $view = NULL;
       }
 
-      return view('report_apv',['views' => $view ,'yy' => date('Y')+543, 'fundcenter' => Auth::user()->fund_center]);
+      if(substr(Auth::user()->center_money,5) == "00" && strpos(Func::get_cost_title(Auth::user()->center_money),'ฝ') == 0){
+        $cost = mb_substr(Func::get_cost_title(Auth::user()->center_money),1,3,'UTF-8');
+        // dd(123);
+      }else{
+        $cost = Func::get_cost_title(Auth::user()->center_money);
+      }
+      return view('report_apv',['views' => $view ,'yy' => date('Y')+543, 'fundcenter' => Auth::user()->fund_center,'cost' => $cost]);
 
     }
     public function post_report_apv(Request $request)
     {
-      // dd($request->stat_year);
+      // dd($request->cost_title);
       if(Auth::user()->type == 1 || Auth::user()->type == 5){
         $this->validate($request, [
           'cost_title'  => 'required'
         ]);
-          $center_money = Estimate::select('center_money')->where('stat_year',$request->stat_year)->where('center_money','like','%'.$request->center_money.'%')->where('fund_center','like','%'.$request->fund_center.'%')->groupBy('center_money')->get();
+          $center_money = Estimate::select('center_money')->where('stat_year',$request->stat_year)->where('center_money','like','%'.$request->center_money.'%')->where('cost_title','like','%'.$request->cost_title.'%')->groupBy('center_money')->get();
 
       }else{
         if(substr(Auth::user()->center_money,5) == "00" || Auth::user()->type == "4"){
@@ -899,7 +892,7 @@ class EstimateController extends Controller
         $view = NULL;
       }
 
-      return view('report_apv',['views' => $view ,'yy' => $request->stat_year, 'fundcenter' => $request->center_money]);
+      return view('report_apv',['views' => $view ,'yy' => $request->stat_year, 'fundcenter' => $request->center_money,'cost' =>$request->cost_title]);
 
     }
 

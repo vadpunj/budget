@@ -204,6 +204,7 @@
       $('.myTable').DataTable({
         select:true,
         scrollX:true,
+        "paging":false,
         order:[[ 2, "asc" ]]
       });
       function selectAll1() {

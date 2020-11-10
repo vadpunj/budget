@@ -95,8 +95,8 @@
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                     @elseif($value["status"] == "4")
-                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                       <td align="center">{{ 'ปรับแก้งบประมาณ' }}</td>
+                      <td align="center">{{ '-' }}</td>
                       <td align="center">{{ '-' }}</td>
                     @elseif($value["status"] == "0")
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>

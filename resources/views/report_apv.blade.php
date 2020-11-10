@@ -90,7 +90,7 @@
                     @csrf
                     @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "5" || Auth::user()->type == "4")
                       <input type="hidden" name="center_money" value="{{ $fundcenter }}">
-                      <input type="hidden" name="cost_title" value="{{ Func::get_cost_title(Auth::user()->center_money) }}">
+                      <input type="hidden" name="cost_title" value="{{ $cost }}">
                     @endif
                     <input type="hidden" name="year" value="{{ $yy }}">
                     &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
