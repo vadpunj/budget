@@ -46,6 +46,10 @@
         padding: 10px !important;
         box-shadow: 5px 10px 18px #333333 !important;
       }
+        .word {
+          color: #fff !important;
+        }
+      </style>
     </style>
 
   </head>
@@ -63,8 +67,9 @@
                           {{ session()->get('message') }}
                       </div>
                   @endif
-                  <h1>Login <span style="font-size:23px;">ระบบงบประมาณ</span></h1>
-                  <p class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</p>
+                  <div class="card-header word">
+                  <center><span style="font-size:23px;">ระบบจัดทำงบประมาณทำการประจำปี</span></center></div>
+                  <center><h4 style="padding-bottom: 20px;margin-top: 5px;">Login เข้าสู่ระบบ <span style="font-size:14px;" class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</span></h4></center>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
@@ -92,8 +97,8 @@
                     @enderror
                   </div>
                   <div class="row">
-                    <div class="col-6">
-                      <button class="btn btn-primary px-4" type="submit">Login</button>
+                    <div class="col-12">
+                      <center><button class="btn btn-primary px-4" type="submit">Login</button></center>
                     </div>
                   </div>
                 </div>
