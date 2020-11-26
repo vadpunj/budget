@@ -172,7 +172,7 @@
             @if(count($stat) > 0)
             <tr>
               <td align="center">{{ date('Y')+543 }}</td>
-              <td align="right">{{ number_format($stat["5"],) }}</td>
+              <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
               <td align="right">{{ number_format($stat["1"],2) }}</td>
               <td align="right">{{ number_format($stat["4"],2) }}</td>
