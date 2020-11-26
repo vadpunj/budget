@@ -174,13 +174,7 @@ class UserController extends Controller
       // dd($request->emp_id);
       $this->validate($request, [
         'name' => 'required|min:4',
-        'emp_id' => 'required|numeric',
-        'field' => 'required',
-        'office' => 'required',
-        'part' => 'required',
-        'type' => 'required',
-        'center_money' => 'required',
-        'tel' => 'required|numeric'
+        'emp_id' => 'required|numeric'
       ]);
 
       $update = User::find($request->id);
@@ -195,9 +189,9 @@ class UserController extends Controller
       $update->update();
 
       if($update){
-        return back()->with('success', 'Update Successful');
+        return back()->with('success', 'บันทึกข้อมูลแล้ว');
       }
-      return back()->with('success', 'Update Successful');
+      // return back()->with('success', 'Update Successful');
     }
 
     public function delete_user(Request $request)
@@ -205,7 +199,7 @@ class UserController extends Controller
       $delete = User::find($request->id);
       $delete->delete();
       if($delete){
-        return back()->with('success', 'Delete Successful');
+        return back()->with('success', 'ลบข้อมูลแล้ว');
       }
       // return back()->with('success', 'Delete Successful');
     }
