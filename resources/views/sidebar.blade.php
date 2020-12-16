@@ -113,6 +113,10 @@
         <a class="nav-link {{ (request()->is('/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">
           <i class="nav-icon fa fa-download"></i> Export File To SAP</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/shutdown')) ? 'active' : '' }}" href="{{ route('shutdown') }}">
+          <i class="nav-icon fa fa-power-off"></i> Shut down</a>
+
       @endif
       @if(Auth::user()->type ==1)
       <li class="nav-item">

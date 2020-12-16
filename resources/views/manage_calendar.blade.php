@@ -70,7 +70,7 @@
                   <label class="col-md-2 col-form-label">วันที่ <font color="red">*</font></label>
                   <div class="form-group col-md-4">
                     <div class="input-group">
-                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date" autocomplete="off"/>
+                      <input class="datepicker form-control @error('start_date') is-invalid @enderror" type='text' data-provide="datepicker" name="start_date" autocomplete="off" value="{{ old('start_date') }}"/>
                       <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
                           <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -86,7 +86,7 @@
                   <label class="col-md-2 col-form-label">ถึง <font color="red">*</font></label>
                     <div class="form-group col-md-4">
                       <div class="input-group">
-                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker" autocomplete="off"/>
+                        <input class="datepicker form-control @error('end_date') is-invalid @enderror" name="end_date" type='text' data-provide="datepicker" autocomplete="off" value="{{ old('end_date') }}"/>
                         <div class="input-group-append">
                           <button type="button" class="btn btn-outline-secondary docs-datepicker-trigger " disabled="">
                             <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -103,7 +103,7 @@
                 <div class="form-group row">
                   <label class="col-md-2 col-form-label">Event Name <font color="red">*</font></label>
                   <div class="form-group col-md-4">
-                    <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name" autocomplete="off">
+                    <input class="form-control @error('event_name') is-invalid @enderror" type="text" name="event_name" autocomplete="off" value="{{ old('event_name') }}">
                     @error('event_name')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Role;
 use App\Structure;
+use App\Shutdown;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -55,6 +56,8 @@ class UserController extends Controller
          'emp_id'=>'required|numeric',
          'password'=>'required'
       ]);
+      $shut = Func::rang_shutdown(date('Y-m-d'));
+
       // ตรวจสอบว่ามีสิทธิ์เข้ามาใช้งานหรือไม่ เช็คจากตารางuserของเราเอง
       $user = User::where('emp_id',$request->emp_id)->first();
       if(!empty($user)){
@@ -106,8 +109,21 @@ class UserController extends Controller
                 'updated_at' => date('Y-m-d H:i:s')]);
           }
 
+// dd($shut);
           \Auth::login($user);
-          return redirect()->route('dashboard'); // รหัส login ผ่าน
+
+          if((Auth::user()->type == 2 || Auth::user()->type == 3 || Auth::user()->type == 4) && $shut == false){
+            // dd(24343);
+            Auth::logout();
+            return redirect()->back()->with('message', 'อยู่ในช่วงปิดระบบ ไม่สามารถเข้าใช้งานได้');
+            // dd(24242);
+          }else{
+            return redirect()->route('dashboard'); // รหัส login ผ่าน
+
+          }
+          // if((Auth::user()->type <> "5" || Auth::user()->type <> "1") && $shut == true){
+          //   return redirect()->route('close');
+          // }
         }else{
           return redirect()->back()->with('message', 'รหัสผ่านไม่ถูกต้อง'); //รหัสผิด
         }
@@ -202,5 +218,23 @@ class UserController extends Controller
         return back()->with('success', 'ลบข้อมูลแล้ว');
       }
       // return back()->with('success', 'Delete Successful');
+    }
+    public function shutdown()
+    {
+      return view('shutdown');
+    }
+    public function post_shutdown(Request $request)
+    {
+      $this->validate($request, [
+        'start_date' => 'required',
+        'end_date' => 'required'
+      ]);
+// dd($request->all());
+      $insert = new Shutdown;
+      $insert->start_date = date('Y-m-d',strtotime($request->start_date));
+      $insert->end_date = date('Y-m-d',strtotime($request->end_date));
+      $insert->save();
+
+      return back()->with('success', 'เพิ่มข้อมูลแล้ว');
     }
 }

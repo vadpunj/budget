@@ -57,11 +57,7 @@
                   <div class="form-group col-sm-4">
                     <div class="input-group">
                       <input class="form-control @error('stat_year') is-invalid @enderror" type="text" name="stat_year" value="{{ date('Y')+543 }}" readonly>
-                      @error('stat_year')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                      @enderror
+
                     </div>
                   </div>
                   <label class="col-md-2 col-form-label">สายงาน</label>
@@ -98,8 +94,7 @@
                 </div>
           </div>
          </div>
-           <div style="overflow-x: scroll;">
-           <table class="table table-responsive-sm table-bordered" style="width: 100%" id="myTable">
+           <table class="table table-responsive-sm table-bordered" id="myTable" style="width: 150%">
              <thead>
                <tr>
                  <th>รหัสบัญชี</th>
@@ -109,6 +104,7 @@
                  <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
                  <th>{{'งบประมาณขอตั้งปี '.(date("Y")+543)}}</th>
                  <th>{{'% ผลรวมที่เพิ่มขึ้นจากปี '.(date("Y",strtotime("-1 year"))+543)}}</th>
+                 <th>คำอธิบาย</th>
                </tr>
              </thead>
              <tbody>
@@ -149,6 +145,9 @@
                   @else
                     <td align="center">{{ '-' }}</td>
                   @endif
+                  <td align="center">
+                    <input class="form-control" type="text" name="reason[{{$account}}]" value="{{ $reason[$key][$account] }}">
+                  </td>
                 </tr>
                 @endforeach
               @endforeach
@@ -175,16 +174,18 @@
                   <input class="form-control" type="text" name="budget[{{$id->account}}]">
                 </td>
                 <td align="center">{{ '-' }}</td>
+                <td align="center">
+                  <input class="form-control" type="text" name="reason[{{$id->account}}]">
+                </td>
               </tr>
               @endforeach
              </tbody>
            </table>
            <div class="form-group row">
              <div class="col-md-2 form-group">
-               <button class="btn btn-primary" type="submit" <?php echo $btn; ?>>Submit</button>
+               <button class="btn btn-primary" type="submit">Submit</button>
              </div>
            </div>
-         </div>
         </form>
        </div>
      </div>
@@ -207,6 +208,7 @@ $(document).ready(function() {
   $('#myTable').DataTable({
     "paging":   false,
     "ordering": false,
+    "autoWidth": false,
     scrollX:true
   });
 });

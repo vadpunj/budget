@@ -4,6 +4,7 @@ use App\Master;
 use App\Estimate;
 use App\Role;
 use App\Structure;
+use App\Shutdown;
 
 class Func{
   public static function get_date($value)
@@ -58,6 +59,22 @@ class Func{
     }else{
       return $name->CostCenterTitle;
     }
+  }
+  public static function get_name_costcenter($center_money)
+  {
+    $name = Structure::where('CostCenterID',$center_money)->first();
+    if($name == NULL){
+      return NULL;
+    }else{
+      return $name->CostCenterName;
+    }
+  }
+  public static function rang_shutdown($date)
+  {
+    $date = Shutdown::where('start_date','<=',$date)
+      ->where('end_date','>=',$date)->first();
+      // dd(is_null($date));
+    return is_null($date);
   }
 }
 

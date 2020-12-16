@@ -26,6 +26,7 @@ class CreateEstimatesTable extends Migration
           $table->string('created_by');
           $table->string('approve_by1')->nullable();
           $table->string('approve_by2')->nullable();
+          $table->string('reason')->nullable();
           $table->timestamps();
           $table->softDeletes();
         });

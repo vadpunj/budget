@@ -20,6 +20,6 @@ class ApproveAuth
       if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isApprove2())){
           return $next($request);
       }
-      return redirect('home');
+      return redirect('dashboard');
     }
 }

@@ -33,6 +33,7 @@ class EstimateController extends Controller
       $all_year1=[];
       $all_now=[];
       $status=[];
+      $reason=[];
 
       $check_button = Estimate::select('status')
         ->where('stat_year',date('Y')+543)
@@ -74,12 +75,12 @@ class EstimateController extends Controller
 
           if($last_ver != NULL){
             $list = DB::table('estimates')
-              ->select('stat_year','account','status', DB::raw('SUM(budget) as budget'))
+              ->select('stat_year','reason','account','status', DB::raw('SUM(budget) as budget'))
               ->where('stat_year',$i)
               ->whereNull('deleted_at')
               ->where('version', $last_ver)
               ->where('center_money',Auth::user()->center_money)
-              ->groupBy('stat_year','account','version','status')
+              ->groupBy('stat_year','reason','account','version','status')
               ->orderBy('status','DESC')
               ->get()->toArray();
               // dd($list);
@@ -93,6 +94,7 @@ class EstimateController extends Controller
                 }if($value->stat_year == date("Y")+543){
                   $now[$value->stat_year][$value->account] = $value->budget;
                   $status[$value->stat_year][$value->account] = $value->status;
+                  $reason[$value->stat_year][$value->account] = $value->reason;
                 }
               }
 
@@ -100,13 +102,14 @@ class EstimateController extends Controller
             $list = NULL;
           }
         }
-
-      return view('add_est',['test' => $test,'btn' => $btn,'status' => $status,'list' => $list,'year3' => $year3,'year2' => $year2,'year1' => $year1,'now' => $now,'status' => $status]);
+// dd($reason);
+      return view('add_est',['test' => $test,'btn' => $btn,'status' => $status,'list' => $list,'year3' => $year3,'year2' => $year2,'year1' => $year1,'now' => $now,'status' => $status,'reason' => $reason]);
     }
 
     public function post_add(Request $request)
     {
-      // dd($request->all());
+      // dd($request->reason['5X101103']);
+
       $this->validate($request,[
          'stat_year'=>'required|numeric',
          // 'name_reqs'=>'required',
@@ -128,6 +131,7 @@ class EstimateController extends Controller
           $insert->center_money = Auth::user()->center_money;
           $insert->fund_center = Auth::user()->fund_center;
           $insert->cost_title = Func::get_cost_title(Auth::user()->center_money);
+          $insert->reason = $request->reason[$key];
           $insert->created_by = Auth::user()->emp_id;
           $insert->save();
         }
@@ -398,81 +402,157 @@ class EstimateController extends Controller
     public function post_approve(Request $request)
     {
 // เขต/ฝ่าย Approve
-// dd($request->all());
-      if(Auth::user()->type == 4 || Auth::user()->type == 1){
-        for($i=0 ;$i<count($request->approve1) ;$i++){
-          $arr = explode("-",$request->approve1[$i]);
-          $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
-          if($request->btn == "true"){
-            $update = DB::table('estimates')
-              ->where('stat_year', date('Y')+543)
-              ->where('account', $arr[0])
-              ->where('version',$last_ver)
-              ->where('center_money',$arr[1])
-              ->update(['status' => 0,'approve_by1' => Auth::user()->emp_id]);
-
-            $approve = new Approve_log;
-            $approve->user_approve = Auth::user()->emp_id;
-            $approve->stat_year = date('Y')+543;
-            $approve->version = $last_ver;
-            $approve->center_money = $arr[1];
-            $approve->save();
-            $msg = 'อนุมัติสำเร็จ';
-
-          }elseif($request->btn == "false"){
-            // dd(121212);
-            $update = DB::table('estimates')
-              ->where('stat_year', date('Y')+543)
-              ->where('account', $arr[0])
-              ->where('version',$last_ver)
-              ->where('center_money',$arr[1])
-              ->update(['status' => 4,'approve_by1' => NULL]);
-            $msg = 'ยกเลิกการอนุมัติแล้ว';
-          }
-        }
-        if($update){
-          return back()->with('success', $msg);
-        }
-      }
-// วง Approve
-    if(Auth::user()->type == 5){
-      for($i=0 ;$i<count($request->approve2) ;$i++){
-        $arr = explode("-",$request->approve2[$i]);
-        // var_dump($arr);
-        $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
-          if($request->btn == "true"){
+// dd(Carbon::now());
+      if(Auth::user()->type == 5){
+        foreach($request->approve2 as $key => $val){
+          foreach ($val as $key2 => $value) {
+            $last_ver = Func::get_last_version(date('Y')+543,$key2);
             // dd($last_ver);
-            $update = DB::table('estimates')
-              ->where('stat_year', date('Y')+543)
-              ->where('account', $arr[0])
-              ->where('version',$last_ver)
-              ->where('center_money',$arr[1])
-              ->update(['status' => 1,'approve_by2' => Auth::user()->emp_id,'updated_at' => Carbon::now()]);
+            if($request->btn == "true"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account', $key)
+                ->where('version',$last_ver)
+                ->where('center_money',$key2)
+                ->update(['status' => 1 ,'budget'=> $request->new2[$key][$key2],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+                $approve = new Approve_log;
+                $approve->user_approve = Auth::user()->emp_id;
+                $approve->stat_year = date('Y')+543;
+                $approve->version = $last_ver;
+                $approve->center_money = $arr[1];
+                $approve->save();
+                $msg = 'อนุมัติสำเร็จ';
 
-            $approve = new Approve_log;
-            $approve->user_approve = Auth::user()->emp_id;
-            $approve->stat_year = date('Y')+543;
-            $approve->version = $last_ver;
-            $approve->center_money = $arr[1];
-            $approve->save();
-            $msg = 'อนุมัติสำเร็จ';
-
-          }elseif($request->btn == "false"){
-            $update = DB::table('estimates')
-              ->where('stat_year', date('Y')+543)
-              ->where('account', $arr[0])
-              ->where('version',$last_ver)
-              ->where('center_money',$arr[1])
-              ->update(['status' => 3,'approve_by2' => NULL]);
-
-                $msg = 'ยกเลิกการอนุมัติแล้ว';
+            }elseif($request->btn == "false"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account',$key)
+                ->where('version',$last_ver)
+                ->where('center_money',$key2)
+                ->update(['status' => 3,'approve_by1' => NULL]);
+                $msg = 'ยกเลิกอนุมัติสำเร็จ';
             }
           }
-          if($update){
-          return back()->with('success', $msg);
+        }
+      }
+      // dd($request->all());
+      if(Auth::user()->type == 4 || Auth::user()->type == 1){
+        foreach($request->approve1 as $key => $val){
+          foreach ($val as $key2 => $value) {
+            $last_ver = Func::get_last_version(date('Y')+543,$key2);
+            // dd($last_ver);
+            if($request->btn == "true"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account', $key)
+                ->where('version',$last_ver)
+                ->where('center_money',$key2)
+                ->update(['status' => 0 ,'budget'=> $request->new1[$key][$key2],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+                $approve = new Approve_log;
+                $approve->user_approve = Auth::user()->emp_id;
+                $approve->stat_year = date('Y')+543;
+                $approve->version = $last_ver;
+                $approve->center_money = $arr[1];
+                $approve->save();
+                $msg = 'อนุมัติสำเร็จ';
+            }elseif($request->btn == "false"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account',$key)
+                ->where('version',$last_ver)
+                ->where('center_money',$key2)
+                ->update(['status' => 4,'approve_by1' => NULL,'updated_at' => Carbon::now()]);
+                $msg = 'ยกเลิกอนุมัติสำเร็จ';
+
+            }
           }
         }
-  }
+      }
+      if($update){
+        return back()->with('success', $msg);
+      }
+
+    }
+
+
+//     public function post_approve(Request $request)
+//     {
+// // เขต/ฝ่าย Approve
+// dd($request->all());
+//       if(Auth::user()->type == 4 || Auth::user()->type == 1){
+//         for($i=0 ;$i<count($request->approve1) ;$i++){
+//           $arr = explode("-",$request->approve1[$i]);
+//           $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
+//           if($request->btn == "true"){
+//             $update = DB::table('estimates')
+//               ->where('stat_year', date('Y')+543)
+//               ->where('account', $arr[0])
+//               ->where('version',$last_ver)
+//               ->where('center_money',$arr[1])
+//               ->update(['status' => 0,'approve_by1' => Auth::user()->emp_id]);
+//
+//             $approve = new Approve_log;
+//             $approve->user_approve = Auth::user()->emp_id;
+//             $approve->stat_year = date('Y')+543;
+//             $approve->version = $last_ver;
+//             $approve->center_money = $arr[1];
+//             $approve->save();
+//             $msg = 'อนุมัติสำเร็จ';
+//
+//           }elseif($request->btn == "false"){
+//             // dd(121212);
+//             $update = DB::table('estimates')
+//               ->where('stat_year', date('Y')+543)
+//               ->where('account', $arr[0])
+//               ->where('version',$last_ver)
+//               ->where('center_money',$arr[1])
+//               ->update(['status' => 4,'approve_by1' => NULL]);
+//             $msg = 'ยกเลิกการอนุมัติแล้ว';
+//           }
+//         }
+//         if($update){
+//           return back()->with('success', $msg);
+//         }
+//       }
+// // วง Approve
+//     if(Auth::user()->type == 5){
+//       for($i=0 ;$i<count($request->approve2) ;$i++){
+//         $arr = explode("-",$request->approve2[$i]);
+//         // var_dump($arr);
+//         $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
+//           if($request->btn == "true"){
+//             // dd($last_ver);
+//             $update = DB::table('estimates')
+//               ->where('stat_year', date('Y')+543)
+//               ->where('account', $arr[0])
+//               ->where('version',$last_ver)
+//               ->where('center_money',$arr[1])
+//               ->update(['status' => 1,'approve_by2' => Auth::user()->emp_id,'updated_at' => Carbon::now()]);
+//
+//             $approve = new Approve_log;
+//             $approve->user_approve = Auth::user()->emp_id;
+//             $approve->stat_year = date('Y')+543;
+//             $approve->version = $last_ver;
+//             $approve->center_money = $arr[1];
+//             $approve->save();
+//             $msg = 'อนุมัติสำเร็จ';
+//
+//           }elseif($request->btn == "false"){
+//             $update = DB::table('estimates')
+//               ->where('stat_year', date('Y')+543)
+//               ->where('account', $arr[0])
+//               ->where('version',$last_ver)
+//               ->where('center_money',$arr[1])
+//               ->update(['status' => 3,'approve_by2' => NULL]);
+//
+//                 $msg = 'ยกเลิกการอนุมัติแล้ว';
+//             }
+//           }
+//           if($update){
+//           return back()->with('success', $msg);
+//           }
+//         }
+//   }
     public function get_struc()
     {
       $data = Structure::get();
@@ -589,6 +669,7 @@ class EstimateController extends Controller
                 'func.a' => 'z0',
                 'fund_center' => $value['fund_center'],
                 'cmmt' => $value['account'],
+                'name' => Func::get_account($value['account']),
                 'amount' => $value['budget']
               );
         }
@@ -757,7 +838,7 @@ class EstimateController extends Controller
 
     public function print_all(Request $request)
     {
-      // dd($request->all());
+      // dd(Auth::user()->type);
       if(Auth::user()->type == 1 || Auth::user()->type == 5){
         $center_money = Estimate::select('center_money')->where('stat_year',$request->year)->where('cost_title','like','%'.$request->cost_title.'%')->where('center_money','like','%'.$request->center_money.'%')->groupBy('center_money')->get();
       }else{
@@ -828,11 +909,8 @@ class EstimateController extends Controller
     public function get_approve()
     {
 // dd(343);
-      if(Auth::user()->type == 1 || Auth::user()->type == 5 || Auth::user()->type == 4){
-        $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
-      }else{
-        $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
-      }
+      $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
+
       // dd($center_money);
       if($center_money->count()){
         foreach($center_money as $data){
@@ -856,12 +934,12 @@ class EstimateController extends Controller
       }else{
         $cost = Func::get_cost_title(Auth::user()->center_money);
       }
-      return view('report_apv',['views' => $view ,'yy' => date('Y')+543, 'fundcenter' => Auth::user()->fund_center,'cost' => $cost]);
+      return view('report_apv',['views' => $view ,'yy' => date('Y')+543, 'centermoney' => Auth::user()->center_money,'cost' => $cost]);
 
     }
     public function post_report_apv(Request $request)
     {
-      // dd($request->cost_title);
+      // dd($request->all());
       if(Auth::user()->type == 1 || Auth::user()->type == 5){
         $this->validate($request, [
           'cost_title'  => 'required'
@@ -892,7 +970,7 @@ class EstimateController extends Controller
         $view = NULL;
       }
 
-      return view('report_apv',['views' => $view ,'yy' => $request->stat_year, 'fundcenter' => $request->center_money,'cost' =>$request->cost_title]);
+      return view('report_apv',['views' => $view ,'yy' => $request->stat_year, 'centermoney' => $request->center_money,'cost' =>$request->cost_title]);
 
     }
 
@@ -1015,18 +1093,19 @@ class EstimateController extends Controller
       foreach($view as $value){
         $data[$value->account][$value->stat_year] = $value->budget;
       }
-      $datas[]  = array('account' => 'บัญชีรายการภาระผูกพัน' ,'before' => 'ปีงบประมาณ '.($request->statyear-1) ,'now' => 'ปีงบประมาณ '.$request->statyear);
+      $datas[]  = array('account' => 'บัญชีรายการภาระผูกพัน' ,'name' => 'รายการภาระผูกพัน','before' => 'ปีงบประมาณ '.($request->statyear-1) ,'now' => 'ปีงบประมาณ '.$request->statyear);
 // dd($datas);
       foreach ($data as $key => $arr_value) {
         if(isset($data_old[$key][$request->statyear-1])){
-          $before = $data_old[$key][$request->statyear-1];
+          $before = number_format($data_old[$key][$request->statyear-1],2);
         }else{
           $before = '-';
         }
           $datas[] = array(
             'account' => $key,
+            'name' => $key,
             'before' => $before,
-            'now' => $data[$key][$request->statyear]
+            'now' => number_format($data[$key][$request->statyear],2)
           );
       }
 

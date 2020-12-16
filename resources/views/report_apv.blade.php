@@ -64,7 +64,7 @@
               <label class="col-md-2 col-form-label">ชื่อฝ่าย (ย่อ) : <font color="red">*</font></label>
               <div class="form-group col-sm-4">
                 <div class="input-group">
-                  <input class="form-control @error('cost_title') is-invalid @enderror" type="text" name="cost_title">
+                  <input class="form-control @error('cost_title') is-invalid @enderror" type="text" name="cost_title" value="{{ old('cost_title') }}">
                   @error('cost_title')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -89,7 +89,7 @@
                   <form action="{{ route('print_view') }}" method="post">
                     @csrf
                     @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "5" || Auth::user()->type == "4")
-                      <input type="hidden" name="center_money" value="{{ $fundcenter }}">
+                      <input type="hidden" name="center_money" value="{{ $centermoney }}">
                       <input type="hidden" name="cost_title" value="{{ $cost }}">
                     @endif
                     <input type="hidden" name="year" value="{{ $yy }}">
@@ -101,13 +101,14 @@
           </div>
       </div>
           @csrf
-          <table class="table table-responsive-sm table-bordered myTable">
+          <table class="table table-responsive-sm table-bordered">
             <thead>
               <tr>
                 <th>ปีงบประมาณ</th>
                 <th>ศูนย์เงินทุน</th>
                 <th>ศูนย์ต้นทุน</th>
                 <th>ฝ่าย</th>
+                <th>ส่วน</th>
                 <th>หมวดค่าใช้จ่าย</th>
                 <th>รายการภาระผูกพัน</th>
                 <th>งบประมาณ</th>
@@ -129,6 +130,7 @@
                   <td align="center">{{$value['fund_center']}}</td>
                   <td align="center">{{$value['center_money']}}</td>
                   <td align="center">{{$value['cost_title']}}</td>
+                  <td>{{Func::get_name_costcenter($value['center_money'])}}</td>
                   <td align="center">{{$value['account']}}</td>
                   <td>{{Func::get_account($value['account'])}}</td>
                   <td align="right">{{number_format($value['budget'],2)}}</td>
@@ -150,7 +152,7 @@
               @endforeach
             </tbody>
             <tr>
-              <td colspan="6" align="right"><b>Sum</b></td>
+              <td colspan="7" align="right"><b>Sum</b></td>
               <td align="right"><b>{{ number_format($sum,2) }}</b></td>
               <td></td>
             </tr>

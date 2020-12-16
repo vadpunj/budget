@@ -55,7 +55,7 @@
                   <label class="col-md-2 col-form-label">รายการภาระผูกพัน <font color="red">*</font></label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="form-control @error('account') is-invalid @enderror" type="text" name="account">
+                      <input class="form-control @error('account') is-invalid @enderror" type="text" name="account" value="{{ old('account') }}">
                       @error('account')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -66,7 +66,7 @@
                   <label class="col-md-2 col-form-label">ชื่อ <font color="red">*</font></label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="form-control @error('name') is-invalid @enderror" type="text" name="name">
+                      <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{ old('name') }}">
                       @error('name')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>

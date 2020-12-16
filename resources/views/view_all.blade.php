@@ -58,7 +58,7 @@
               <label class="col-md-2 col-form-label" for="date-input">ชื่อฝ่าย(ย่อ) : <font color="red">*</font></label>
                 <div class="col-sm-4">
                   <div class="input-group">
-                    <input class="form-control @error('fund_center') is-invalid @enderror" type="text" name="cost_title">
+                    <input class="form-control @error('fund_center') is-invalid @enderror" type="text" name="cost_title" value="{{ old('cost_title') }}">
                     @error('fund_center')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -79,20 +79,23 @@
 
         <form action="{{route('post_approve')}}" method="post">
           @csrf
-          <table class="table table-responsive-sm table-bordered myTable">
+          <table class="table table-responsive-sm table-bordered myTable" style="width: 150%">
             <thead>
               <tr>
                 <th>ปีงบประมาณ</th>
                 <th>ศูนย์เงินทุน</th>
-                <th>ศูนย์ต้นทุน</th>
+                <th>ศูนยต้นทุน</th>
                 <th>ฝ่าย</th>
+                <th>ส่วน</th>
                 <th>หมวดค่าใช้จ่าย</th>
                 <th>รายการภาระผูกพัน</th>
                 <th>งบประมาณ</th>
                 @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+                <th>งบประมาณใหม่</th>
                 <th>ฝ่าย/เขต</th>
                 @endif
                 @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                <th>งบประมาณใหม่</th>
                 <th>วง.</th>
                 @endif
                 <th>สถานะ</th>
@@ -114,6 +117,7 @@
                   <td align="center">{{$value['fund_center']}}</td>
                   <td align="center">{{$value['center_money']}}</td>
                   <td align="center">{{$value['cost_title']}}</td>
+                  <td>{{ Func::get_name_costcenter($value['center_money']) }}</td>
                   <td align="center">{{$value['account']}}</td>
                   <td>{{Func::get_account($value['account'])}}</td>
                   <td align="right">{{number_format($value['budget'],2)}}</td>
@@ -124,8 +128,14 @@
                       $able = 'disabled';
                     }
                    ?>
-                    <td align="center"><input type="checkbox" name="approve1[]" value="{{$value['account']."-".$value['center_money']}}" <?php echo $able; ?>></td>
-
+                   <td align="center">
+                <?php if($able == 'disabled'){ ?>
+                     <input class="form-control" type="text" name="new1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" readonly>
+                <?php }else{ ?>
+                     <input class="form-control" type="text" name="new1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}">
+                <?php } ?>
+                   </td>
+                    <td align="center"><input type="checkbox" name="approve1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}"<?php echo $able; ?>></td>
                   @endif
 
                   @if(Auth::user()->type == 5 || Auth::user()->type == 1)
@@ -135,8 +145,14 @@
                       $able = '';
                     }
                    ?>
-                    <td align="center"><input type="checkbox" name="approve2[]" value="{{$value['account']."-".$value['center_money']}}" <?php echo $able; ?>></td>
-                    <input type="hidden" name="budget[]" value="{{$value['budget']}}" <?php echo $able; ?>>
+                   <td align="center">
+                 <?php if($able == 'disabled'){ ?>
+                      <input class="form-control" type="text" name="new2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" readonly>
+                 <?php }else{ ?>
+                      <input class="form-control" type="text" name="new2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}">
+                 <?php } ?></td>
+                    <td align="center"><input type="checkbox" name="approve2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" <?php echo $able; ?>></td>
+
                   @endif
                   {{--<input type="hidden" name="year[]" value="{{date('Y')+543}}">
                   <input type="hidden" name="center_money[]" value="{{$value['center_money']}}">--}}
@@ -156,12 +172,14 @@
               @endforeach
             </tbody>
             <tr>
-              <td colspan="6" align="right"><b>Sum</b></td>
+              <td colspan="7" align="right"><b>Sum</b></td>
               <td align="right"><b>{{ number_format($sum,2) }}</b></td>
               @if(Auth::user()->type == 4 || Auth::user()->type == 1)
+              <td></td>
                 <td>Select All <input type="checkbox" id="all1" onclick='selectAll1()'></td>
               @endif
               @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+              <td></td>
                 <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
               @endif
               <td></td>
@@ -205,6 +223,7 @@
         select:true,
         scrollX:true,
         "paging":false,
+        "autoWidth": false,
         order:[[ 2, "asc" ]]
       });
       function selectAll1() {

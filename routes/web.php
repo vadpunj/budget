@@ -12,16 +12,15 @@ use App\User;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/register', "UserController@register")->middleware('superadmin');
 Route::post('/register', "UserController@postregister")->middleware('superadmin')->name('register');
-Route::get('/login', "UserController@login")->middleware('guest')->name('login');
-Route::post('/login', "UserController@postlogin")->middleware('guest')->name('login');
+Route::get('/', "UserController@login")->middleware('guest')->name('login');
+Route::post('/', "UserController@postlogin")->middleware('guest')->name('login');
 Route::get('/logout', "UserController@logout")->name('logout');
-
 Route::group(['middleware' => ['auth']], function () {
   Route::get('/home', 'InputController@get_source')->name('dashboard');
   Route::post('/home', 'InputController@post_information')->name('inform');
@@ -47,6 +46,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/add/master', 'EstimateController@post_master')->name('post_add_master');
   Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
   Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
+  Route::get('/shutdown', 'UserController@shutdown')->middleware('ApproveAuth')->name('shutdown');
+  Route::post('/shutdown', 'UserController@post_shutdown')->middleware('ApproveAuth')->name('post_shutdown');
 
   Route::post('/find/data', 'ImportExcelController@ajax_data');
   Route::post('/find/branch', 'InputController@ajax_data');

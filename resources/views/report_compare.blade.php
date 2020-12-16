@@ -46,7 +46,7 @@
                 <label class="col-md-2 col-form-label">ศูนย์เงินทุน <font color="red">*</font></label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
-                    <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center">
+                    <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center" value="{{ old('fund_center') }}">
                     @error('fund_center')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -57,7 +57,7 @@
                 <label class="col-md-2 col-form-label">ศูนย์ต้นทุน <font color="red">*</font></label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
-                    <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money">
+                    <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money" value="{{ old('center_money') }}">
                     @error('center_money')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
@@ -69,7 +69,7 @@
                 <label class="col-md-2 col-form-label">บัญชีรายการภาระผูกพัน</label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
-                    <input class="form-control @error('account') is-invalid @enderror"  type="text" name="account">
+                    <input class="form-control @error('account') is-invalid @enderror"  type="text" name="account" value="{{ old('account') }}">
                     @error('account')
                       <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -109,6 +109,7 @@
     <table class="table table-responsive-sm table-bordered">
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
+        <th>ชื่อ</th>
         <th>ปีงบประมาณ {{ $yy-1 }}</th>
         <th>ปีงบประมาณ {{ $yy }}</th>
       </tr>
@@ -120,6 +121,7 @@
         @foreach($data as $key_acc => $arr_value)
           <tr>
             <td align="center">{{ $key_acc }}</td>
+            <td>{{ Func::get_account($key_acc) }}</td>
             @if(isset($data_old[$key_acc][$yy-1]))
               @php
                 $sum1 += $data_old[$key_acc][$yy-1];
@@ -139,7 +141,7 @@
           </tr>
         @endforeach
         <tr>
-          <td align="right"><b>Sum</b></td>
+          <td align="right" colspan="2"><b>Sum</b></td>
           <td align="right"><b>{{ number_format($sum1,2) }}</b></td>
           <td align="right"><b>{{ number_format($sum2,2) }}</b></td>
         </tr>

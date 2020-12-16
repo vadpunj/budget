@@ -5,8 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use Func;
 
-class UserAuth
+class ShutdownSys
 {
     /**
      * Handle an incoming request.
@@ -17,9 +18,12 @@ class UserAuth
      */
     public function handle($request, Closure $next)
     {
-      if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isUser() || Auth::user()->isAdmin())){
-          return $next($request);
+      $shut = Func::rang_shutdown(date('Y-m-d'));
+      if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isUser() || Auth::user()->isApprove2()) && $shut == false){
+          return redirect('close');
+      }else{
+        return $next($request);
       }
-      return redirect('dashboard');
+
     }
 }
