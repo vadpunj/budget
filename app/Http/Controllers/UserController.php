@@ -233,6 +233,7 @@ class UserController extends Controller
       $insert = new Shutdown;
       $insert->start_date = date('Y-m-d',strtotime($request->start_date));
       $insert->end_date = date('Y-m-d',strtotime($request->end_date));
+      $insert->user_id = Auth::user()->emp_id;
       $insert->save();
 
       return back()->with('success', 'เพิ่มข้อมูลแล้ว');

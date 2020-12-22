@@ -17,6 +17,7 @@ class CreateShutdownsTable extends Migration
             $table->bigIncrements('id');
             $table->date('start_date');
             $table->date('end_date');
+            $table->string('user_id');
             $table->timestamps();
         });
     }

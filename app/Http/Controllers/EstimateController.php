@@ -35,20 +35,20 @@ class EstimateController extends Controller
       $status=[];
       $reason=[];
 
-      $check_button = Estimate::select('status')
-        ->where('stat_year',date('Y')+543)
-        ->where('version',Func::get_last_version(date('Y')+543 ,Auth::user()->center_money))
-        ->where('center_money',Auth::user()->center_money)
-        ->groupBy('status')->get();
+      // $check_button = Estimate::select('status')
+      //   ->where('stat_year',date('Y')+543)
+      //   ->where('version',Func::get_last_version(date('Y')+543 ,Auth::user()->center_money))
+      //   ->where('center_money',Auth::user()->center_money)
+      //   ->groupBy('status')->get();
 // dd($check_button);
-      if(count($check_button) == 1){
-        $btn = '';
-        if($check_button[0]->status == 0 || $check_button[0]->status == 1 || $check_button[0]->status == 3){
-          $btn = 'disabled';
-        }
-      }else{
-        $btn = 'disabled';
-      }
+      // if(count($check_button) == 1){
+      //   $btn = '';
+      //   if($check_button[0]->status == 0 || $check_button[0]->status == 1 || $check_button[0]->status == 3){
+      //     $btn = 'disabled';
+      //   }
+      // }else{
+      //   $btn = 'disabled';
+      // }
 
       $test = DB::table('masters')
         ->whereNull('deleted_at')
@@ -103,7 +103,7 @@ class EstimateController extends Controller
           }
         }
 // dd($reason);
-      return view('add_est',['test' => $test,'btn' => $btn,'status' => $status,'list' => $list,'year3' => $year3,'year2' => $year2,'year1' => $year1,'now' => $now,'status' => $status,'reason' => $reason]);
+      return view('add_est',['test' => $test,'status' => $status,'list' => $list,'year3' => $year3,'year2' => $year2,'year1' => $year1,'now' => $now,'status' => $status,'reason' => $reason]);
     }
 
     public function post_add(Request $request)
