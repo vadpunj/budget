@@ -20,6 +20,6 @@ class UserAuth
       if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isUser() || Auth::user()->isAdmin())){
           return $next($request);
       }
-      return redirect('dashboard');
+      return redirect('home');
     }
 }

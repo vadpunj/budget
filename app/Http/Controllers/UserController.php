@@ -57,7 +57,7 @@ class UserController extends Controller
          'password'=>'required'
       ]);
       $shut = Func::rang_shutdown(date('Y-m-d'));
-
+// dd($shut);
       // ตรวจสอบว่ามีสิทธิ์เข้ามาใช้งานหรือไม่ เช็คจากตารางuserของเราเอง
       $user = User::where('emp_id',$request->emp_id)->first();
       if(!empty($user)){
