@@ -221,7 +221,12 @@ class UserController extends Controller
     }
     public function shutdown()
     {
-      return view('shutdown');
+      $shut = Func::rang_shutdown(date('Y-m-d'));
+      $status = '';
+      if($shut == false){
+        $status = 'กำลังอยู่ในช่วงปิดระบบ';
+      }
+      return view('shutdown',['status' => $status]);
     }
     public function post_shutdown(Request $request)
     {
