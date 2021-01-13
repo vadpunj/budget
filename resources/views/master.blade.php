@@ -154,7 +154,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="submit" class="btn btn-warning">Save</button>
         </div>
         </form>
       </div>

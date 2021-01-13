@@ -65,6 +65,7 @@ class UserController extends Controller
         $Controller = new UserController();
         // $urlApi = 'http://192.168.242.164:8010/testservice/services/getservice.php';
         $urlApi = 'http://catdev.cattelecom.com/testservice/services/getservice.php';
+        // $urlApi = 'http://192.168.242.164/getservice.php';
         $data_array =  array(
           "ClientKey" => '',
           "ServiceName" => 'AuthenUser',
@@ -77,14 +78,13 @@ class UserController extends Controller
         $make_call =  $Controller->callAPI('POST', $urlApi, json_encode($data_array));
         // dd($make_call);
         $key = json_decode($make_call, true);
-
+// dd($key);
         if($make_call  == 'bad request'){
           return redirect()->back()->with('message', 'กรุณาloginใหม่อีกครั้ง'); //user timeout
         }
         $response = json_decode($make_call, true);
-
+        // dd($response);
         if($response['Result'] == 'Pass'){
-
           if(is_null($user->field)){
             $key_json = json_decode($make_call);
             $key = $key_json->ClientKey;
@@ -134,7 +134,6 @@ class UserController extends Controller
 
     public static function callAPI($method, $url, $data){
       $curl = curl_init();
-
       switch ($method){
          case "POST":
             curl_setopt($curl, CURLOPT_POST, 1);
@@ -152,18 +151,18 @@ class UserController extends Controller
       }
 
       // OPTIONS:
-      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_URL, trim($url));
       curl_setopt($curl, CURLOPT_HTTPHEADER, array(
          'APIKEY: 111111111111111111111',
          'Content-Type: application/json',
       ));
       curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
+      // curl_setopt($curl, CURLOPT_SSLVERSION, 3);
       // EXECUTE:
+
       $result = curl_exec($curl);
-      // $key = json_decode($result);
-      // dd($dd->ClientKey);
+
       if(!$result){
         die("Connection Failure");
       }

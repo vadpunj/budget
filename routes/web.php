@@ -12,8 +12,8 @@ use App\User;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
+// Route::get('info', function () {
+//     return view('info');
 // });
 
 Route::get('/register', "UserController@register")->middleware('superadmin');
