@@ -110,6 +110,8 @@
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
         <th>ชื่อ</th>
+        <th>ฝ่าย</th>
+        <th>ส่วน</th>
         <th>ปีงบประมาณ {{ $yy-1 }}</th>
         <th>ปีงบประมาณ {{ $yy }}</th>
       </tr>
@@ -122,6 +124,8 @@
           <tr>
             <td align="center">{{ $key_acc }}</td>
             <td>{{ Func::get_account($key_acc) }}</td>
+            <td>{{ Func::get_cost_title($fund) }}</td>
+            <td>{{ Func::get_name_costcenter($center) }}</td>
             @if(isset($data_old[$key_acc][$yy-1]))
               @php
                 $sum1 += $data_old[$key_acc][$yy-1];
@@ -141,7 +145,7 @@
           </tr>
         @endforeach
         <tr>
-          <td align="right" colspan="2"><b>Sum</b></td>
+          <td align="right" colspan="4"><b>Sum</b></td>
           <td align="right"><b>{{ number_format($sum1,2) }}</b></td>
           <td align="right"><b>{{ number_format($sum2,2) }}</b></td>
         </tr>

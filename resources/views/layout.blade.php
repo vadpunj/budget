@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="text/html">
 
-    <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/Logononame.png') }}" sizes="16x16">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/Logo.jpg') }}" sizes="20x10">
     @section('title')
     @show
     <title>Budget Project</title>

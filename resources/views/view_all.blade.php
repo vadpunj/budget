@@ -129,13 +129,9 @@
                     }
                    ?>
                    <td align="center">
-                <?php if($able == 'disabled'){ ?>
-                     <input class="form-control" type="text" name="new1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" readonly>
-                <?php }else{ ?>
-                     <input class="form-control" type="text" name="new1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}">
-                <?php } ?>
+                     <input class="form-control" type="text" name="new1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" @if($able == 'disabled') readonly @endif>
                    </td>
-                    <td align="center"><input type="checkbox" name="approve1[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}"<?php echo $able; ?>></td>
+                    <td align="center"><input type="checkbox" name="approve1[]" value="{{$value['account'].'-'.$value['center_money']}}"<?php echo $able; ?>></td>
                   @endif
 
                   @if(Auth::user()->type == 5 || Auth::user()->type == 1)
@@ -145,13 +141,10 @@
                       $able = '';
                     }
                    ?>
-                   <td align="center">
-                 <?php if($able == 'disabled'){ ?>
-                      <input class="form-control" type="text" name="new2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" readonly>
-                 <?php }else{ ?>
-                      <input class="form-control" type="text" name="new2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}">
-                 <?php } ?></td>
-                    <td align="center"><input type="checkbox" name="approve2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" <?php echo $able; ?>></td>
+                    <td align="center">
+                      <input class="form-control" type="text" name="new2[{{$value['account']}}][{{$value['center_money']}}]" value="{{$value['budget']}}" @if($able == 'disabled') readonly @endif>
+                    </td>
+                    <td align="center"><input type="checkbox" name="approve2[]" value="{{$value['account'].'-'.$value['center_money']}}" <?php echo $able; ?>></td>
 
                   @endif
                   {{--<input type="hidden" name="year[]" value="{{date('Y')+543}}">
@@ -227,7 +220,6 @@
         order:[[ 2, "asc" ]]
       });
       function selectAll1() {
-        // console.log($('#all1').is(':checked'));
         if($('#all1').is(':checked') == true){
           var items = document.getElementsByName('approve1[]');
           for (var i = 0; i < items.length; i++) {

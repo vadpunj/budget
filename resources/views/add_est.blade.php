@@ -16,9 +16,7 @@
   <!-- Global site tag (gtag.js) - Google Analytics-->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <link href="{{ asset('admin/css/jquery.dataTables.css') }}" rel="stylesheet">
-
   <script src="{{ asset('admin/js/jquery-1.12.0.js') }}"></script>
-  {{--<script src="~/Scripts/autoNumeric/autoNumeric.min.js" type="text/javascript"></script>--}}
   <style>
     .word {
       color: #fff !important;
@@ -139,7 +137,7 @@
                   @endif
                   @if($now[date("Y")+543][$account] != 0 && isset($year1[date("Y")+542][$account]) && $year1[date("Y")+542][$account] < $now[date("Y")+543][$account])
                     @php
-                      $cal = ($now[date('Y')+543][$account] * 100 / $year1[date("Y")+542][$account]) /100;
+                      $cal = (($now[date('Y')+543][$account] - $year1[date("Y")+542][$account]) * 100 / $year1[date("Y")+542][$account]);
                     @endphp
                     <td align="center">{{round($cal,2).' %'}}</td>
                   @else
@@ -211,6 +209,7 @@ $(document).ready(function() {
     "autoWidth": false,
     scrollX:true
   });
+
 });
 </script>
 @endsection

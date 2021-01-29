@@ -70,7 +70,7 @@ class EstimateController extends Controller
          $all_now[date("Y")+543][$value->account] = 0;
 
        }
-        for($i = date("Y",strtotime("-3 year"))+543 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+543 ; $i <= date("Y")+542 ; $i++){
           $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
 
           if($last_ver != NULL){
@@ -80,6 +80,7 @@ class EstimateController extends Controller
               ->whereNull('deleted_at')
               ->where('version', $last_ver)
               ->where('center_money',Auth::user()->center_money)
+              ->where('status',1)
               ->groupBy('stat_year','reason','account','version','status')
               ->orderBy('status','DESC')
               ->get()->toArray();
@@ -91,10 +92,6 @@ class EstimateController extends Controller
                   $year2[$value->stat_year][$value->account] = $value->budget;
                 }if($value->stat_year == date("Y",strtotime("-1 year"))+543){
                   $year1[$value->stat_year][$value->account] = $value->budget;
-                }if($value->stat_year == date("Y")+543){
-                  $now[$value->stat_year][$value->account] = $value->budget;
-                  $status[$value->stat_year][$value->account] = $value->status;
-                  $reason[$value->stat_year][$value->account] = $value->reason;
                 }
               }
 
@@ -102,6 +99,23 @@ class EstimateController extends Controller
             $list = NULL;
           }
         }
+        $last_ver_now = Func::get_last_version(date("Y")+543,Auth::user()->center_money);
+        $list_now = DB::table('estimates')
+          ->select('stat_year','reason','account','status', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+543)
+          ->whereNull('deleted_at')
+          ->where('version', $last_ver_now)
+          ->where('center_money',Auth::user()->center_money)
+          ->groupBy('stat_year','reason','account','version','status')
+          ->orderBy('status','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $now[$value->stat_year][$value->account] = $value->budget;
+            $status[$value->stat_year][$value->account] = $value->status;
+            $reason[$value->stat_year][$value->account] = $value->reason;
+          }
+          // dd($list_now);
+
 // dd($reason);
       return view('add_est',['test' => $test,'status' => $status,'list' => $list,'year3' => $year3,'year2' => $year2,'year1' => $year1,'now' => $now,'status' => $status,'reason' => $reason]);
     }
@@ -306,7 +320,7 @@ class EstimateController extends Controller
      // Storage::disk('log')->put($name, File::get($request->file('select_file')));
      // // dd(File::get($request->file('select_file')));
      // $data = Excel::load($path)->get();
-     // dd(2432);
+     // dd($data->toArray());
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
      $insert_log->path = $path.$name;
@@ -405,16 +419,16 @@ class EstimateController extends Controller
 // dd(Carbon::now());
       if(Auth::user()->type == 5){
         foreach($request->approve2 as $key => $val){
-          foreach ($val as $key2 => $value) {
-            $last_ver = Func::get_last_version(date('Y')+543,$key2);
+          $arr = explode("-",$val);
+            $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
             // dd($last_ver);
             if($request->btn == "true"){
               $update = DB::table('estimates')
                 ->where('stat_year', date('Y')+543)
-                ->where('account', $key)
+                ->where('account', $arr[0])
                 ->where('version',$last_ver)
-                ->where('center_money',$key2)
-                ->update(['status' => 1 ,'budget'=> $request->new2[$key][$key2],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+                ->where('center_money',$arr[1])
+                ->update(['status' => 1 ,'budget'=> $request->new2[$arr[0]][$arr[1]],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
                 $approve = new Approve_log;
                 $approve->user_approve = Auth::user()->emp_id;
                 $approve->stat_year = date('Y')+543;
@@ -426,28 +440,29 @@ class EstimateController extends Controller
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
                 ->where('stat_year', date('Y')+543)
-                ->where('account',$key)
+                ->where('account',$arr[0])
                 ->where('version',$last_ver)
-                ->where('center_money',$key2)
+                ->where('center_money',$arr[1])
                 ->update(['status' => 3,'approve_by1' => NULL]);
                 $msg = 'ยกเลิกอนุมัติสำเร็จ';
             }
-          }
+
         }
       }
       // dd($request->all());
       if(Auth::user()->type == 4 || Auth::user()->type == 1){
         foreach($request->approve1 as $key => $val){
-          foreach ($val as $key2 => $value) {
-            $last_ver = Func::get_last_version(date('Y')+543,$key2);
-            // dd($last_ver);
+          $arr = explode("-",$val);
+          // for ($i=0 ; $i<count($arr) ; $i++) {
+            // dd($arr[1]);
+            $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
             if($request->btn == "true"){
               $update = DB::table('estimates')
                 ->where('stat_year', date('Y')+543)
-                ->where('account', $key)
+                ->where('account', $arr[0])
                 ->where('version',$last_ver)
-                ->where('center_money',$key2)
-                ->update(['status' => 0 ,'budget'=> $request->new1[$key][$key2],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+                ->where('center_money',$arr[1])
+                ->update(['status' => 0 ,'budget'=> $request->new1[$arr[0]][$arr[1]],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
                 $approve = new Approve_log;
                 $approve->user_approve = Auth::user()->emp_id;
                 $approve->stat_year = date('Y')+543;
@@ -458,14 +473,14 @@ class EstimateController extends Controller
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
                 ->where('stat_year', date('Y')+543)
-                ->where('account',$key)
+                ->where('account',$arr[0])
                 ->where('version',$last_ver)
-                ->where('center_money',$key2)
+                ->where('center_money',$arr[1])
                 ->update(['status' => 4,'approve_by1' => NULL,'updated_at' => Carbon::now()]);
                 $msg = 'ยกเลิกอนุมัติสำเร็จ';
 
             }
-          }
+
         }
       }
       if($update){
@@ -982,6 +997,23 @@ class EstimateController extends Controller
     public function post_compare(Request $request)
     {
       // dd($request->all());
+      $name = DB::table('masters')
+        ->whereNull('deleted_at')
+         ->whereNotIn('account', function($query)
+         {
+             $query->select('account')
+                   ->from('estimates')
+                   ->where('stat_year',date('Y')+543)
+                   ->whereNull('deleted_at')
+                   ->where('version', Func::get_last_version(date('Y')+543 ,Auth::user()->center_money))
+                   ->where('center_money',Auth::user()->center_money)
+                   ->groupBy('account');
+         })->get();
+         foreach ($name as $key => $value) {
+           $data_old[$value->account][date("Y",strtotime("-1 year"))+543] = 0;
+           $data[$value->account][date("Y")+543] = 0;
+         }
+
       if(Auth::user()->type == "5" || Auth::user()->type == "1"){
         $this->validate($request, [
           'center_money' => 'required',
@@ -1003,6 +1035,7 @@ class EstimateController extends Controller
           ->where('center_money','like','%'.$request->center_money.'%')
           ->where('fund_center','like','%'.$request->fund_center.'%')
           ->where('stat_year',($request->stat_year-1))
+          ->where('status',1)
           ->where('version',$last_ver_old)
           ->groupBy('account','stat_year')->get();
           // dd($view);
@@ -1024,6 +1057,7 @@ class EstimateController extends Controller
           ->where('center_money',Auth::user()->center_money)
           ->where('stat_year',($request->stat_year-1))
           ->where('version',$last_ver_old)
+          ->where('status',1)
           ->groupBy('account','stat_year')->get();
           $fund = Auth::user()->fund_center;
           $center = Auth::user()->center_money;
@@ -1037,15 +1071,35 @@ class EstimateController extends Controller
       foreach($view as $value){
         $data[$value->account][$value->stat_year] = $value->budget;
       }
+
       $datas = array_merge_recursive($data_old,$data);
       // dd($datas);
-      return view('report_compare',['data' => $data,'data_old' => $data_old,'account'=>$request->account ,'fund'=> $fund,'yy' => $request->stat_year, 'center' => $center]);
+
+      // return Redirect::route('post_compare',array('data' => $datas,'data_old' => $data_old,'account'=>$request->account ,'fund'=> $fund,'yy' => $request->stat_year, 'center' => $center))->withInput();
+// session()->flashInput($request->all());
+      return view('report_compare',['data' => $datas,'data_old' => $data_old,'account'=>$request->account ,'fund'=> $fund,'yy' => $request->stat_year, 'center' => $center]);
 
     }
 
     public function print_compare(Request $request)
     {
       // dd($request->all());
+      $name = DB::table('masters')
+        ->whereNull('deleted_at')
+         ->whereNotIn('account', function($query)
+         {
+             $query->select('account')
+                   ->from('estimates')
+                   ->where('stat_year',date('Y')+543)
+                   ->whereNull('deleted_at')
+                   ->where('version', Func::get_last_version(date('Y')+543 ,Auth::user()->center_money))
+                   ->where('center_money',Auth::user()->center_money)
+                   ->groupBy('account');
+         })->get();
+         foreach ($name as $key => $value) {
+           $data_old[$value->account][date("Y",strtotime("-1 year"))+543] = 0;
+           $data[$value->account][date("Y")+543] = 0;
+         }
       if(Auth::user()->type == "5" || Auth::user()->type == "1"){
         $last_ver = Func::get_last_version($request->statyear,$request->centermoney);
         // dd($last_ver);
@@ -1066,6 +1120,8 @@ class EstimateController extends Controller
           ->where('version',$last_ver_old)
           ->groupBy('account','stat_year')->get();
           // dd($view);
+          $fund = $request->fundcenter;
+          $center = $request->centermoney;
       }else{
         $last_ver = Func::get_last_version($request->statyear,Auth::user()->center_money);
         $last_ver_old = Func::get_last_version(($request->statyear-1),Auth::user()->center_money);
@@ -1083,6 +1139,8 @@ class EstimateController extends Controller
           ->where('stat_year',($request->statyear-1))
           ->where('version',$last_ver_old)
           ->groupBy('account','stat_year')->get();
+          $fund = Auth::user()->fund_center;
+          $center = Auth::user()->center_money;
       }
       // dd($view);
       $data =[];
@@ -1093,22 +1151,30 @@ class EstimateController extends Controller
       foreach($view as $value){
         $data[$value->account][$value->stat_year] = $value->budget;
       }
-      $datas[]  = array('account' => 'บัญชีรายการภาระผูกพัน' ,'name' => 'รายการภาระผูกพัน','before' => 'ปีงบประมาณ '.($request->statyear-1) ,'now' => 'ปีงบประมาณ '.$request->statyear);
+      $data = array_merge_recursive($data_old,$data);
+      $datas[]  = array('account' => 'บัญชีรายการภาระผูกพัน' ,'name' => 'รายการภาระผูกพัน','fund' => 'ฝ่าย','center' => 'ส่วน','before' => 'ปีงบประมาณ '.($request->statyear-1) ,'now' => 'ปีงบประมาณ '.$request->statyear);
 // dd($datas);
       foreach ($data as $key => $arr_value) {
-        if(isset($data_old[$key][$request->statyear-1])){
-          $before = number_format($data_old[$key][$request->statyear-1],2);
+        if(isset($data[$key][$request->statyear-1])){
+          $before = $data[$key][$request->statyear-1];
         }else{
           $before = '-';
         }
+        if(isset($data[$key][$request->statyear])){
+          $now = $data[$key][$request->statyear];
+        }else{
+          $now = '-';
+        }
           $datas[] = array(
             'account' => $key,
-            'name' => $key,
+            'name' => Func::get_account($key),
+            'fund' => Func::get_cost_title($fund),
+            'center' => Func::get_name_costcenter($center),
             'before' => $before,
-            'now' => number_format($data[$key][$request->statyear],2)
+            'now' => $now
           );
       }
-
+      // dd($datas);
       Excel::create('View Estimate Compare'.$request->year,function($excel) use ($datas){
         $excel->setTitle('Compare');
         $excel->sheet('Compare',function($sheet) use ($datas){

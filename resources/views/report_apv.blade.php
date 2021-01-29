@@ -44,7 +44,7 @@
     <div class="animated fadeIn">
       <div class="card">
         <div class="card-header word">
-          <i class="fa fa-align-justify"></i> เปรียบเทียบงบประมาณ</div>
+          <i class="fa fa-align-justify"></i> สถานะอนุมัติงบประมาณ</div>
           <div class="card-body">
           <form action="{{ route('post_report_apv') }}" method="post">
             @csrf

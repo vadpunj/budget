@@ -103,7 +103,7 @@
             <td>{{ Func::get_account($key_acc) }}</td>
             @if(isset($data_old[$key_acc][date("Y")+542]))
               @php
-                $sum2 += $data_old[$key_acc][date("Y")+542];
+                $sum1 += $data_old[$key_acc][date("Y")+542];
               @endphp
               <td align="right">{{ number_format($data_old[$key_acc][date("Y")+542],2) }}</td>
             @else
