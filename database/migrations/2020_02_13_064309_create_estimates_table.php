@@ -22,6 +22,7 @@ class CreateEstimatesTable extends Migration
           $table->string('center_money');
           $table->string('fund_center');
           $table->string('cost_title');
+          $table->string('cost_name');
           $table->string('status')->nullable();
           $table->string('created_by');
           $table->string('approve_by1')->nullable();

@@ -145,6 +145,7 @@ class EstimateController extends Controller
           $insert->center_money = Auth::user()->center_money;
           $insert->fund_center = Auth::user()->fund_center;
           $insert->cost_title = Func::get_cost_title(Auth::user()->center_money);
+          $insert->cost_name = Func::get_name_costcenter(Auth::user()->center_money);
           $insert->reason = $request->reason[$key];
           $insert->created_by = Auth::user()->emp_id;
           $insert->save();
@@ -337,6 +338,7 @@ class EstimateController extends Controller
        $insert->center_money = $value['ศูนย์ต้นทุน'];
        $insert->fund_center = $value['ศูนย์เงินทุน'];
        $insert->cost_title = Func::get_cost_title($value['ศูนย์ต้นทุน']);
+       $insert->cost_name = Func::get_name_costcenter($value['ศูนย์ต้นทุน']);
        $insert->status = 5;
        $insert->created_by = Auth::user()->emp_id;
        $insert->save();
