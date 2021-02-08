@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
           $table->string('emp_id');
           $table->tinyInteger('type');
           $table->string('field')->nullable();
+          $table->string('cost_title')->nullable();
           $table->string('office')->nullable();
           $table->string('part')->nullable();
           $table->string('center_money')->nullable();

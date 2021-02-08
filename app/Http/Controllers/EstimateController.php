@@ -1021,28 +1021,37 @@ class EstimateController extends Controller
           'center_money' => 'required',
           'fund_center' => 'required'
         ]);
-        $last_ver = Func::get_last_version($request->stat_year,$request->center_money);
+        $id = Func::get_idcostname($request->fund_center,$request->center_money);
         // dd($last_ver);
-        $last_ver_old = Func::get_last_version(($request->stat_year-1),$request->center_money);
-        $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
-          ->where('account','like','%'.$request->account.'%')
-          ->where('center_money','like','%'.$request->center_money.'%')
-          ->where('fund_center','like','%'.$request->fund_center.'%')
-          ->where('stat_year',$request->stat_year)
-          ->where('version',$last_ver)
-          ->groupBy('account','stat_year')->get();
+        if($id != NULL){
+          $last_ver = Func::get_last_version($request->stat_year,$id->CostCenterID);
+          // dd($last_ver);
+          $last_ver_old = Func::get_last_version(($request->stat_year-1),$id->CostCenterID);
+          $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+            ->where('account','like','%'.$request->account.'%')
+            ->where('cost_name','like','%'.$request->center_money.'%')
+            ->where('cost_title','like','%'.$request->fund_center.'%')
+            ->where('stat_year',$request->stat_year)
+            ->where('version',$last_ver)
+            ->groupBy('account','stat_year')->get();
+  // dd($last_ver);
+          $old = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+            ->where('account','like','%'.$request->account.'%')
+            ->where('cost_name','like','%'.$request->center_money.'%')
+            ->where('cost_title','like','%'.$request->fund_center.'%')
+            ->where('stat_year',($request->stat_year-1))
+            ->where('status',1)
+            ->where('version',$last_ver_old)
+            ->groupBy('account','stat_year')->get();
+            $fund = $id->CostCenterID;
+            $center = $id->CostCenterID;
+        }else{
+          $fund = NULL;
+          $center = NULL;
+          $view =[];
+          $old =[];
+        }
 
-        $old = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
-          ->where('account','like','%'.$request->account.'%')
-          ->where('center_money','like','%'.$request->center_money.'%')
-          ->where('fund_center','like','%'.$request->fund_center.'%')
-          ->where('stat_year',($request->stat_year-1))
-          ->where('status',1)
-          ->where('version',$last_ver_old)
-          ->groupBy('account','stat_year')->get();
-          // dd($view);
-          $fund = $request->fund_center;
-          $center = $request->center_money;
       }else{
         $last_ver = Func::get_last_version($request->stat_year,Auth::user()->center_money);
         $last_ver_old = Func::get_last_version(($request->stat_year-1),Auth::user()->center_money);
@@ -1103,27 +1112,36 @@ class EstimateController extends Controller
            $data[$value->account][date("Y")+543] = 0;
          }
       if(Auth::user()->type == "5" || Auth::user()->type == "1"){
-        $last_ver = Func::get_last_version($request->statyear,$request->centermoney);
-        // dd($last_ver);
-        $last_ver_old = Func::get_last_version(($request->statyear-1),$request->centermoney);
-        $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
-          ->where('account','like','%'.$request->account.'%')
-          ->where('center_money','like','%'.$request->centermoney.'%')
-          ->where('fund_center','like','%'.$request->fundcenter.'%')
-          ->where('stat_year',$request->statyear)
-          ->where('version',$last_ver)
-          ->groupBy('account','stat_year')->get();
+        $id = Func::get_idcostname($request->fundcenter,$request->centermoney);
+        if($id != NULL){
+          $last_ver = Func::get_last_version($request->statyear,$id->CostCenterID);
+          // dd($last_ver);
+          $last_ver_old = Func::get_last_version(($request->statyear-1),$id->CostCenterID);
+          $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+            ->where('account','like','%'.$request->account.'%')
+            ->where('cost_name','like','%'.$request->centermoney.'%')
+            ->where('cost_title','like','%'.$request->fundcenter.'%')
+            ->where('stat_year',$request->statyear)
+            ->where('version',$last_ver)
+            ->groupBy('account','stat_year')->get();
 
-        $old = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
-          ->where('account','like','%'.$request->account.'%')
-          ->where('center_money','like','%'.$request->centermoney.'%')
-          ->where('fund_center','like','%'.$request->fundcenter.'%')
-          ->where('stat_year',($request->statyear-1))
-          ->where('version',$last_ver_old)
-          ->groupBy('account','stat_year')->get();
-          // dd($view);
-          $fund = $request->fundcenter;
-          $center = $request->centermoney;
+          $old = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
+            ->where('account','like','%'.$request->account.'%')
+            ->where('cost_name','like','%'.$request->centermoney.'%')
+            ->where('cost_title','like','%'.$request->fundcenter.'%')
+            ->where('stat_year',($request->statyear-1))
+            ->where('version',$last_ver_old)
+            ->groupBy('account','stat_year')->get();
+            // dd($view);
+            $fund = $id->CostCenterID;
+            $center = $id->CostCenterID;
+        }else{
+          $fund = NULL;
+          $center = NULL;
+          $view =[];
+          $old =[];
+        }
+
       }else{
         $last_ver = Func::get_last_version($request->statyear,Auth::user()->center_money);
         $last_ver_old = Func::get_last_version(($request->statyear-1),Auth::user()->center_money);

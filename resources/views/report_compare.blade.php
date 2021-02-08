@@ -43,7 +43,7 @@
                 @csrf
               <div class="form-group row">
                 @if(Auth::user()->type == "5" || Auth::user()->type == "1")
-                <label class="col-md-2 col-form-label">ศูนย์เงินทุน <font color="red">*</font></label>
+                <label class="col-md-2 col-form-label">ชื่อฝ่าย(ย่อ) <font color="red">*</font></label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
                     <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center" value="{{ old('fund_center') }}">
@@ -54,7 +54,7 @@
                     @enderror
                   </div>
                 </div>
-                <label class="col-md-2 col-form-label">ศูนย์ต้นทุน <font color="red">*</font></label>
+                <label class="col-md-2 col-form-label">ชื่อส่วนงาน(เต็ม) <font color="red">*</font></label>
                 <div class="form-group col-sm-4">
                   <div class="input-group">
                     <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money" value="{{ old('center_money') }}">
@@ -93,8 +93,8 @@
                   </form>
                     <form action="{{ route('print_compare') }}" method="post">
                       @csrf
-                        <input type="hidden" name="fundcenter" value="{{ $fund }}">
-                        <input type="hidden" name="centermoney" value="{{ $center }}">
+                        <input type="hidden" name="fundcenter" value="{{ Func::get_cost_title($fund) }}">
+                        <input type="hidden" name="centermoney" value="{{ Func::get_name_costcenter($center) }}">
                         <input type="hidden" name="statyear" value="{{ $yy }}">
                         <input type="hidden" name="account" value="{{ $account }}">
                       &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>

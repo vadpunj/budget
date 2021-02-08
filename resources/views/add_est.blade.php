@@ -126,16 +126,10 @@
                   @else
                     <td align="center">{{ '-' }}</td>
                   @endif
-                  @if($status[$key][$account] >= 3)
                   <td align="center">
-                    <input class="form-control" type="text" name="budget[{{$account}}]" value="{{ $now[$key][$account] }}">
+                    <input class="form-control" type="text" name="budget[{{$account}}]" value="{{ $now[$key][$account] }}" @if($status[$key][$account] < 3) readonly @endif>
                   </td>
-                  @else
-                  <td align="center">
-                    <input class="form-control" type="text" name="budget[{{$account}}]" value="{{ $now[$key][$account] }}" readonly>
-                  </td>
-                  @endif
-                  @if($now[date("Y")+543][$account] != 0 && isset($year1[date("Y")+542][$account]) && $year1[date("Y")+542][$account] < $now[date("Y")+543][$account])
+                  @if($now[$key][$account] != 0 && isset($year1[date("Y")+542][$account]) && $year1[date("Y")+542][$account] <= $now[date("Y")+543][$account])
                     @php
                       $cal = (($now[date('Y')+543][$account] - $year1[date("Y")+542][$account]) * 100 / $year1[date("Y")+542][$account]);
                     @endphp

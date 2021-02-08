@@ -51,6 +51,16 @@ class Func{
       return $last_ver->version;
     }
   }
+  public static function get_idcostname($fund,$center_money)
+  {
+    $id  = Structure::select('CostCenterID')->where('CostCenterTitle','like','%'.$fund.'%')->where('CostCenterName','like','%'.$center_money.'%')->groupBy('CostCenterID')->first();
+    // dd($id);
+    if($id == NULL){
+      return NULL;
+    }else{
+      return $id;
+    }
+  }
   public static function get_cost_title($center_money)
   {
     $name = Structure::where('CostCenterID',$center_money)->first();

@@ -16,6 +16,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Phatsirin Srisaengchai',
           'emp_id' => '01000583',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -29,6 +30,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Dumkerng Muikeaw',
           'emp_id' => '00368195',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -42,6 +44,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Panicha Saenkhueansi',
           'emp_id' => '01000554',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -55,6 +58,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Wanida Chomthamai',
           'emp_id' => '01000103',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -68,6 +72,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Prapatsorn Prechan',
           'emp_id' => '00309374',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -81,6 +86,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Jariya Eamapichat',
           'emp_id' => '00232739',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
@@ -94,6 +100,7 @@ class AdminTableSeeder extends Seeder
         [
           'name' => 'Punyabha Auparikchatpong',
           'emp_id' => '01000363',
+          'cost_title' =>'อท.',
           'type' => 1,
           'field' => 'สายงานเทคโนโลยีสารสนเทศ',
           'office' => 'ฝ่ายเทคโนโลยีสารสนเทศเพื่อบริหารองค์กร',
