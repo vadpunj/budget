@@ -193,7 +193,7 @@ class EstimateController extends Controller
 
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
-     $insert_log->path = $path.$name;
+     $insert_log->path = $pathreal.$name;
      $insert_log->type_log = 'ไฟล์master';
      $insert_log->save();
 
@@ -324,7 +324,7 @@ class EstimateController extends Controller
      // dd($data->toArray());
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
-     $insert_log->path = $path.$name;
+     $insert_log->path = $pathreal.$name;
      $insert_log->type_log = 'งบทำการ';
      $insert_log->save();
 
@@ -596,7 +596,7 @@ class EstimateController extends Controller
 
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
-     $insert_log->path = $path.$name;
+     $insert_log->path = $pathreal.$name;
      $insert_log->type_log = 'ไฟลstructure';
      $insert_log->save();
 
