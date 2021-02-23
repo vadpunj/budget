@@ -49,7 +49,7 @@ class EstimateController extends Controller
       // }else{
       //   $btn = 'disabled';
       // }
-
+      // query หาชื่อค่าใช้จ่ายทั้งหมด
       $test = DB::table('masters')
         ->whereNull('deleted_at')
          ->whereNotIn('account', function($query)
@@ -70,6 +70,7 @@ class EstimateController extends Controller
          $all_now[date("Y")+543][$value->account] = 0;
 
        }
+       // query ค่าใช้จ่ายงบประมาณที่อนุมัติแล้วในปีก่อนย้อนหลังไป3ปี
         for($i = date("Y",strtotime("-3 year"))+543 ; $i <= date("Y")+542 ; $i++){
           $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
 
@@ -99,6 +100,7 @@ class EstimateController extends Controller
             $list = NULL;
           }
         }
+        // query ข้อมูลงบปีปัจจุบัน
         $last_ver_now = Func::get_last_version(date("Y")+543,Auth::user()->center_money);
         $list_now = DB::table('estimates')
           ->select('stat_year','reason','account','status', DB::raw('SUM(budget) as budget'))
@@ -130,6 +132,8 @@ class EstimateController extends Controller
          'phone' => 'required|numeric'
       ]);
       // dd($request->budget);
+      // บันทึกข้อมูลมูลงบประมาณ
+      // เก็บข้อมูลUserที่ของบในtable User_request
       $last = Func::get_last_version(date('Y')+543,Auth::user()->center_money);
 // dd(Func::get_cost_title(Auth::user()->center_money));
       // $last = Estimate::where('center_money',\Auth::user()->center_money)->latest()->first();
@@ -176,6 +180,7 @@ class EstimateController extends Controller
 
     public function post_importfile(Request $request)
     {
+      // import file master
       config(['excel.import.heading' => 'original' ]);
       set_time_limit(0);
       $this->validate($request, [
@@ -249,6 +254,7 @@ class EstimateController extends Controller
     public function post_master(Request $request)
     {
       // dd('234');
+      // บันทึกข้อมูล master
       $this->validate($request, [
         'account' => 'required|min:8',
         'name'  => 'required'
@@ -295,7 +301,7 @@ class EstimateController extends Controller
     public function get_estimate()
     {
       // SELECT * FROM `estimates` where account not in (SELECT account from masters );
-
+      // แสดงข้อมูลงบที่ยังไม่ได้mapกับบัญชีค่าใช้จ่าย
       $test =  Estimate::whereNotIn('account', function($query){
           $query->select('account')
           ->from(with(new Master)->getTable());
@@ -306,6 +312,7 @@ class EstimateController extends Controller
 
     public function post_estimate(Request $request)
     {
+      // import file งบประมาณ
       config(['excel.import.heading' => 'original' ]);
       set_time_limit(0);
       $this->validate($request, [
@@ -318,9 +325,6 @@ class EstimateController extends Controller
      $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
      $data = Excel::load($path)->get();
-     // Storage::disk('log')->put($name, File::get($request->file('select_file')));
-     // // dd(File::get($request->file('select_file')));
-     // $data = Excel::load($path)->get();
      // dd($data->toArray());
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
@@ -352,6 +356,7 @@ class EstimateController extends Controller
     public function post_edit_account(Request $request)
     {
       // dd(2321);
+      // แก้ไขงบบัญชีงบที่แมพไม่เจอ
       $update = Estimate::find($request->id);
       $update->account = $request->account;
       $update->update();
@@ -363,6 +368,7 @@ class EstimateController extends Controller
 
     public function get_view()
     {
+      // แสดงเมนูงบเพื่อนให้วง Approve
       if(Auth::user()->type == 1 || Auth::user()->type == 5 || Auth::user()->type == 4){
         $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
 
@@ -393,6 +399,7 @@ class EstimateController extends Controller
     {
 
       // dd($request->all());
+      // เฉพาะ วง ที่สามารถค้นหาตามชื่อฝ่ายได้
       $view = null;
       $this->validate($request, [
         'cost_title'  => 'required'
@@ -417,7 +424,7 @@ class EstimateController extends Controller
 
     public function post_approve(Request $request)
     {
-// เขต/ฝ่าย Approve
+      // เขต/ฝ่าย Approve
 // dd(Carbon::now());
       if(Auth::user()->type == 5){
         foreach($request->approve2 as $key => $val){
@@ -578,6 +585,7 @@ class EstimateController extends Controller
     public function post_struc(Request $request)
     {
       // dd(3333);
+      // import file ข้อมูลโครงสร้าง
       config(['excel.import.heading' => 'original' ]);
       set_time_limit(0);
       $this->validate($request, [
@@ -623,6 +631,7 @@ class EstimateController extends Controller
 
     public function edit_struc(Request $request)
     {
+      // แก้ไขข้อมูลโครงสร้างองค์กร
       $edit = Structure::find($request->id);
       $edit->Company = $request->Company;
       $edit->Division = $request->Division;
@@ -639,6 +648,7 @@ class EstimateController extends Controller
 
     public function delete_struc(Request $request)
     {
+      // ลบข้อมูลโครงสร้างองค์กร
       $delete = Structure::find($request->id);
       $delete->delete();
 
@@ -649,6 +659,7 @@ class EstimateController extends Controller
 
     public function post_add_struc(Request $request)
     {
+      // เพิ่มข้อมูลโครงสร้างองค์กร
       $add = new Structure;
       $add->Company = $request->Company;
       $add->Division = $request->Division;
@@ -670,6 +681,7 @@ class EstimateController extends Controller
     public function export_sap(Request $request)
     {
       // $data_array[] = 0;
+      // export template to sap
       $sap = Estimate::select('stat_year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
         ->where('stat_year', $request->stat_year)
         ->where('status',1)
@@ -705,6 +717,7 @@ class EstimateController extends Controller
 
     public function get_status()
     {
+      // ขั้นตอนงบประมาณ
       if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 4){
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->orderBy('center_money','ASC')->get();
       }else{
@@ -739,6 +752,7 @@ class EstimateController extends Controller
 
     public function post_status(Request $request)
     {
+      // วง สามารถค้นหาชื่อฝ่ายได้
       $get_status = NULL;
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('cost_title','like','%'.$request->cost_title.'%')->groupBy('center_money')->orderBy('center_money','ASC')->get();
@@ -763,8 +777,8 @@ class EstimateController extends Controller
 
     public function get_version()
     {
+      // ดูversionงบประมาณ
       $last_ver = Func::get_last_version(date('Y')+543,Auth::user()->center_money);
-
       // $last_ver  = Estimate::where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->latest()->first();
       // dd($last_ver->version);
       $data = Estimate::where('version',$last_ver)
@@ -777,6 +791,7 @@ class EstimateController extends Controller
     }
     public function post_version(Request $request)
     {
+      // ค้นหางบประมาณversionต่าง
       $last_ver = Func::get_last_version(date('Y')+543,Auth::user()->center_money);
 
       // $last_ver  = Estimate::where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->latest()->first();
@@ -795,6 +810,7 @@ class EstimateController extends Controller
     }
     public function post_view_estimate(Request $request)
     {
+      // เปรียบเทียบข้อมูลงบประมาณ
       if(Auth::user()->type == "5" || Auth::user()->type == "1"){
         // dd(24);
 
@@ -855,6 +871,7 @@ class EstimateController extends Controller
 
     public function print_all(Request $request)
     {
+      // export file ข้อมูลการของบประมาณ(หน้า report_apv)
       // dd(Auth::user()->type);
       if(Auth::user()->type == 1 || Auth::user()->type == 5){
         $center_money = Estimate::select('center_money')->where('stat_year',$request->year)->where('cost_title','like','%'.$request->cost_title.'%')->where('center_money','like','%'.$request->center_money.'%')->groupBy('center_money')->get();
@@ -926,6 +943,7 @@ class EstimateController extends Controller
     public function get_approve()
     {
 // dd(343);
+    // วง/ฝ่าย approve งบ
       $center_money = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
 
       // dd($center_money);
@@ -957,6 +975,7 @@ class EstimateController extends Controller
     public function post_report_apv(Request $request)
     {
       // dd($request->all());
+      // หน้า report apv
       if(Auth::user()->type == 1 || Auth::user()->type == 5){
         $this->validate($request, [
           'cost_title'  => 'required'
@@ -999,6 +1018,7 @@ class EstimateController extends Controller
     public function post_compare(Request $request)
     {
       // dd($request->all());
+      // หน้า report compare
       $name = DB::table('masters')
         ->whereNull('deleted_at')
          ->whereNotIn('account', function($query)
@@ -1094,6 +1114,7 @@ class EstimateController extends Controller
 
     public function print_compare(Request $request)
     {
+      // export file compare
       // dd($request->all());
       $name = DB::table('masters')
         ->whereNull('deleted_at')
