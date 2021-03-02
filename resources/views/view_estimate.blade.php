@@ -45,7 +45,7 @@
               <div class="form-group row">
                 @if(Auth::user()->type == "5" || Auth::user()->type == "1")
                 <label class="col-md-2 col-form-label">ศูนย์เงินทุน <font color="red">*</font></label>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-md-4">
                   <div class="input-group">
                     <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center" value="{{ old('fund_center') }}">
                     @error('fund_center')
@@ -56,7 +56,7 @@
                   </div>
                 </div>
                 <label class="col-md-2 col-form-label">ศูนยต้นทุน <font color="red">*</font></label>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-md-4">
                   <div class="input-group">
                     <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money" value="{{ old('center_money') }}">
                     @error('center_money')
@@ -68,7 +68,7 @@
                 </div>
                 @endif
                 <label class="col-md-2 col-form-label">บัญชีรายการภาระผูกพัน</label>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-md-4">
                   <div class="input-group">
                     <input class="form-control @error('account') is-invalid @enderror"  type="text" name="account" value="{{ old('account') }}">
                     @error('account')

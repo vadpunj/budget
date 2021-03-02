@@ -44,7 +44,7 @@
               <div class="form-group row">
                 @if(Auth::user()->type == "5" || Auth::user()->type == "1")
                 <label class="col-md-2 col-form-label">ชื่อฝ่าย(ย่อ) <font color="red">*</font></label>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-md-4">
                   <div class="input-group">
                     <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center" value="{{ old('fund_center') }}">
                     @error('fund_center')
@@ -55,7 +55,7 @@
                   </div>
                 </div>
                 <label class="col-md-2 col-form-label">ชื่อส่วนงาน(เต็ม) <font color="red">*</font></label>
-                <div class="form-group col-sm-4">
+                <div class="form-group col-md-4">
                   <div class="input-group">
                     <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money" value="{{ old('center_money') }}">
                     @error('center_money')

@@ -53,7 +53,7 @@
                 @csrf
                 <div class="form-group row">
                   <label class="col-md-2 col-form-label">รายการภาระผูกพัน <font color="red">*</font></label>
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-md-4">
                     <div class="input-group">
                       <input class="form-control @error('account') is-invalid @enderror" type="text" name="account" value="{{ old('account') }}">
                       @error('account')
@@ -64,7 +64,7 @@
                     </div>
                   </div>
                   <label class="col-md-2 col-form-label">ชื่อ <font color="red">*</font></label>
-                  <div class="form-group col-sm-4">
+                  <div class="form-group col-md-4">
                     <div class="input-group">
                       <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{ old('name') }}">
                       @error('name')

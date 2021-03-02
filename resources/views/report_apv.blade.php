@@ -62,7 +62,7 @@
             <div class="form-group row">
               @if(Auth::user()->type == "5" || Auth::user()->type == "1")
               <label class="col-md-2 col-form-label">ชื่อฝ่าย (ย่อ) : <font color="red">*</font></label>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-md-4">
                 <div class="input-group">
                   <input class="form-control @error('cost_title') is-invalid @enderror" type="text" name="cost_title" value="{{ old('cost_title') }}">
                   @error('cost_title')
@@ -74,7 +74,7 @@
               </div>
               @endif
               <label class="col-md-2 col-form-label">รหัสศูนย์ต้นทุน :</label>
-              <div class="form-group col-sm-4">
+              <div class="form-group col-md-4">
                 <div class="input-group">
                   <input class="form-control" type="text" name="center_money">
                 </div>
