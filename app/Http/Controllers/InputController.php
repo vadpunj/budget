@@ -26,6 +26,7 @@ class InputController extends Controller
 {
     public function get_source()
     {
+      // $group_status = [];
       $data = Information::orderBy('id','DESC')->get();
       if(Auth::user()->type == 4){
       $center = Estimate::select('center_money')->where('stat_year',date('Y')+543)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
@@ -37,13 +38,15 @@ class InputController extends Controller
       }
       // dd($group_status);
       $stat= array('5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
-
-      foreach ($group_status as $key => $arr_val) {
-        foreach($arr_val as $key2 => $val){
-          // dd($val);
-          $stat[$val->status] += $val->budget;
+      if(isset($group_status)){
+        foreach ($group_status as $key => $arr_val) {
+          foreach($arr_val as $key2 => $val){
+            // dd($val);
+            $stat[$val->status] += $val->budget;
+          }
         }
       }
+
 // dd($stat);
         return view('dashboard',['stat'=>$stat ,'data' => $data]);
       }
@@ -104,6 +107,7 @@ class InputController extends Controller
 
     public function open( $filename = '' )
     {
+
          // Check if file exists in app/storage/file folder
          $file_path = storage_path() . "/log_info/" . $filename;
          // dd($file_path);
@@ -285,7 +289,7 @@ class InputController extends Controller
     public function download( $filename = '' )
     {
          // Check if file exists in app/storage/file folder
-         $file_path = storage_path() . "/file/" . $filename;
+         $file_path = storage_path() . "/files/" . $filename;
          // dd($file_path);
          $headers = array(
              'Content-Type: application/vnd.ms-excel',

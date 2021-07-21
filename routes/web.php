@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get('/export/sap', 'EstimateController@get_export')->middleware('ApproveAuth')->name('get_export');
   Route::post('/export/sap', 'EstimateController@export_sap')->middleware('ApproveAuth')->name('export_sap');
   Route::get('/view/all', 'EstimateController@get_view')->name('get_view');
+  Route::get('/change/id', 'EstimateController@find_fundcenter')->name('change_id');
+  Route::get('/change/fund', 'EstimateController@find_center')->name('change_fund');
   Route::post('/view/all', 'EstimateController@post_view')->name('post_view');
   Route::get('/view/version', 'EstimateController@get_version')->name('get_version');
   Route::post('/view/version', 'EstimateController@post_version')->name('post_version');
@@ -42,8 +44,11 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
   Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
   Route::post('/master', 'EstimateController@post_importfile')->name('post_import_master');
-  Route::get('/add/master', 'EstimateController@get_master')->name('add_master');
-  Route::post('/add/master', 'EstimateController@post_master')->name('post_add_master');
+  Route::get('/find/master', 'EstimateController@get_master')->name('add_master');
+  Route::post('/find/master', 'EstimateController@post_master')->name('find_master');
+  Route::post('/find/master/add', 'EstimateController@add_master')->name('post_add_master');
+  Route::post('/find/master/edit', 'EstimateController@post_edit_master')->name('post_edit_master');
+  Route::post('/find/master/delete', 'EstimateController@post_delete_master')->name('post_delete_master');
   Route::get('/import/struc', 'EstimateController@get_struc')->name('import_struc');
   Route::post('/import/struc', 'EstimateController@post_struc')->name('import_struc');
   Route::get('/shutdown', 'UserController@shutdown')->middleware('ApproveAuth')->name('shutdown');
@@ -68,12 +73,11 @@ Route::group(['middleware' => ['auth']], function () {
   });
   Route::group(['prefix' => 'estimate'], function(){
     Route::get('/add', 'EstimateController@get_add')->middleware('UserAuth')->name('add_est');
-    Route::post('/add', 'EstimateController@post_add')->middleware('UserAuth')->name('insert_est');
+    Route::post('/add', 'EstimateController@post_add')->middleware('UserAuth')->name('post_add');
+    // Route::post('/add/find', 'EstimateController@find_estimate')->middleware('UserAuth')->name('find_estimate');
     // Route::get('/edit/master', 'EstimateController@get_edit_master')->name('edit_master');
-    Route::post('/edit/master', 'EstimateController@post_edit_master')->name('post_edit_master');
-    Route::post('/delete/master', 'EstimateController@post_delete_master')->name('post_delete_master');
-    Route::get('/import/estimate', 'EstimateController@get_estimate')->middleware('UserAuth')->name('import_estimate');
-    Route::post('/import/estimate', 'EstimateController@post_estimate')->middleware('UserAuth');
+    Route::get('/import/estimate', 'EstimateController@get_estimate')->name('import_estimate');
+    Route::post('/import/estimate', 'EstimateController@post_estimate');
     Route::post('/edit/account', 'EstimateController@post_edit_account')->name('post_edit_account');
     Route::post('/approve', 'EstimateController@post_approve')->name('post_approve');
     Route::post('/print/view', 'EstimateController@print_all')->name('print_view');

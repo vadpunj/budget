@@ -101,11 +101,11 @@ class UserController extends Controller
             // dd($make_data);
             $jsodata = json_decode($make_data);
             $line = Structure::where('CostCenterName',$jsodata->div_name)->first();
-            // dd($line->Division);
+            // dd($line);
             $update = DB::table('users')
                 ->where('emp_id',$request->emp_id)
-                ->update(['field' => $line->Division,'cost_title' => $line->CostCenterTitle,'center_money' => $line->CostCenterID,'fund_center' => $line->FundsCenterID,
-                'office'=> $jsodata->dept_name ,'part' => $jsodata->div_name ,'tel' => $jsodata->phone_no,
+                ->update(['field' => Func::get_name_costcenter_by_divID($line->FundsCenterID),'cost_title' => $line->CostCenterTitle,'center_money' => $line->CostCenterID,'fund_center' => substr_replace($line->CostCenterID,"00",5),
+                'division_center' => $line->FundsCenterID,'office'=> $jsodata->dept_name ,'part' => $jsodata->div_name ,'tel' => $jsodata->phone_no,'nt' => $line->NT,
                 'updated_at' => date('Y-m-d H:i:s')]);
           }
 
@@ -186,7 +186,7 @@ class UserController extends Controller
 
     public function edit_user(Request $request)
     {
-      // dd($request->emp_id);
+      // dd($request->all());
       $this->validate($request, [
         'name' => 'required|min:4',
         'emp_id' => 'required|numeric'
@@ -195,12 +195,16 @@ class UserController extends Controller
       $update = User::find($request->id);
       $update->name = $request->name;
       $update->emp_id = $request->emp_id;
-      $update->field = $request->field;
-      $update->office = $request->office;
-      $update->part = $request->part;
+      $update->field = Func::get_field_name($request->division_center);
+      $update->office = Func::get_office_name($request->fund_center);
+      $name = Func::get_part_name($request->center_money);
+      $update->part = $name->CostCenterName;
+      $update->cost_title =  $name->CostCenterTitle;
       $update->center_money = $request->center_money;
       $update->type = $request->type;
       $update->tel = $request->tel;
+      $update->fund_center = $request->fund_center;
+      $update->division_center = $request->division_center;
       $update->update();
 
       if($update){

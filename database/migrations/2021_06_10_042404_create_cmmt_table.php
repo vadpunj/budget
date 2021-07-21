@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMastersTable extends Migration
+class CreateCmmtTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateMastersTable extends Migration
      */
     public function up()
     {
-        Schema::create('masters', function (Blueprint $table) {
+        Schema::create('cmmt', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('account');
+            $table->string('name_id');
             $table->string('name');
-            $table->string('id1'); //หมวดค่าใช้จ่าย
-            $table->string('id2'); //หมวดย่อย
-            $table->string('remark')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -32,6 +28,6 @@ class CreateMastersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('masters');
+        Schema::dropIfExists('cmmt');
     }
 }

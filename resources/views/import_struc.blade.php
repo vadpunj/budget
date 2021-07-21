@@ -104,6 +104,12 @@
                     </div>
                   </div>
                   <div class="form-group row">
+                  <label class="col-md-2 col-form-label">NT <font color="red">*</font></label>
+                  <div class="form-group col-sm-4">
+                    <div class="input-group">
+                      <input class="form-control @error('NT') is-invalid @enderror" type="text" name="NT" placeholder="NT1, NT2">
+                    </div>
+                  </div>
                     <div class="col-md-2 form-group">
                       <button class="btn btn-primary" type="submit">Submit</button>
                     </div>
@@ -119,7 +125,7 @@
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="date-input">Select File</label>
       <div class="col-md-6">
-        <input id="file-input" type="file" name="select_file"><span class="text-muted">.xlsx<a href="{{ url('/download/struct.xlsx') }}" target="_blank">
+        <input id="file-input" type="file" name="select_file"><span class="text-muted">.xlsx<a href="{{ url('/download/struc.xlsx') }}" target="_blank">
     ตัวอย่างไฟล์ที่อัพโหลด
 </a></span>
       </div>
@@ -131,12 +137,12 @@
      <thead>
        <tr>
          <th>No.</th>
-         <th>Company</th>
          <th>Division</th>
          <th>FundsCenterID</th>
          <th>CostCenterID</th>
          <th>CostCenterTitle</th>
          <th>CostCenterName</th>
+         <th>NT</th>
          <th>Edit</th>
          <th>Delete</th>
        </tr>
@@ -145,12 +151,12 @@
        @foreach($data as $row)
        <tr>
          <td align="center">{{$loop->iteration}}</td>
-         <td align="center">{{$row->Company}}</td>
          <td>{{$row->Division}}</td>
          <td align="center">{{$row->FundsCenterID}}</td>
          <td align="center">{{$row->CostCenterID}}</td>
          <td>{{$row->CostCenterTitle}}</td>
          <td>{{$row->CostCenterName}}</td>
+         <td>{{$row->NT}}</td>
          <td align="center">
            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="{{'#myEdit'.$row->id}}">
              <i class="nav-icon icon-pencil"></i> Edit
@@ -180,8 +186,8 @@
           <div class="modal-body">
             <div class="row">
               <div class="form-group col-sm-4">
-                <label for="city">Company</label>
-                <input class="form-control @error('Company') is-invalid @enderror" type="text" name="Company" value="{{$row->Company}}">
+                <label for="city">NT</label>
+                <input class="form-control @error('Company') is-invalid @enderror" type="text" name="NT" value="{{$row->NT}}">
               </div>
               <div class="form-group col-sm-8">
                 <label for="postal-code">Division</label>

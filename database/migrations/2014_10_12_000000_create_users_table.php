@@ -24,7 +24,9 @@ class CreateUsersTable extends Migration
           $table->string('part')->nullable();
           $table->string('center_money')->nullable();
           $table->string('fund_center')->nullable();
+          $table->string('division_center')->nullable();
           $table->string('tel')->nullable();
+          $table->string('nt')->nullable();
           $table->string('user_id',10)->nullable();
           $table->timestamps();
           $table->softDeletes();

@@ -18,9 +18,11 @@ class CreateStructuresTable extends Migration
             $table->string('Company');
             $table->string('Division');
             $table->string('FundsCenterID');
-            $table->string('CostCenterID');
+            $table->string('FundID')->nullable();
+            $table->string('CostCenterID')->nullable();
             $table->string('CostCenterTitle');
             $table->string('CostCenterName');
+            $table->string('NT')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

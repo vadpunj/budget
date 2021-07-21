@@ -18,12 +18,16 @@ class CreateEstimatesTable extends Migration
           $table->integer('version');
           $table->integer('stat_year');
           $table->string('account');
+          $table->string('id1');
+          $table->string('id2');
           $table->double('budget');
           $table->string('center_money');
           $table->string('fund_center');
+          $table->string('div_center');
           $table->string('cost_title');
           $table->string('cost_name');
           $table->string('status')->nullable();
+          $table->string('status_ver');
           $table->string('created_by');
           $table->string('approve_by1')->nullable();
           $table->string('approve_by2')->nullable();

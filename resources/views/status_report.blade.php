@@ -48,19 +48,26 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
-          @if(Auth::user()->type == 5)
+          @if(Auth::user()->type == 5 || Auth::user()->type == 1)
           <form action="{{ route('post_status') }}" method="post">
-            @csrf
-          <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="date-input">ชื่อฝ่าย(ย่อ) : <font color="red">*</font></label>
-              <div class="col-md-3">
-                <input class="form-control"  type="text" name="cost_title">
-
+              @csrf
+              <div class="row">
+                <div class="form-group col-sm-3">
+                  <label for="postal-code">สายงาน : </label>
+                    <select class="form-control div_id" name="div_id" id="div_id">
+                      <option value="">--เลือกสายงาน--</option>
+                    @foreach($str as $val)
+                      <option value="{{ $val->FundsCenterID }}" @if($divid == $val->FundsCenterID) selected @else '' @endif>{{ Func::get_name_costcenter_by_divID($val->FundsCenterID) }}</option>
+                    @endforeach
+                    </select>
+                </div>
+                <div class="col-md-4">
+                  <input type="submit" class="btn btn-primary" value="Submit" style="margin-top: 20px;">
+                </div>
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
           </form>
           @endif
+          @if(isset($status))
           <table class="table table-responsive-sm table-bordered myTable">
             <thead>
               <tr>
@@ -75,10 +82,9 @@
               </tr>
             </thead>
             <tbody>
-              @if(isset($status))
-                @foreach($status as $key => $arr_value)
-                  @foreach($arr_value as $key2 => $value)
+                @foreach($status as $key => $value)
                   <tr>
+
                     <td align="center">{{ $value["stat_year"] }}</td>
                     <td align="center">{{ $value["cost_title"] }}</td>
                     <td align="center">{{ $value["center_money"] }}</td>
@@ -106,7 +112,6 @@
                       <td align="center">{{ '-' }}</td>
                     @endif
                   </tr>
-                  @endforeach
                 @endforeach
               @endif
             </tbody>
@@ -131,6 +136,40 @@
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
       <!-- Latest compiled and minified JavaScript -->
   <script src="{{ asset('admin/js/bootstrap-select.min.js')}}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(document).on('click','.div_id',function(){
+        // console.log("its change");
+        var cat_id=$(this).val();
+        // var divid=document.getElementById("fun_id").value;
+        // console.log(divid);
+        var div=$(this).parents();
+        var op=" ";
+        // console.log(cat_id);
+        $.ajax({
+          type: 'get',
+          url:"{{ route('change_id') }}",
+          data:{'id': cat_id},
+          success:function(data){
+            // console.log('success');
+            // console.log(data.length);
+            // console.log(data.length);
+            op+='<option selected="selected" value="0">--กรุณาเลือกสายงานก่อน--</option>'
+            for(var i=0;i<data.length;i++){
+              // console.log(data[i]["CostCenterName"]);
+              op+='<option value="'+data[i]["FundID"]+'">'+data[i]["CostCenterName"]+'</option>'
+            }
+            div.find('.fund_id').empty();
+            div.find('.fund_id').append(op);
+          }
+
+        })
+      });
+    });
+    // function submit() {
+    //   document.getElementById("mydata").submit();
+    // }
+  </script>
   <script type="text/javascript">
       $('.myTable').DataTable({
         select:true,

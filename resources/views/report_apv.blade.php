@@ -49,10 +49,10 @@
           <form action="{{ route('post_report_apv') }}" method="post">
             @csrf
             <div class="form-group row">
-              <label class="col-md-2 col-form-label">ปี (พ.ศ.) :</label>
+              <label class="col-md-2 col-form-label">ปี (พ.ศ.) :<font color="red">*</font></label>
                 <div class="col-md-3">
                   <select class="form-control" name="stat_year">
-                    @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
+                    @for($i = (date('Y')+544) ;$i >= (date('Y',strtotime("-3 year"))+544) ; $i--)
                       <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
                     @endfor
                   </select>
@@ -61,15 +61,14 @@
             @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "4")
             <div class="form-group row">
               @if(Auth::user()->type == "5" || Auth::user()->type == "1")
-              <label class="col-md-2 col-form-label">ชื่อฝ่าย (ย่อ) : <font color="red">*</font></label>
+              <label class="col-md-2 col-form-label">ชื่อฝ่าย : <font color="red">*</font></label>
               <div class="form-group col-md-4">
                 <div class="input-group">
-                  <input class="form-control @error('cost_title') is-invalid @enderror" type="text" name="cost_title" value="{{ old('cost_title') }}">
-                  @error('cost_title')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                  @enderror
+                  <select class="form-control" name="fund_id">
+                    @foreach($fund as $id)
+                    <option value="{{ $id->FundID }}" @if($fund_id == $id->FundID) selected @else '' @endif>{{ $id->CostCenterName }}</option>
+                    @endforeach
+                  </select>
                 </div>
               </div>
               @endif
@@ -88,9 +87,9 @@
           </form>
                   <form action="{{ route('print_view') }}" method="post">
                     @csrf
-                    @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "5" || Auth::user()->type == "4")
+                    @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "4")
                       <input type="hidden" name="center_money" value="{{ $centermoney }}">
-                      <input type="hidden" name="cost_title" value="{{ $cost }}">
+                      <input type="hidden" name="cost_title" value="{{ $fund_id }}">
                     @endif
                     <input type="hidden" name="year" value="{{ $yy }}">
                     &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
@@ -101,6 +100,7 @@
           </div>
       </div>
           @csrf
+          @if(isset($views))
           <table class="table table-responsive-sm table-bordered">
             <thead>
               <tr>
@@ -116,12 +116,10 @@
               </tr>
             </thead>
             <tbody>
-            @if(isset($views))
               @php
                 $sum =0;
               @endphp
-              @foreach($views as $key => $arr_value)
-                @foreach($arr_value as $value)
+              @foreach($views as $key => $value)
                 @php
                   $sum += $value['budget'];
                 @endphp
@@ -129,8 +127,8 @@
                   <td align="center">{{$value['stat_year']}}</td>
                   <td align="center">{{$value['fund_center']}}</td>
                   <td align="center">{{$value['center_money']}}</td>
+                  <td>{{Func::FundID_name($value['fund_center'])}}</td>
                   <td align="center">{{$value['cost_title']}}</td>
-                  <td>{{Func::get_name_costcenter($value['center_money'])}}</td>
                   <td align="center">{{$value['account']}}</td>
                   <td>{{Func::get_account($value['account'])}}</td>
                   <td align="right">{{number_format($value['budget'],2)}}</td>
@@ -148,7 +146,6 @@
                     <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
                   @endif
                 </tr>
-                @endforeach
               @endforeach
             </tbody>
             <tr>

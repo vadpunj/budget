@@ -35,55 +35,47 @@
     </ol>
     <!-- end breadcrumb -->
   <div class="container-fluid">
-    @if(!empty($success))
-    <div class="alert alert-success alert-block">
-     <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ $success }}</strong>
-    </div>
-    @endif
     @if(Auth::user()->type == 1 || Auth::user()->type == 5)
     <button type="button" class="btn btn-info mb-1" data-toggle="modal" data-target="{{'#myAdd'}}">
       <i class="nav-icon fa fa-plus"></i> เพิ่มข้อมูลบัญชี
     </button>
    @endif
-    <div class="animated fadeIn">
-      <div class="row">
-         <div class="col-lg-12">
-          <form action="{{ route('find_master') }}" method="post">
-            @csrf
-           <div class="card">
-           <div class="card-header word">
-             <i class="fa fa-search"></i> ค้นหาข้อมูลบัญชี</div>
-             <div class="card-body">
-               <div class="form-group row">
+  <div class="animated fadeIn">
+    <div class="row">
+       <div class="col-lg-12">
+        <form action="{{ route('find_master') }}" method="post">
+          @csrf
+         <div class="card">
+         <div class="card-header word">
+           <i class="fa fa-search"></i> ค้นหาข้อมูลบัญชี</div>
+           <div class="card-body">
+             <div class="form-group row">
 
-               <label class="col-md-1 col-form-label">หมวดหมู่</label>
-               <div class="col-md-3">
-                 <select class="form-control" name="id1">
-                   @foreach($list as $value)
-                     <option value="{{ $value->name_id }}" @if($cate == $value->name_id) selected @else '' @endif>{{ $value->name }}</option>
-                   @endforeach
-                 </select>
-               </div>
-               <div class="col-md-2 form-group">
-                 <button class="btn btn-primary" type="submit">Submit</button>
-               </div>
-               </form>
-              </div>
-           </div>
-          </div>
+             <label class="col-md-1 col-form-label">หมวดหมู่</label>
+             <div class="col-md-3">
+               <select class="form-control" name="id1">
+                 @foreach($list as $value)
+                   <option value="{{ $value->name_id }}" @if($cate == $value->name_id) selected @else '' @endif>{{ $value->name }}</option>
+                 @endforeach
+               </select>
+             </div>
+             <div class="col-md-2 form-group">
+               <button class="btn btn-primary" type="submit">Submit</button>
+             </div>
+             </form>
+            </div>
+         </div>
         </div>
       </div>
-     </div>
-  @if(isset($data_arr))
+    </div>
+   </div>
+@if(isset($data_arr))
    <table class="table table-responsive-sm table-bordered" id="myTable">
      <thead>
        <th>รายการภาระผูกพัน</th>
        <th>ชื่อ</th>
-       @if(Auth::user()->type == 5)
        <th>Edit</th>
        <th>Delete</th>
-       @endif
      </thead>
      <tbody>
     @foreach($data_arr as $arr => $id1_arr)
@@ -107,7 +99,6 @@
       <tr>
        <td align="center">{{ $account }}</td>
        <td>{{ $row }}</td>
-       @if(Auth::user()->type == 5)
        <td align="center">
          {{--<a href="{{ '/estimate/edit/master/'.$row->id }}">--}}
            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="{{'#myEdit'.$account}}">
@@ -120,7 +111,6 @@
            <i class="nav-icon icon-trash"></i> Delete
          </button>
        </td>
-       @endif
       </tr>
       @endforeach
     @endforeach

@@ -43,44 +43,37 @@
                 @csrf
               <div class="form-group row">
                 @if(Auth::user()->type == "5" || Auth::user()->type == "1")
-                <label class="col-md-2 col-form-label">ชื่อฝ่าย(ย่อ) <font color="red">*</font></label>
-                <div class="form-group col-md-4">
-                  <div class="input-group">
-                    <input class="form-control @error('fund_center') is-invalid @enderror"  type="text" name="fund_center" value="{{ old('fund_center') }}">
-                    @error('fund_center')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-                <label class="col-md-2 col-form-label">ชื่อส่วนงาน(เต็ม) <font color="red">*</font></label>
-                <div class="form-group col-md-4">
-                  <div class="input-group">
-                    <input class="form-control @error('center_money') is-invalid @enderror"  type="text" name="center_money" value="{{ old('center_money') }}">
-                    @error('center_money')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-                @endif
-                <label class="col-md-2 col-form-label">บัญชีรายการภาระผูกพัน</label>
-                <div class="form-group col-sm-4">
-                  <div class="input-group">
-                    <input class="form-control @error('account') is-invalid @enderror"  type="text" name="account" value="{{ old('account') }}">
-                    @error('account')
-                      <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-                </div>
-                <label class="col-md-2 col-form-label">ปี (พ.ศ.) :</label>
+                <label class="col-md-2 col-form-label">สายงาน : <font color="red">*</font></label>
                   <div class="col-md-4">
+                    <select class="form-control div_id" name="div_id" id="div_id">
+                      <option value="">--เลือกสายงาน--</option>
+                    @foreach($str as $val)
+                      <option value="{{ $val->FundsCenterID }}" @if($divid == $val->FundsCenterID) selected @else '' @endif>{{ Func::get_name_costcenter_by_divID($val->FundsCenterID) }}</option>
+                    @endforeach
+                    </select>
+                  </div>
+                  <label class="col-md-1 col-form-label">ฝ่าย : <font color="red">*</font></label>
+                    <div class="col-md-4">
+                      <select class="form-control fund_id" name="fund_id" id="fund_id">
+                        <option value="0">--กรุณาเลือกสายงานก่อน--</option>
+                        <option value="all">ทั้งหมด</option>
+                      </select>
+                    </div>
+                @endif
+              </div>
+              <div class="form-group row">
+                <label class="col-md-2 col-form-label">หมวดค่าใช้จ่าย<font color="red">*</font></label>
+                <div class="col-md-4">
+                  <select class="form-control" name="id1">
+                    @foreach($cmmt as $value)
+                    <option value="{{ $value->name_id }}" @if($id1 == $value->name_id) selected @else '' @endif>{{ $value->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <label class="col-md-2 col-form-label">ปี (พ.ศ.) :<font color="red">*</font></label>
+                  <div class="col-md-3">
                     <select class="form-control" name="stat_year">
-                      @for($i = (date('Y')+543) ;$i >= (date('Y',strtotime("-3 year"))+543) ; $i--)
+                      @for($i = (date('Y')+544) ;$i >= (date('Y',strtotime("-3 year"))+544) ; $i--)
                         <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
                       @endfor
                     </select>
@@ -93,10 +86,9 @@
                   </form>
                     <form action="{{ route('print_compare') }}" method="post">
                       @csrf
-                        <input type="hidden" name="fundcenter" value="{{ Func::get_cost_title($fund) }}">
-                        <input type="hidden" name="centermoney" value="{{ Func::get_name_costcenter($center) }}">
+                        <input type="hidden" name="fundcenter" value="{{ $fund_id }}">
                         <input type="hidden" name="statyear" value="{{ $yy }}">
-                        <input type="hidden" name="account" value="{{ $account }}">
+                        <input type="hidden" name="account" value="{{ $id1 }}">
                       &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-info"><i class="fa fa-print"></i> Export</button>
                     </form>
                   </div>
@@ -110,8 +102,7 @@
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
         <th>ชื่อ</th>
-        <th>ฝ่าย</th>
-        <th>ส่วน</th>
+        <th>ฝ่าย/ส่วน</th>
         <th>ปีงบประมาณ {{ $yy-1 }}</th>
         <th>ปีงบประมาณ {{ $yy }}</th>
       </tr>
@@ -124,8 +115,11 @@
           <tr>
             <td align="center">{{ $key_acc }}</td>
             <td>{{ Func::get_account($key_acc) }}</td>
-            <td>{{ Func::get_cost_title($fund) }}</td>
-            <td>{{ Func::get_name_costcenter($center) }}</td>
+            @if(Auth::user()->type == 2)
+              <td align="center">{{ Func::get_cost_title($fund_id) }}</td>
+            @else
+              <td>{{ Func::FundID_name($fund_id) }}</td>
+            @endif
             @if(isset($data_old[$key_acc][$yy-1]))
               @php
                 $sum1 += $data_old[$key_acc][$yy-1];
@@ -145,7 +139,7 @@
           </tr>
         @endforeach
         <tr>
-          <td align="right" colspan="4"><b>Sum</b></td>
+          <td align="right" colspan="3"><b>Sum</b></td>
           <td align="right"><b>{{ number_format($sum1,2) }}</b></td>
           <td align="right"><b>{{ number_format($sum2,2) }}</b></td>
         </tr>
@@ -168,6 +162,40 @@
   <script src="{{ asset('admin/node_modules/pace-progress/pace.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js') }}"></script>
   <script src="{{ asset('admin/node_modules/@coreui/coreui/dist/js/coreui.min.js') }}"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(document).on('click','.div_id',function(){
+        // console.log("its change");
+        var cat_id=$(this).val();
+        // var divid=document.getElementById("fun_id").value;
+        // console.log(divid);
+        var div=$(this).parents();
+        var op=" ";
+        // console.log(cat_id);
+        $.ajax({
+          type: 'get',
+          url:"{{ route('change_id') }}",
+          data:{'id': cat_id},
+          success:function(data){
+            // console.log('success');
+            // console.log(data.length);
+            // console.log(data.length);
+            op+='<option selected="selected" value="0">--กรุณาเลือกสายงานก่อน--</option>'
+            for(var i=0;i<data.length;i++){
+              // console.log(data[i]["CostCenterName"]);
+              op+='<option value="'+data[i]["FundID"]+'">'+data[i]["CostCenterName"]+'</option>'
+            }
+            div.find('.fund_id').empty();
+            div.find('.fund_id').append(op);
+          }
+
+        })
+      });
+    });
+    // function submit() {
+    //   document.getElementById("mydata").submit();
+    // }
+  </script>
   <script type="text/javascript">
   $(document).ready(function() {
     $('#myTable').DataTable({

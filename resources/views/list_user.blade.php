@@ -119,7 +119,7 @@
           <div class="row">
             <div class="form-group col-sm-6">
               <label for="city">สายงาน</label>
-              <input class="form-control @error('field') is-invalid @enderror" type="text" name="field" value="{{$row->field}}">
+              <input class="form-control @error('field') is-invalid @enderror" type="text" name="field" value="{{$row->field}}" readonly>
               @error('field')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -128,7 +128,7 @@
             </div>
             <div class="form-group col-sm-6">
               <label for="postal-code">ฝ่าย/สำนักงาน</label>
-              <input class="form-control @error('office') is-invalid @enderror" type="text" name="office" value="{{$row->office}}">
+              <input class="form-control @error('office') is-invalid @enderror" type="text" name="office" value="{{$row->office}}" readonly>
               @error('office')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -139,7 +139,7 @@
           <div class="row">
             <div class="form-group col-sm-6">
               <label for="city">ส่วน/สค.</label>
-              <input class="form-control @error('part') is-invalid @enderror" type="text" name="part" value="{{$row->part}}">
+              <input class="form-control @error('part') is-invalid @enderror" type="text" name="part" value="{{$row->part}}" readonly>
               @error('part')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -147,8 +147,28 @@
               @enderror
             </div>
             <div class="form-group col-sm-6">
-              <label for="postal-code">ศูนย์เงินทุน</label>
+              <label for="postal-code">ศูนย์ต้นทุน</label>
               <input class="form-control @error('center_money') is-invalid @enderror" type="text" name="center_money" value="{{$row->center_money}}">
+              @error('center_money')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+              @enderror
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <label for="city">ศูนย์เงินทุน</label>
+              <input class="form-control @error('fund_center') is-invalid @enderror" type="text" name="fund_center" value="{{$row->fund_center}}">
+              @error('part')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+              @enderror
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="postal-code">สายงาน</label>
+              <input class="form-control @error('division_center') is-invalid @enderror" type="text" name="division_center" value="{{$row->division_center}}">
               @error('center_money')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -231,8 +251,20 @@
 
              </div>
              <div class="form-group col-sm-6">
-               <label for="postal-code">ศูนย์เงินทุน</label>
+               <label for="postal-code">ศูนย์ต้นทุน</label>
                <input class="form-control" type="text" name="center_money" value="{{$row->center_money}}"readonly>
+
+             </div>
+           </div>
+           <div class="row">
+             <div class="form-group col-sm-6">
+               <label for="city">ศูนย์เงินทุน</label>
+               <input class="form-control" type="text" name="fund_center" value="{{$row->fund_center}}"readonly>
+
+             </div>
+             <div class="form-group col-sm-6">
+               <label for="postal-code">สายงาน</label>
+               <input class="form-control" type="text" name="division_center" value="{{$row->division_center}}"readonly>
 
              </div>
            </div>
