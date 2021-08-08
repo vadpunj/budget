@@ -21,6 +21,12 @@
     .word {
       color: #fff !important;
     }
+    .tableFixHead          { overflow: auto; height: 700px; }
+    .tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+    table  { border-collapse: collapse; width: 100%; }
+    th, td { padding: 8px 16px; }
+    th     { background:#eee; }
   </style>
 @endsection
 
@@ -89,121 +95,123 @@
       </div>
     </div>
     @if(isset($name))
-    <table class="table table-responsive-sm table-bordered" >
-      <thead>
-        <tr>
-          <th>รหัสบัญชี</th>
-          <th>หมวด/ประเภทรายจ่าย</th>
-          <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-3 year"))+544)}}</th>
-          <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-2 year"))+544)}}</th>
-          <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
-          <th>{{'งบประมาณขอตั้งปี '.(date("Y")+544)}}</th>
-          @if($type != 'all')
-          <th>{{'คำอธิบาย'}}</th>
-          @endif
-        </tr>
-      </thead>
-      <tbody>
-        @php
-          $all_sum = 0;
-          $all_sum1 = 0;
-          $all_sum2 = 0;
-          $all_sum3 = 0;
-        @endphp
-       @foreach($name as $id1 => $arr_id2)
-       <tr>
-           <td  colspan="8"><b>{{ $head[$id1] }}</b></td>
-       </tr>
-       @php
-         $sum = 0;
-         $sum1 = 0;
-         $sum2 = 0;
-         $sum3 = 0;
-       @endphp
-         @foreach($arr_id2 as $id2 => $arr_year)
+    <div class="tableFixHead">
+      <table class="table table-responsive-sm table-bordered" >
+        <thead>
+          <tr>
+            <th>รหัสบัญชี</th>
+            <th>หมวด/ประเภทรายจ่าย</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-3 year"))+544)}}</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-2 year"))+544)}}</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
+            <th>{{'งบประมาณขอตั้งปี '.(date("Y")+544)}}</th>
+            @if($type != 'all')
+            <th>{{'คำอธิบาย'}}</th>
+            @endif
+          </tr>
+        </thead>
+        <tbody>
+          @php
+            $all_sum = 0;
+            $all_sum1 = 0;
+            $all_sum2 = 0;
+            $all_sum3 = 0;
+          @endphp
+         @foreach($name as $id1 => $arr_id2)
          <tr>
-             @if($id1 == 1 && $id2 == '1')
-               <td  colspan="8">1.1 เงินเดือน ค่าจ้าง ค่าตอบแทน</td>
-             @elseif($id1 == 1 && $id2 == '2')
-               <td  colspan="8">1.2 เงินเดือน ค่าจ้าง ค่าตอบแทนผู้บริหาร</td>
-             @endif
-             @if($id1 == 2 && $id2 == '1')
-               <td  colspan="8">2.1 ค่าสวัสดิการพนักงาน ลูกจ้าง</td>
-             @elseif($id1 == 2 && $id2 == '2')
-               <td  colspan="8">2.2 ค่าสวัสดิการผู้บริหาร</td>
-             @endif
+             <td  colspan="8"><b>{{ $head[$id1] }}</b></td>
          </tr>
-         @foreach($arr_year as $year =>$arr_acc)
-           @foreach($arr_acc as $account => $value)
-         <tr>
-           <td>{{ $account }}</td>
-           <td>{{ Func::get_account($account) }}</td>
-           @if(!empty($year3[date("Y")+541][$account]))
-           @php
-             $sum3 += $year3[date("Y")+541][$account];
-             $all_sum3 += $year3[date("Y")+541][$account];
-           @endphp
-             <td align="right">{{ number_format($year3[date("Y")+541][$account],2) }}</td>
-           @else
-             <td align="center">{{ '-' }}</td>
-           @endif
-           @if(!empty($year2[date("Y")+542][$account]))
-           @php
-             $sum2 += $year2[date("Y")+542][$account];
-             $all_sum2 += $year2[date("Y")+542][$account];
-           @endphp
-             <td align="right">{{ number_format($year2[date("Y")+542][$account],2) }}</td>
-           @else
-             <td align="center">{{ '-' }}</td>
-           @endif
-           @if(!empty($year1[date("Y")+543][$account]))
-           @php
-             $sum1 += $year1[date("Y")+543][$account];
-             $all_sum1  += $year1[date("Y")+543][$account];
-           @endphp
-             <td align="right">{{ number_format($year1[date("Y")+543][$account],2) }}</td>
-           @else
-             <td align="center">{{ '-' }}</td>
-           @endif
-           @if(!empty($now[date("Y")+544][$account]))
-           @php
-             $sum += $now[date("Y")+544][$account];
-             $all_sum += $now[date("Y")+544][$account];
-           @endphp
-             <td align="right">{{ number_format($now[$year][$account],2) }}</td>
-           @else
-             <td align="center">{{ '-' }}</td>
-           @endif
-           @if($type != 'all')
-             @if(!empty($reason[date("Y")+544][$account]))
-               <td>{{ $reason[date("Y")+544][$account] }}</td>
+         @php
+           $sum = 0;
+           $sum1 = 0;
+           $sum2 = 0;
+           $sum3 = 0;
+         @endphp
+           @foreach($arr_id2 as $id2 => $arr_year)
+           <tr>
+               @if($id1 == 1 && $id2 == '1')
+                 <td  colspan="8">1.1 เงินเดือน ค่าจ้าง ค่าตอบแทน</td>
+               @elseif($id1 == 1 && $id2 == '2')
+                 <td  colspan="8">1.2 เงินเดือน ค่าจ้าง ค่าตอบแทนผู้บริหาร</td>
+               @endif
+               @if($id1 == 2 && $id2 == '1')
+                 <td  colspan="8">2.1 ค่าสวัสดิการพนักงาน ลูกจ้าง</td>
+               @elseif($id1 == 2 && $id2 == '2')
+                 <td  colspan="8">2.2 ค่าสวัสดิการผู้บริหาร</td>
+               @endif
+           </tr>
+           @foreach($arr_year as $year =>$arr_acc)
+             @foreach($arr_acc as $account => $value)
+           <tr>
+             <td>{{ $account }}</td>
+             <td>{{ Func::get_account($account) }}</td>
+             @if(!empty($year3[date("Y")+541][$account]))
+             @php
+               $sum3 += $year3[date("Y")+541][$account];
+               $all_sum3 += $year3[date("Y")+541][$account];
+             @endphp
+               <td align="right">{{ number_format($year3[date("Y")+541][$account],2) }}</td>
              @else
                <td align="center">{{ '-' }}</td>
              @endif
-           @endif
+             @if(!empty($year2[date("Y")+542][$account]))
+             @php
+               $sum2 += $year2[date("Y")+542][$account];
+               $all_sum2 += $year2[date("Y")+542][$account];
+             @endphp
+               <td align="right">{{ number_format($year2[date("Y")+542][$account],2) }}</td>
+             @else
+               <td align="center">{{ '-' }}</td>
+             @endif
+             @if(!empty($year1[date("Y")+543][$account]))
+             @php
+               $sum1 += $year1[date("Y")+543][$account];
+               $all_sum1  += $year1[date("Y")+543][$account];
+             @endphp
+               <td align="right">{{ number_format($year1[date("Y")+543][$account],2) }}</td>
+             @else
+               <td align="center">{{ '-' }}</td>
+             @endif
+             @if(!empty($now[date("Y")+544][$account]))
+             @php
+               $sum += $now[date("Y")+544][$account];
+               $all_sum += $now[date("Y")+544][$account];
+             @endphp
+               <td align="right">{{ number_format($now[$year][$account],2) }}</td>
+             @else
+               <td align="center">{{ '-' }}</td>
+             @endif
+             @if($type != 'all')
+               @if(!empty($reason[date("Y")+544][$account]))
+                 <td>{{ $reason[date("Y")+544][$account] }}</td>
+               @else
+                 <td align="center">{{ '-' }}</td>
+               @endif
+             @endif
 
-         </tr>
+           </tr>
+               @endforeach
              @endforeach
            @endforeach
+           <tr>
+             <td align="center" colspan="2"><b>Sum</b></td>
+             <td align="right"><b>{{ number_format($sum3,2) }}</b></td>
+             <td align="right"><b>{{ number_format($sum2,2) }}</b></td>
+             <td align="right"><b>{{ number_format($sum1,2) }}</b></td>
+             <td align="right"><b>{{ number_format($sum,2) }}</b></td>
+           </tr>
          @endforeach
          <tr>
-           <td align="center" colspan="2"><b>Sum</b></td>
-           <td align="right"><b>{{ number_format($sum3,2) }}</b></td>
-           <td align="right"><b>{{ number_format($sum2,2) }}</b></td>
-           <td align="right"><b>{{ number_format($sum1,2) }}</b></td>
-           <td align="right"><b>{{ number_format($sum,2) }}</b></td>
+           <td align="center" colspan="2"><b>Sum Total</b></td>
+           <td align="right"><b>{{ number_format($all_sum3,2) }}</b></td>
+           <td align="right"><b>{{ number_format($all_sum2,2) }}</b></td>
+           <td align="right"><b>{{ number_format($all_sum1,2) }}</b></td>
+           <td align="right"><b>{{ number_format($all_sum,2) }}</b></td>
          </tr>
-       @endforeach
-       <tr>
-         <td align="center" colspan="2"><b>Sum Total</b></td>
-         <td align="right"><b>{{ number_format($all_sum3,2) }}</b></td>
-         <td align="right"><b>{{ number_format($all_sum2,2) }}</b></td>
-         <td align="right"><b>{{ number_format($all_sum1,2) }}</b></td>
-         <td align="right"><b>{{ number_format($all_sum,2) }}</b></td>
-       </tr>
 
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
     @endif
   </div>
 </main>
@@ -220,21 +228,15 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $(document).on('click','.div_id',function(){
-        // console.log("its change");
         var cat_id=$(this).val();
-        // var divid=document.getElementById("fun_id").value;
         // console.log(divid);
         var div=$(this).parents();
         var op=" ";
-        // console.log(cat_id);
         $.ajax({
           type: 'get',
           url:"{{ route('change_id') }}",
           data:{'id': cat_id},
           success:function(data){
-            // console.log('success');
-            // console.log(data.length);
-            // console.log(data.length);
             op+='<option selected="selected" value="0">--กรุณาเลือกสายงานก่อน--</option>'
             for(var i=0;i<data.length;i++){
               // console.log(data[i]["CostCenterName"]);

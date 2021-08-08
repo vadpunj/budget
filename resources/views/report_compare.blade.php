@@ -102,7 +102,11 @@
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
         <th>ชื่อ</th>
-        <th>ฝ่าย/ส่วน</th>
+        @if(Auth::user()->type == 5)
+        <th>ฝ่าย</th>
+        @else
+        <th>ส่วน</th>
+        @endif
         <th>ปีงบประมาณ {{ $yy-1 }}</th>
         <th>ปีงบประมาณ {{ $yy }}</th>
       </tr>
@@ -115,7 +119,7 @@
           <tr>
             <td align="center">{{ $key_acc }}</td>
             <td>{{ Func::get_account($key_acc) }}</td>
-            @if(Auth::user()->type == 2)
+            @if(Auth::user()->type == 2 ||Auth::user()->type == 3)
               <td align="center">{{ Func::get_cost_title($fund_id) }}</td>
             @else
               <td>{{ Func::FundID_name($fund_id) }}</td>
@@ -177,9 +181,6 @@
           url:"{{ route('change_id') }}",
           data:{'id': cat_id},
           success:function(data){
-            // console.log('success');
-            // console.log(data.length);
-            // console.log(data.length);
             op+='<option selected="selected" value="0">--กรุณาเลือกสายงานก่อน--</option>'
             for(var i=0;i<data.length;i++){
               // console.log(data[i]["CostCenterName"]);

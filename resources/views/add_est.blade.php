@@ -21,6 +21,12 @@
     .word {
       color: #fff !important;
     }
+    .tableFixHead          { overflow: auto; height: 700px; }
+    .tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+    table  { border-collapse: collapse; width: 100%; }
+    th, td { padding: 8px 16px; }
+    th     { background:#eee; }
   </style>
 @endsection
 
@@ -89,13 +95,15 @@
                       </span>
                     @enderror
                   </div>
+                  <font color="red">*กรุณาตรวจสอบข้อมูลผู้ขอก่อนตั้งงบประมาณ*</font>
                 </div>
           </div>
          </div>
 
        @if(isset($name))
-       <form class="" action="{{ route('post_add') }}" method="post">
+       <form action="{{ route('post_add') }}" method="post">
          @csrf
+      <div class="tableFixHead">
        <table class="table table-responsive-sm table-bordered">
          <thead>
            <tr>
@@ -162,21 +170,20 @@
               @else
                 <td align="center">{{ '-' }}</td>
               @endif
-              @if(count($list_now) == 0)
-                <td align="center">
-                  <input class="form-control{{ ' '.$id1 }}" type="text" name="budget[{{$account}}]" value="{{ $now[$year][$account] }}">
-                </td>
+              @if($stage == 6)
+              <td align="center">
+                <input class="form-control{{ ' '.$id1 }}" type="text" name="budget[{{$account}}]" value="{{ $now[$year][$account] }}">
+              </td>
               @else
-                @if(!empty($now[$year][$account]))
-                @php
-                  $sum += $now[$year][$account];
-                @endphp
-                  <td align="right">{{ number_format($now[$year][$account],2) }}</td>
-                @else
-                  <td align="center">{{ '-' }}</td>
-                @endif
+              @if(!empty($now[$year][$account]))
+              @php
+                $sum += $now[$year][$account];
+              @endphp
+                <td align="right">{{ number_format($now[$year][$account],2) }}</td>
+              @else
+                <td align="center">{{ '-' }}</td>
               @endif
-
+              @endif
               @if(($now[$year][$account] != 0 && $year1[date("Y")+543][$account] != 0) && $year1[date("Y")+543][$account] <= $now[date("Y")+544][$account])
                 @php
                   $cal = (($now[date('Y')+544][$account] - $year1[date("Y")+543][$account]) * 100 / $year1[date("Y")+543][$account]);
@@ -185,9 +192,13 @@
               @else
                 <td align="center">{{ '-' }}</td>
               @endif
-              <td align="center">
-                <input class="form-control" type="text" name="reason[{{$account}}]" value="{{ $reason[$year][$account] }}">
-              </td>
+              @if($stage == 6)
+                <td align="center">
+                  <input class="form-control" type="text" name="reason[{{$account}}]" value="{{ $reason[$year][$account] }}">
+                </td>
+              @else
+                <td>{{ $reason[$year][$account] }}</td>
+              @endif
             </tr>
                 @endforeach
               @endforeach
@@ -197,7 +208,7 @@
               <td align="right">{{ number_format($sum3,2) }}</td>
               <td align="right">{{ number_format($sum2,2) }}</td>
               <td align="right">{{ number_format($sum1,2) }}</td>
-              @if(count($list_now) == 0)
+              @if($stage == 6)
               <td align="center">
                 <input class="form-control" type="text" name="{{ $id1 }}">
               </td>
@@ -208,8 +219,9 @@
           @endforeach
          </tbody>
        </table>
+     </div>
        <div class="col-md-2 form-group">
-         <button class="btn btn-primary" type="button" data-toggle="modal" data-target="{{'#myAlert'}}" @if(count($list_now) == 0) @else disabled @endif>Submit</button>
+         <button class="btn btn-primary" type="button" data-toggle="modal" data-target="{{'#myAlert'}}" @if($stage == 6) @else disabled @endif>Submit</button>
        </div>
        @endif
        </div>
@@ -219,7 +231,7 @@
  </main>
 
  <div class="modal fade" id="{{'myAlert'}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-   <div class="modal-dialog modal-sm modal-primary" role="document">
+   <div class="modal-dialog" role="document">
      <div class="modal-content">
        <div class="modal-header">
          <h5 class="modal-title" id="exampleModalLabel">Alert Box</h5>
@@ -228,11 +240,11 @@
          </button>
        </div>
         <div class="modal-body">
-          <p>หลังจากกดบันทึกแล้ว ไม่สามารถแก้ไขได้?</p>
+          <p>ต้องการบันทึกข้อมูลเพื่อรอแก้ไข หรือส่งข้อมูลเพื่อพิจารณางบในขั้นถัดไป <br>โปรดเลือก</p>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-          <button class="btn btn-primary" type="submit">Save</button>
+          <button class="btn btn-primary" type="submit" name="type" value="save"><i class="nav-icon fa fa-save"></i> Save</button>
+          <button class="btn btn-success" name="type" type="submit" value="send"><i class="nav-icon fa fa-sign-out"></i> Send Data</button>
         </div>
         </form>
       </div>
@@ -258,7 +270,7 @@
       // "autoWidth": false,
       scrollX:true
     });
-    $("input").change(function(e) {
+    $("input").click(function(e) {
 
       for(var i =1 ; i<=19 ;i++){
         var tt = 0;

@@ -84,13 +84,16 @@
             <tbody>
                 @foreach($status as $key => $value)
                   <tr>
-
                     <td align="center">{{ $value["stat_year"] }}</td>
-                    <td align="center">{{ $value["cost_title"] }}</td>
+                    <td>{{ Func::FundID_name($value["fund_center"]) }}</td>
                     <td align="center">{{ $value["center_money"] }}</td>
-                    <td>{{ Func::get_name_costcenter($value["center_money"]) }}</td>
+                    <td align="center">{{ $value["cost_title"] }}</td>
                     <td align="right">{{ number_format($value["budget"],2) }}</td>
-                    @if($value["status"] == "5")
+                    @if($value["status"] == "6")
+                      <td align="center">{{ '-' }}</td>
+                      <td align="center">{{ '-' }}</td>
+                      <td align="center">{{ '-' }}</td>
+                    @elseif($value["status"] == "5")
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                       <td align="center">{{ '-' }}</td>
                       <td align="center">{{ '-' }}</td>

@@ -104,7 +104,7 @@ class UserController extends Controller
             // dd($line);
             $update = DB::table('users')
                 ->where('emp_id',$request->emp_id)
-                ->update(['field' => Func::get_name_costcenter_by_divID($line->FundsCenterID),'cost_title' => $line->CostCenterTitle,'center_money' => $line->CostCenterID,'fund_center' => substr_replace($line->CostCenterID,"00",5),
+                ->update(['field' => Func::get_name_costcenter_by_divID($line->FundsCenterID),'cost_title' => $line->CostCenterTitle,'center_money' => $line->CostCenterID,'fund_center' => $line->FundID,
                 'division_center' => $line->FundsCenterID,'office'=> $jsodata->dept_name ,'part' => $jsodata->div_name ,'tel' => $jsodata->phone_no,'nt' => $line->NT,
                 'updated_at' => date('Y-m-d H:i:s')]);
           }

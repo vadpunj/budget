@@ -34,7 +34,7 @@
       <li class="breadcrumb-item">
         <a href="#">หน้าแรก</a>
       </li>
-      <li class="breadcrumb-item active">ข้อมูลเวอร์ชันงบประมาณทำการประจำปี</li>
+      <li class="breadcrumb-item active">ข้อมูลเวอร์ชันงบประมาณที่บันทึกเข้ามา</li>
     </ol>
     <!-- end breadcrumb -->
   <div class="container-fluid">

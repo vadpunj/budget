@@ -122,7 +122,11 @@
                 <td align="center">{{ $value["stat_year"] }}</td>
                 <td align="center">{{ $value["center_money"] }}</td>
                 <td align="right">{{ number_format($value["budget"],2) }}</td>
-                @if($value["status"] == "5")
+                @if($value["status"] == "6")
+                  <td align="center">{{ '-' }}</td>
+                  <td align="center">{{ '-' }}</td>
+                  <td align="center">{{ '-' }}</td>
+                @elseif($value["status"] == "5")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center">{{ '-' }}</td>
                   <td align="center">{{ '-' }}</td>
@@ -164,8 +168,6 @@
               <th>ตั้งงบประมาณ</th>
               <th>เขต/ฝ่าย อนุมัติ</th>
               <th>วง.อนุมัติ</th>
-              <th>ปรับแก้งบประมาณ</th>
-              <th>วง.ขอแก้งบประมาณ</th>
             </tr>
           </thead>
           <tbody>
@@ -175,8 +177,6 @@
               <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
               <td align="right">{{ number_format($stat["1"],2) }}</td>
-              <td align="right">{{ number_format($stat["4"],2) }}</td>
-              <td align="right">{{ number_format($stat["3"],2) }}</td>
             </tr>
             @endif
           </tbody>
