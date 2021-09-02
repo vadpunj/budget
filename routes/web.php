@@ -42,6 +42,12 @@ Route::group(['middleware' => ['auth']], function () {
   Route::get( '/open/{filename}', 'InputController@open');
   Route::get( '/view/estimate', 'EstimateController@get_view_estimate')->name('get_view_estimate');
   Route::post( '/view/estimate', 'EstimateController@post_view_estimate')->name('post_view_estimate');
+  Route::get( '/view/estimate/exp', 'EstimateController@get_view_estimate_export')->name('get_view_estimate_export');
+  Route::post( '/view/estimate/exp', 'EstimateController@post_view_estimate_export')->name('post_view_estimate_export');
+  Route::post('/view/estimate/excel', 'EstimateController@get_excel')->name('get_excel');
+  // Route::post('/view/estimate/pdf', 'EstimateController@get_pdf')->name('get_pdf');
+  Route::post('/view/estimate/pdf_test', 'EstimateController@get_pdf')->name('get_pdf');
+
   Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
   Route::post('/master', 'EstimateController@post_importfile')->name('post_import_master');
   Route::get('/find/master', 'EstimateController@get_master')->name('add_master');

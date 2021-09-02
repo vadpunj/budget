@@ -96,6 +96,7 @@
                     <th>ส่วนงาน</th>
                     <th>ศูนย์ต้นทุน</th>
                     <th>งบประมาณ</th>
+                    <th>คำอธิบาย</th>
                     @if(Auth::user()->type == 4)
                     <th>งบประมาณใหม่</th>
                     <th>ฝ่าย/เขต</th>
@@ -135,6 +136,7 @@
                       <td align="center">{{ Func::get_cost_title($cent) }}</td>
                       <td align="center">{{ $cent }}</td>
                       <td align="right">{{ number_format($value,2) }}</td>
+                      <td>{{ $reason[$id2][$acc][$cent] }}</td>
                       @if(Auth::user()->type == 4)
                       <?php
                         $able = '';
@@ -179,11 +181,11 @@
                     <td colspan="4" align="right"><b>Sum</b></td>
                     <td align="right"><b>{{ number_format($sum,2) }}</b></td>
                     @if(Auth::user()->type == 4)
-                    <td></td>
+                    <td colspan="2"></td>
                       <td>Select All <input type="checkbox" id="all1" onclick='selectAll1()'></td>
                     @endif
                     @if(Auth::user()->type == 5)
-                    <td></td>
+                    <td colspan="2"></td>
                       <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
                     @endif
                     <td></td>

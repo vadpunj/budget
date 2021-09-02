@@ -52,7 +52,7 @@
           </div>
           @endif
           <div class="card">
-          <div class="card-header word">
+          <div class="card-header">
             <i class="fa fa-align-justify"></i> ข้อมูลผู้ขอ</div>
             <div class="card-body">
                 @csrf
@@ -186,7 +186,7 @@
               @endif
               @if(($now[$year][$account] != 0 && $year1[date("Y")+543][$account] != 0) && $year1[date("Y")+543][$account] <= $now[date("Y")+544][$account])
                 @php
-                  $cal = (($now[date('Y')+544][$account] - $year1[date("Y")+543][$account]) * 100 / $year1[date("Y")+543][$account]);
+                  $cal = ((($now[date('Y')+544][$account] - $year1[date("Y")+543][$account]) * 100) / $year1[date("Y")+543][$account]);
                 @endphp
                 <td align="center">{{round($cal,2).' %'}}</td>
               @else

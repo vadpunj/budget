@@ -194,6 +194,28 @@ class Func{
       return $name;
     }
   }
+  public static function get_center_name($center_money)
+  {
+    $name = Structure::select('CostCenterName')
+    ->where('CostCenterID',$center_money)
+    ->get()->first();
+    if($name == NULL){
+      return NULL;
+    }else{
+      return $name->CostCenterName;
+    }
+  }
+  public static function get_funID($center_money)
+  {
+    $name = Structure::select('FundID')
+    ->where('CostCenterID',$center_money)
+    ->get()->first();
+    if($name == NULL){
+      return NULL;
+    }else{
+      return $name->FundID;
+    }
+  }
 }
 
  ?>

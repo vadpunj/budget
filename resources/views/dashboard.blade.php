@@ -87,7 +87,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
-          <div class="card-header word">
+          <div class="card-header">
             <i class="fa fa-align-justify"></i> ข่าวสารประกาศจาก วง.</div>
             <div class="card-body">
               @foreach($data as $value)

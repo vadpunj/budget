@@ -55,7 +55,7 @@
           </div>
           @endif
           <div class="card">
-          <div class="card-header word">
+          <div class="card-header">
             <i class="fa fa-align-justify"></i> วันเวลาที่ปิดระบบ</div>
             <div class="card-body">
               <form action="{{ route('post_shutdown') }}" method="post">

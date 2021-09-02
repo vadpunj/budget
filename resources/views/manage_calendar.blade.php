@@ -56,7 +56,7 @@
           </div>
           @endif
           <div class="card">
-          <div class="card-header word">
+          <div class="card-header">
             @if (session()->has('notification'))
               <div class="notification">
                 {!! session('notification') !!}

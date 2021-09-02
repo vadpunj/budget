@@ -36,7 +36,7 @@
   <div class="container-fluid">
     <div class="animated fadeIn">
       <div class="card">
-        <div class="card-header word">
+        <div class="card-header">
           <i class="fa fa-align-justify"></i> เปรียบเทียบงบประมาณ</div>
           <div class="card-body">
             <form action="{{ route('post_compare') }}" method="post">

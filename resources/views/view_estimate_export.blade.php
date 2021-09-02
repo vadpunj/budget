@@ -2,7 +2,7 @@
 
 @section('title')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>View Estimate</title>
+<title>Pre Approve</title>
 @endsection
 
 @section('css')
@@ -37,16 +37,16 @@
     <li class="breadcrumb-item">
       <a href="#">หน้าแรก</a>
     </li>
-    <li class="breadcrumb-item active">ภาพรวมงบประมาณ</li>
+    <li class="breadcrumb-item active">นำเสนองบประมาณ</li>
   </ol>
   <!-- end breadcrumb -->
   <div class="container-fluid">
     <div class="animated fadeIn">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> ภาพรวมงบประมาณ</div>
+          <i class="fa fa-align-justify"></i> นำเสนองบประมาณ</div>
           <div class="card-body">
-            <form action="{{ route('post_view_estimate') }}" method="post">
+            <form action="{{ route('post_view_estimate_export') }}" method="post">
                 @csrf
                 <div class="row">
                   @if(Auth::user()->type == 5 || Auth::user()->type == 1)
@@ -77,6 +77,7 @@
                   <div class="form-group col-sm-5">
                     <label for="postal-code">ส่วน : </label>
                       <select class="form-control" name="center_id">
+                        <option value="all">ทั้งหมด</option>
                         @foreach($fund_cen as $data)
                           <option value="{{ $data->CostCenterID }}" @if($fun_id == $data->CostCenterID) selected @else '' @endif>{{ $data->CostCenterName }}</option>
                         @endforeach
@@ -86,15 +87,35 @@
                   <div class="col-md-4">
                     <input type="submit" class="btn btn-primary" value="Submit" style="margin-top: 20px;">
                   </div>
+              </form>
                 </div>
                 @if(Auth::user()->type == 5)
                   <font color="red">*หากไม่มีชื่อฝ่ายขึ้น ให้กดเลือกสายงานอีกครั้ง*</font>
                 @endif
-            </form>
           </div>
       </div>
     </div>
     @if(isset($name))
+    <div class="row">
+    <form action="{{ route('get_excel') }}" method="post">
+      @csrf
+      <div class="col-md-4">
+        <input type="hidden" name="center" value="{{ $type }}">
+        @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+          <input type="hidden" name="fundcenter" value="{{ $fund }}">
+        @endif
+        <input type="submit" class="btn btn-success" value="Excel" style="margin-top: 20px;">
+      </div>
+    </form>
+    <form action="{{ route('get_pdf') }}" method="post">
+      @csrf
+        <input type="hidden" name="center" value="{{ $type }}">
+        @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+          <input type="hidden" name="fundcenter" value="{{ $fund }}">
+        @endif
+        <input type="submit" class="btn btn-danger" value="PDF" style="margin-top: 20px;">
+      </div>
+      <br>
     <div class="tableFixHead">
       <table class="table table-responsive-sm table-bordered" >
         <thead>

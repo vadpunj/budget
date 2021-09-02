@@ -18,7 +18,7 @@
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
     <title>Login page</title>
     <!-- Icons-->
-    <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/Logo.jpg') }}" sizes="16x16">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('admin/img/nt.png') }}" sizes="16x16">
     <link href="{{ asset('admin/node_modules/@coreui/icons/css/coreui-icons.min.css')}}" rel="stylesheet">
     <link href="{{ asset('admin/node_modules/flag-icon-css/css/flag-icon.min.css')}}" rel="stylesheet">
     <link href="{{ asset('admin/node_modules/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
@@ -46,9 +46,9 @@
         padding: 10px !important;
         box-shadow: 5px 10px 18px #333333 !important;
       }
-        .word {
+        /* .word {
           color: #fff !important;
-        }
+        } */
       </style>
     </style>
 
@@ -67,7 +67,7 @@
                           {{ session()->get('message') }}
                       </div>
                   @endif
-                  <div class="card-header word">
+                  <div class="card-header">
                   <center><span style="font-size:23px;">ระบบจัดทำงบประมาณทำการประจำปี</span></center></div>
                   <center><h4 style="padding-bottom: 20px;margin-top: 5px;">Login เข้าสู่ระบบ <span style="font-size:14px;" class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</span></h4></center>
                   <div class="input-group mb-3">

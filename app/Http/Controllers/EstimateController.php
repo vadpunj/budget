@@ -18,6 +18,7 @@ use DB;
 use Func;
 use App\Log_user;
 use Excel;
+use PDF;
 use Carbon\Carbon;
 
 class EstimateController extends Controller
@@ -491,13 +492,13 @@ class EstimateController extends Controller
 
       if(Auth::user()->type == 5 || Auth::user()->type == 1 ||  Auth::user()->type == 4){
 // dd($fun_center);
-        $view = Estimate::select(DB::raw('status,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
+        $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
           ->where('stat_year',date('Y')+544)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('fund_center',$fun_center)
           ->where('id1',$request->id1)
-          ->groupBy('status','center_money','version','id2','stat_year','fund_center','cost_title','account','approve_by1','approve_by2')
+          ->groupBy('status','center_money','reason','version','id2','stat_year','fund_center','cost_title','account','approve_by1','approve_by2')
           ->orderBy('center_money','asc')
           ->orderBy('account','asc')
           ->get();
@@ -506,16 +507,17 @@ class EstimateController extends Controller
             foreach($view as $key){
               $status[$key->id2][$key->account][$key->center_money] = $key->status;
               $bg[$key->id2][$key->account][$key->center_money] = $key->budget;
+              $reason[$key->id2][$key->account][$key->center_money] = $key->reason;
             }
           }
       }else{
-        $view = Estimate::select(DB::raw('status,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
+        $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
           ->where('stat_year',date('Y')+544)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('center_money', Auth::user()->center_money)
           ->where('id1',$request->id1)
-          ->groupBy('status','center_money','version','id2','stat_year','fund_center','cost_title','account','approve_by1','approve_by2')
+          ->groupBy('status','reason','center_money','version','id2','stat_year','fund_center','cost_title','account','approve_by1','approve_by2')
           ->orderBy('center_money','asc')
           ->orderBy('account','asc')
           ->get();
@@ -523,16 +525,17 @@ class EstimateController extends Controller
             foreach($view as $key){
               $status[$key->id2][$key->account][$key->center_money] = $key->status;
               $bg[$key->id2][$key->account][$key->center_money] = $key->budget;
+              $reason[$key->id2][$key->account][$key->center_money] = $key->reason;
             }
           }
       }
-// dd($view);
+// dd($reason);
 // dd(1232);
       $cmmt = Cmmt::get();
       $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
 
 // dd($name);
-      return view('view_all',['views' => $view,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
+      return view('view_all',['reason'=> $reason,'views' => $view,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
     }
 
     public function post_approve(Request $request)
@@ -1091,6 +1094,563 @@ class EstimateController extends Controller
 
     }
 
+    public function get_view_estimate_export()
+    {
+      // dd(998);
+      $cmmt = Cmmt::get();
+      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+      $first = $str->first()->FundsCenterID;
+      $fund_cen = Structure::select(DB::raw('DISTINCT CostCenterID,CostCenterName'))->where('FundID',Auth::user()->fund_center)->whereNotNull('CostCenterID')->get();
+      // dd($fund_cen);
+      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+        return view('view_estimate_export',['fund' => null, 'type' => null,'cmmt' => $cmmt ,'cat_cm' => 1,'str' => $str ,'divid' => $first]);
+      }else{
+        return view('view_estimate_export',['type' => null,'cmmt' => $cmmt ,'cat_cm' => 1, 'fund_cen' => $fund_cen, 'fun_id' =>$fund_cen->first()]);
+      }
+
+      return view('view_estimate_export',['type' => null,'head' => $head,'name' => $all_name,'now' => $now,'year3' => $year3 ,'year2' => $year2, 'year1' => $year1 ]);
+
+      // return view('view_estimate');
+    }
+    public function post_view_estimate_export(Request $request)
+    {
+      // dd($request->all());
+      $cmmt = Cmmt::get();
+      $fund_cen = Structure::select(DB::raw('DISTINCT CostCenterID,CostCenterName'))->where('FundID',Auth::user()->fund_center)->whereNotNull('CostCenterID')->get();
+      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+      $name = DB::table('masters')
+        ->whereNull('deleted_at')
+        ->get()->toArray();
+      // เปรียบเทียบข้อมูลงบประมาณ
+      foreach ($name as $key => $value) {
+        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
+        $year3[date("Y")+541][$value->account] = 0;
+        $year2[date("Y")+542][$value->account] = 0;
+        $year1[date("Y")+543][$value->account] = 0;
+        $now[date("Y")+544][$value->account] = NULL;
+        $reason[date("Y")+544][$value->account] = NULL;
+      }
+      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+        $fund = $request->fund_id;
+      }else{
+        $fund = Auth::user()->fund_center;
+      }
+      if($request->center_id == 'all'){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('fund_center',$fund)//
+            ->groupBy('stat_year','id1','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('fund_center',$fund)//
+          ->groupBy('stat_year','id1','account')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $now[$value->stat_year][$value->account] = $value->budget;
+          }
+      }else{
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('center_money',$request->center_id)
+            ->groupBy('stat_year','id1','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        // dd($year1);
+        // query ข้อมูลงบปีปัจจุบัน
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account','reason', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('center_money',$request->center_id)
+          ->groupBy('stat_year','id1','account','reason')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $now[$value->stat_year][$value->account] = $value->budget;
+            $reason[$value->stat_year][$value->account] = $value->reason;
+          }
+      }
+      foreach($cmmt as $value){
+        $head[$value->name_id] = $value->name;
+      }
+
+        return view('view_estimate_export',['type' => $request->center_id, 'name' => $all_name,'now' => $now,'str' => $str,'divid'=> $request->div_id, 'year3' => $year3 ,'year2' => $year2,'reason' =>$reason ,'year1' => $year1 ,'cate' => 1 , 'head' => $head ,'fund_cen' => $fund_cen,'fun_id' => $request->center_id,'fund' => $fund]);
+
+    }
+    public function get_excel(Request $request)
+    {
+      $cmmt = Cmmt::get();
+      foreach($cmmt as $value){
+        $head[$value->name_id] = $value->name;
+      }
+      $name = DB::table('masters')
+        ->whereNull('deleted_at')
+        ->get()->toArray();
+      // เปรียบเทียบข้อมูลงบประมาณ
+      foreach ($name as $key => $value) {
+        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
+        $year3[date("Y")+541][$value->account] = 0;
+        $year2[date("Y")+542][$value->account] = 0;
+        $year1[date("Y")+543][$value->account] = 0;
+        $now[date("Y")+544][$value->account] = 0;
+        $reason[date("Y")+544][$value->account] = NULL;
+        $acname[$value->account] = $value->name;
+      }
+      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+        $fund = $request->fundcenter;
+      }else{
+        $fund = Auth::user()->fund_center;
+      }
+      if($request->center == 'all'){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('fund_center', $fund)//
+            ->groupBy('stat_year','id1','id2','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_2[$value->id1][$value->id2] = $value->id2;
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account','id2', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('fund_center',$fund)//
+          ->groupBy('stat_year','id1','id2','account')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_2[$value->id1][$value->id2] = $value->id2;
+            $now[$value->stat_year][$value->account] = $value->budget;
+          }
+          // $datas[] = array(
+          //   'account' => 'งบประมาณทำการประจำปี'.(date('Y')+544)
+          // );
+          // $datas[] = array(
+          //   'account' => Func::get_office_name($fund)
+          // );
+          // $datas[]  = array('account' => 'รายการ' ,'y3' => 'ประมาณจ่ายจริงปี '.(date('Y')+541),'y2' => 'ประมาณจ่ายจริงปี '.(date('Y')+542),'y1' => 'ประมาณจ่ายจริงปี '.(date('Y')+543),'new'=>'งบประมาณของตั้งปี '.(date('Y')+544));
+          //
+          // $all3 = 0;
+          // $all2 = 0;
+          // $all1 = 0;
+          // $all = 0;
+          // foreach($all_name as $id1 => $arr_id2){
+          //   $sum3 = 0;
+          //   $sum2 = 0;
+          //   $sum1 = 0;
+          //   $sum = 0;
+          //   if(isset($id_1[$id1][date("Y")+544])){
+          //     if($id_1[$id1][date("Y")+544] == $id1){
+          //       $datas[] = array(
+          //         'account' => $head[$id1]
+          //       );
+          //     }
+          //   }
+          //
+          //   foreach($arr_id2 as $id2 => $arr_year){
+          //     if(isset($id_1[$id1][date("Y")+544]) && isset($id_2[$id1][$id2])){
+          //       if($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 1){
+          //         $id = '1.1 เงินเดือน ค่าจ้าง ค่าตอบแทน';
+          //         $datas[] = array(
+          //           'account' => $id
+          //         );
+          //       }elseif($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 2){
+          //         $id ='1.2 เงินเดือน ค่าจ้าง ค่าตอบแทนผู้บริหาร';
+          //         $datas[] = array(
+          //           'account' => $id
+          //         );
+          //       }
+          //       if($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 1){
+          //         $id ='2.1 ค่าสวัสดิการพนักงาน ลูกจ้าง';
+          //         $datas[] = array(
+          //           'account' => $id
+          //         );
+          //       }elseif($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 2){
+          //         $id ='2.2 ค่าสวัสดิการผู้บริหาร';
+          //         $datas[] = array(
+          //           'account' => $id
+          //         );
+          //       }
+          //     }
+          //     foreach($arr_year as $year =>$arr_acc){
+          //       foreach($arr_acc as $account => $value){
+          //         if($year3[date("Y")+541][$account] > 0 || $year2[date("Y")+542][$account] > 0 || $year1[date("Y")+543][$account] > 0 || $now[$year][$account] > 0){
+          //           $sum3 += $year3[date("Y")+541][$account];
+          //           $sum2 += $year2[date("Y")+542][$account];
+          //           $sum1 += $year1[date("Y")+543][$account];
+          //           $sum += $now[$year][$account];
+          //           $datas[] = array(
+          //             'account' => $account.' '.Func::get_account($account),
+          //             'y3' => $year3[date("Y")+541][$account],
+          //             'y2' => $year2[date("Y")+542][$account],
+          //             'y1' => $year1[date("Y")+543][$account],
+          //             'now' => $now[$year][$account]
+          //           );
+          //         }
+          //       }
+          //     }
+          //   }
+          //   if(isset($id_1[$id1][date("Y")+544]) && $id_1[$id1][date("Y")+544] == $id1){
+          //     $datas[] = array(
+          //       'account' => 'Sum',
+          //       'y3' => $sum3,
+          //       'y2' => $sum2,
+          //       'y1' => $sum1,
+          //       'now' => $sum
+          //     );
+          //     $all3 += $sum3;
+          //     $all2 += $sum2;
+          //     $all1 += $sum1;
+          //     $all += $sum;
+          //   }
+          // }
+            $count = 5;
+      }else{
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('center_money',$request->center)
+            ->groupBy('stat_year','id1','id2','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_2[$value->id1][$value->id2] = $value->id2;
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        // query ข้อมูลงบปีปัจจุบัน
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account','id2','reason', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('center_money',$request->center)
+          ->groupBy('stat_year','id1','id2','account','reason')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_2[$value->id1][$value->id2] = $value->id2;
+            $now[$value->stat_year][$value->account] = $value->budget;
+            $reason[$value->stat_year][$value->account] = $value->reason;
+          }
+            $count = 6;
+        }
+          // dd($now);
+      //     $datas[] = array(
+      //       'account' => 'งบประมาณทำการประจำปี'.(date('Y')+544)
+      //     );
+      //     $datas[] = array(
+      //       'account' => Func::get_name_costcenter($request->center)
+      //     );
+      //     $datas[]  = array('account' => 'รายการ' ,'y3' => 'ประมาณจ่ายจริงปี '.(date('Y')+541),'y2' => 'ประมาณจ่ายจริงปี '.(date('Y')+542),'y1' => 'ประมาณจ่ายจริงปี '.(date('Y')+543),'new'=>'งบประมาณของตั้งปี '.(date('Y')+544) ,'reason' => 'คำอธิบาย');
+      //
+      //     $all3 = 0;
+      //     $all2 = 0;
+      //     $all1 = 0;
+      //     $all = 0;
+      //     foreach($all_name as $id1 => $arr_id2){
+      //       $sum3 = 0;
+      //       $sum2 = 0;
+      //       $sum1 = 0;
+      //       $sum = 0;
+      //       if(isset($id_1[$id1][date("Y")+544])){
+      //         if($id_1[$id1][date("Y")+544] == $id1){
+      //           $datas[] = array(
+      //             'account' => $head[$id1]
+      //           );
+      //         }
+      //       }
+      //
+      //       foreach($arr_id2 as $id2 => $arr_year){
+      //         if(isset($id_1[$id1][date("Y")+544]) && isset($id_2[$id1][$id2])){
+      //           if($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 1){
+      //             $id = '1.1 เงินเดือน ค่าจ้าง ค่าตอบแทน';
+      //             $datas[] = array(
+      //               'account' => $id
+      //             );
+      //           }elseif($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 2){
+      //             $id ='1.2 เงินเดือน ค่าจ้าง ค่าตอบแทนผู้บริหาร';
+      //             $datas[] = array(
+      //               'account' => $id
+      //             );
+      //           }
+      //           if($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 1){
+      //             $id ='2.1 ค่าสวัสดิการพนักงาน ลูกจ้าง';
+      //             $datas[] = array(
+      //               'account' => $id
+      //             );
+      //           }elseif($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 2){
+      //             $id ='2.2 ค่าสวัสดิการผู้บริหาร';
+      //             $datas[] = array(
+      //               'account' => $id
+      //             );
+      //           }
+      //         }
+      //         foreach($arr_year as $year =>$arr_acc){
+      //           foreach($arr_acc as $account => $value){
+      //             if($year3[date("Y")+541][$account] > 0 || $year2[date("Y")+542][$account] > 0 || $year1[date("Y")+543][$account] > 0 || $now[$year][$account] > 0){
+      //               $sum3 += $year3[date("Y")+541][$account];
+      //               $sum2 += $year2[date("Y")+542][$account];
+      //               $sum1 += $year1[date("Y")+543][$account];
+      //               $sum += $now[$year][$account];
+      //               $datas[] = array(
+      //                 'account' => $account.' '.Func::get_account($account),
+      //                 'y3' => $year3[date("Y")+541][$account],
+      //                 'y2' => $year2[date("Y")+542][$account],
+      //                 'y1' => $year1[date("Y")+543][$account],
+      //                 'now' => $now[$year][$account],
+      //                 'reason' => $reason[date("Y")+544][$account]
+      //               );
+      //             }
+      //           }
+      //         }
+      //       }
+      //       if(isset($id_1[$id1][date("Y")+544]) && $id_1[$id1][date("Y")+544] == $id1){
+      //         $datas[] = array(
+      //           'account' => 'Sum',
+      //           'y3' => $sum3,
+      //           'y2' => $sum2,
+      //           'y1' => $sum1,
+      //           'now' => $sum
+      //         );
+      //         $all3 += $sum3;
+      //         $all2 += $sum2;
+      //         $all1 += $sum1;
+      //         $all += $sum;
+      //       }
+      //     }
+      // }
+      // // dd($id_2);
+      //
+      // $datas[] = array(
+      //   'account' => 'Sum',
+      //   'y3' => $all3,
+      //   'y2' => $all2,
+      //   'y1' => $all1,
+      //   'now' => $all
+      // );
+
+      $type = $request->center;
+// dd($datas);
+      Excel::create('Pre Approve_'.$request->center, function($excel) use ($acname, $count,$head,$all_name,$year3,$year2,$year1,$now,$reason,$id_1,$id_2,$type,$fund) {
+      $excel->sheet('Excel sheet', function($sheet) use ($acname, $count,$head,$all_name,$year3,$year2,$year1,$now,$reason,$id_1,$id_2,$type,$fund) {
+         $sheet->loadView('excel')->with('acname',$acname)
+                               ->with('count',$count)
+                               ->with('head',$head)
+                               ->with('all_name',$all_name)
+                               ->with('year3',$year3)
+                               ->with('year2',$year2)
+                               ->with('year1',$year1)
+                               ->with('now',$now)
+                               ->with('reason',$reason)
+                               ->with('id_1',$id_1)
+                               ->with('id_2',$id_2)
+                               ->with('type',$type)
+                               ->with('fund', $fund);
+          $sheet->setWidth('F', 10);
+         // $sheet->setOrientation('landscape');
+           });
+
+       })->export('xlsx');
+      // Excel::create('Pre Approve_'.$request->center,function($excel) use ($datas){
+      //   $excel->setTitle('Estimate');
+      //   $excel->sheet('Estimate',function($sheet) use ($datas){
+      //     $sheet->fromArray($datas,null,'A1',false,false);
+      //   });
+      // })->download('xlsx');
+    }
+    public function get_pdf(Request $request)
+    {
+      $cmmt = Cmmt::get();
+      foreach($cmmt as $value){
+        $head[$value->name_id] = $value->name;
+      }
+      $name = DB::table('masters')
+        ->whereNull('deleted_at')
+        ->get()->toArray();
+      // เปรียบเทียบข้อมูลงบประมาณ
+      foreach ($name as $key => $value) {
+        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
+        $year3[date("Y")+541][$value->account] = 0;
+        $year2[date("Y")+542][$value->account] = 0;
+        $year1[date("Y")+543][$value->account] = 0;
+        $now[date("Y")+544][$value->account] = 0;
+        $reason[date("Y")+544][$value->account] = NULL;
+        $acname[$value->account] = $value->name;
+      }
+      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+        $fund = $request->fundcenter;
+      }else{
+        $fund = Auth::user()->fund_center;
+      }
+      if($request->center == 'all'){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('fund_center', $fund)//
+            ->groupBy('stat_year','id1','id2','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_2[$value->id1][$value->id2] = $value->id2;
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account','id2', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('fund_center',$fund)//
+          ->groupBy('stat_year','id1','id2','account')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_2[$value->id1][$value->id2] = $value->id2;
+            $now[$value->stat_year][$value->account] = $value->budget;
+          }
+          $count = 5;
+      }else{
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+          // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
+          $list = DB::table('estimates')
+            ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
+            ->where('stat_year',$i)
+            ->whereNull('deleted_at')
+            ->where('status_ver', 1)
+            ->where('status',1)
+            ->where('center_money',$request->center)
+            ->groupBy('stat_year','id1','id2','account')
+            ->orderBy('id1','DESC')
+            ->get()->toArray();
+            foreach ($list as $key => $value) {
+              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_2[$value->id1][$value->id2] = $value->id2;
+              if ($value->stat_year == date("Y")+541) {
+                $year3[$value->stat_year][$value->account] = $value->budget;
+              }if ($value->stat_year == date("Y")+542) {
+                $year2[$value->stat_year][$value->account] = $value->budget;
+              }if($value->stat_year == date("Y")+543){
+                $year1[$value->stat_year][$value->account] = $value->budget;
+              }
+            }
+        }
+        // query ข้อมูลงบปีปัจจุบัน
+        $list_now = DB::table('estimates')
+          ->select('stat_year','id1','account','id2','reason', DB::raw('SUM(budget) as budget'))
+          ->where('stat_year',date("Y")+544)
+          ->whereNull('deleted_at')
+          ->where('status_ver', 1)
+          ->where('status',0)
+          ->where('center_money',$request->center)
+          ->groupBy('stat_year','id1','id2','account','reason')
+          ->orderBy('id1','DESC')
+          ->get()->toArray();
+          foreach ($list_now as $key => $value) {
+            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_2[$value->id1][$value->id2] = $value->id2;
+            $now[$value->stat_year][$value->account] = $value->budget;
+            $reason[$value->stat_year][$value->account] = $value->reason;
+          }
+          $count = 6;
+      }
+      $type = $request->center;
+      // dd($list_now);
+              // return view('pdf',['fund'=>$fund,'acname'=> $acname,'count' => $count,'head'=> $head,'all_name' => $all_name,'year3'=>$year3,'year2'=>$year2,'year1'=>$year1,'now'=>$now,'reason'=> $reason, 'id_1'=>$id_1,'id_2'=>$id_2,'type'=>$request->center]);
+        $pdf = PDF::loadView('pdf',['fund'=>$fund,'acname'=> $acname,'count' => $count,'head'=> $head,'all_name' => $all_name,'year3'=>$year3,'year2'=>$year2,'year1'=>$year1,'now'=>$now,'reason'=> $reason, 'id_1'=>$id_1,'id_2'=>$id_2,'type'=>$request->center]);
+        // $pdf = Excel::loadView('pdf',['acname'=> $acname,'count' => $count,'head'=> $head,'all_name' => $all_name,'year3'=>$year3,'year2'=>$year2,'year1'=>$year1,'now'=>$now,'reason'=> $reason, 'id_1'=>$id_1,'id_2'=>$id_2,'type'=>$request->center]);
+
+        // $pdf->setPaper('A4', 'landscape');
+        return $pdf->download('Pre Approve_'.$request->center.'.pdf');
+    }
     public function print_all(Request $request)
     {
       // export file ข้อมูลการของบประมาณ(หน้า report_apv)

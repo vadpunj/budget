@@ -46,7 +46,7 @@
         <form action="{{ route('find_master') }}" method="post">
           @csrf
          <div class="card">
-         <div class="card-header word">
+         <div class="card-header">
            <i class="fa fa-search"></i> ค้นหาข้อมูลบัญชี</div>
            <div class="card-body">
              <div class="form-group row">

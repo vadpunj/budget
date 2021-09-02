@@ -65,6 +65,10 @@
         <a class="nav-link {{ (request()->is('/view/estimate')) ? 'active' : '' }}" href="{{ route('get_view_estimate') }}">
           <i class="nav-icon icon-doc"></i> ภาพรวมงบประมาณจริง</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/view/estimate/exp')) ? 'active' : '' }}" href="{{ route('get_view_estimate_export') }}">
+          <i class="nav-icon fa fa-download"></i> เสนองบประมาณ</a>
+      </li>
       @endif
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
