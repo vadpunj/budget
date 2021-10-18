@@ -62,13 +62,13 @@
             <form action="{{ route('delete_infor') }}" method="POST">
               @csrf
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">ลบข้อมูลโครงสร้าง</h5>
+              <h5 class="modal-title" id="exampleModalLabel">ลบข้อมูลข่าวสาร</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
              <div class="modal-body">
-               <p>ต้องการลบข้อมูลโครงสร้างนี้หรือไม่?</p>
+               <p>ต้องการลบข้อมูข่าวสารนี้หรือไม่?</p>
                <input type="hidden" name="id" value="{{ $value->id }}">
              </div>
              <div class="modal-footer">
@@ -156,7 +156,7 @@
       </div>
     </div>
   @endif
-  @if(Auth::user()->type == 2 ||Auth::user()->type == 3 || Auth::user()->type == 4)
+  @if(Auth::user()->type == 2 ||Auth::user()->type == 3)
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-lg-12">
@@ -176,6 +176,32 @@
               <td align="center">{{ date('Y')+543 }}</td>
               <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
+              <td align="right">{{ number_format($stat["1"],2) }}</td>
+            </tr>
+            @endif
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  @elseif(Auth::user()->type == 4)
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-lg-12">
+        สถานะงบประมาณ(ภาพรวม)
+        <table class="table table-responsive-sm table-bordered myTable">
+          <thead>
+            <tr>
+              <th>ปีงบประมาณ</th>
+              <th>ตั้งงบประมาณ</th>
+              <th>งบประมาณที่อนุมัติแล้ว</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if(count($stat) > 0)
+            <tr>
+              <td align="center">{{ date('Y')+543 }}</td>
+              <td align="right">{{ number_format($budget,2) }}</td>
               <td align="right">{{ number_format($stat["1"],2) }}</td>
             </tr>
             @endif

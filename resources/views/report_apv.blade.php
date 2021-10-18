@@ -58,7 +58,7 @@
                   </select>
                 </div>
             </div>
-            @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "4")
+            @if(Auth::user()->type == "5" || Auth::user()->type == 6 || Auth::user()->type == "1" || Auth::user()->type == "4")
             <div class="form-group row">
               @if(Auth::user()->type == "5" || Auth::user()->type == "1")
               <label class="col-md-2 col-form-label">ชื่อฝ่าย : <font color="red">*</font></label>
@@ -87,7 +87,7 @@
           </form>
                   <form action="{{ route('print_view') }}" method="post">
                     @csrf
-                    @if(Auth::user()->type == "5" || Auth::user()->type == "1" || Auth::user()->type == "4")
+                    @if(Auth::user()->type == "5" ||Auth::user()->type == 6 || Auth::user()->type == "1" || Auth::user()->type == "4")
                       <input type="hidden" name="center_money" value="{{ $centermoney }}">
                       <input type="hidden" name="cost_title" value="{{ $fund_id }}">
                     @endif

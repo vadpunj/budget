@@ -17,11 +17,15 @@ class CreateExportEstimatesTable extends Migration
             $table->bigIncrements('id');
             $table->string('version');
             $table->string('year');
+            $table->string('div_center');
             $table->string('fund_center');
-            $table->string('center_money');
             $table->string('account');
+            $table->string('id1');
+            $table->string('id2');
             $table->string('budget');
-            $table->string('user_id');
+            $table->string('status');
+            $table->string('approve2');
+            $table->string('approve_all')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

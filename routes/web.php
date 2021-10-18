@@ -30,8 +30,8 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/add/struc', 'EstimateController@post_add_struc')->name('post_add_struc');
   Route::get('/status', 'EstimateController@get_status')->name('get_status');
   Route::post('/status', 'EstimateController@post_status')->name('post_status');
-  Route::get('/export/sap', 'EstimateController@get_export')->middleware('ApproveAuth')->name('get_export');
-  Route::post('/export/sap', 'EstimateController@export_sap')->middleware('ApproveAuth')->name('export_sap');
+  Route::get('/sap/export/sap', 'EstimateController@get_export')->middleware('ApproveAuth')->name('get_export');
+  Route::post('/sap/export/sap', 'EstimateController@export_sap')->middleware('ApproveAuth')->name('export_sap');
   Route::get('/view/all', 'EstimateController@get_view')->name('get_view');
   Route::get('/change/id', 'EstimateController@find_fundcenter')->name('change_id');
   Route::get('/change/fund', 'EstimateController@find_center')->name('change_fund');
@@ -47,7 +47,9 @@ Route::group(['middleware' => ['auth']], function () {
   Route::post('/view/estimate/excel', 'EstimateController@get_excel')->name('get_excel');
   // Route::post('/view/estimate/pdf', 'EstimateController@get_pdf')->name('get_pdf');
   Route::post('/view/estimate/pdf_test', 'EstimateController@get_pdf')->name('get_pdf');
-
+  Route::get('/sap/view/approve', 'EstimateController@get_view_approve')->name('get_view_approve');
+  Route::post('/sap/view/approve', 'EstimateController@post_view_approve')->name('post_view_approve');
+  Route::post('/sap/view/approvelog', 'EstimateController@approve_log')->name('approve_log');
   Route::get('/master', 'EstimateController@get_importfile')->name('import_master');
   Route::post('/master', 'EstimateController@post_importfile')->name('post_import_master');
   Route::get('/find/master', 'EstimateController@get_master')->name('add_master');

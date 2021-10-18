@@ -48,7 +48,7 @@
     <div class="animated fadeIn">
       <div class="row">
         <div class="col-lg-12">
-          @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+          @if(Auth::user()->type == 5 || Auth::user()->type == 6 || Auth::user()->type == 1)
           <form action="{{ route('post_status') }}" method="post">
               @csrf
               <div class="row">

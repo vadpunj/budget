@@ -194,7 +194,7 @@
               @endif
               @if($stage == 6)
                 <td align="center">
-                  <input class="form-control" type="text" name="reason[{{$account}}]" value="{{ $reason[$year][$account] }}">
+                  <textarea class="form-control" name="reason[{{$account}}]"  rows="2" cols="20">{{ $reason[$year][$account] }}</textarea>
                 </td>
               @else
                 <td>{{ $reason[$year][$account] }}</td>

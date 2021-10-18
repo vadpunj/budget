@@ -42,7 +42,7 @@
             <form action="{{ route('post_compare') }}" method="post">
                 @csrf
               <div class="form-group row">
-                @if(Auth::user()->type == "5" || Auth::user()->type == "1")
+                @if(Auth::user()->type == "5" || Auth::user()->type == 6 ||Auth::user()->type == "1")
                 <label class="col-md-2 col-form-label">สายงาน : <font color="red">*</font></label>
                   <div class="col-md-4">
                     <select class="form-control div_id" name="div_id" id="div_id">
@@ -102,7 +102,7 @@
       <tr>
         <th>บัญชีรายการภาระผูกพัน</th>
         <th>ชื่อ</th>
-        @if(Auth::user()->type == 5)
+        @if(Auth::user()->type == 5|| Auth::user()->type == 6)
         <th>ฝ่าย</th>
         @else
         <th>ส่วน</th>

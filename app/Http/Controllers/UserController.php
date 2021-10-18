@@ -100,8 +100,17 @@ class UserController extends Controller
             $make_data =  $Controller->callAPI('POST', $urlApi, json_encode($data_profile));
             // dd($make_data);
             $jsodata = json_decode($make_data);
+            // dd($jsodata);
+            if(empty($jsodata->div_name)){
+              $line = Structure::where('CostCenterName',$jsodata->dept_name)->first();
+              $update = DB::table('users')
+                  ->where('emp_id',$request->emp_id)
+                  ->update(['field' => Func::get_name_costcenter_by_divID($line->FundsCenterID),'cost_title' => $line->CostCenterTitle,'center_money' => null,'fund_center' => $line->FundID,
+                  'division_center' => $line->FundsCenterID,'office'=> $jsodata->dept_name ,'part' => null ,'tel' => $jsodata->phone_no,'nt' => $line->NT,
+                  'updated_at' => date('Y-m-d H:i:s')]);
+              // dd('23');
+            }
             $line = Structure::where('CostCenterName',$jsodata->div_name)->first();
-            // dd($line);
             $update = DB::table('users')
                 ->where('emp_id',$request->emp_id)
                 ->update(['field' => Func::get_name_costcenter_by_divID($line->FundsCenterID),'cost_title' => $line->CostCenterTitle,'center_money' => $line->CostCenterID,'fund_center' => $line->FundID,

@@ -70,10 +70,12 @@
           <i class="nav-icon fa fa-download"></i> เสนองบประมาณ</a>
       </li>
       @endif
+      @if(Auth::user()->type != 6)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
           <i class="nav-icon icon-check"></i> ขออนุมัติงบประมาณ</a>
       </li>
+      @endif
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">
           <i class="nav-icon fa fa-eye"></i> ขั้นตอนงบประมาณ</a>
@@ -100,15 +102,29 @@
           </li>
         </ul>
       </li>
-      @if(Auth::user()->type == 5 || Auth::user()->type == 1)
-      <li class="nav-item">
-        <a class="nav-link {{ (request()->is('/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">
-          <i class="nav-icon fa fa-download"></i> Export File To SAP</a>
+      @if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6)
+      <li class="nav-item nav-dropdown {{ (request()->is('sap/*')) ? 'show open' : '' }}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+           ระบบ SAP</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('/sap/view/approve')) ? 'active' : '' }}" href="{{ route('get_view_approve') }}">
+              <i class="nav-icon icon-check"></i> อนุมัติงบประมาณเข้า SAP</a>
+          </li>
+          @if(Auth::user()->type != 6)
+          <li class="nav-item">
+            <a class="nav-link {{ (request()->is('/sap/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">
+              <i class="nav-icon fa fa-download"></i> Export File To SAP</a>
+          </li>
+          @endif
+        </ul>
       </li>
+      @endif
+      @if(Auth::user()->type == 5 || Auth::user()->type == 1)
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/shutdown')) ? 'active' : '' }}" href="{{ route('shutdown') }}">
           <i class="nav-icon fa fa-power-off"></i> Shut down</a>
-
+      </li>
       @endif
       @if(Auth::user()->type ==1)
       <li class="nav-item">

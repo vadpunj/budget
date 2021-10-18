@@ -78,7 +78,8 @@ class Func{
   {
     $name = Structure::where('CostCenterID',$center_money)->first();
     if($name == NULL){
-      return NULL;
+      $fund = Structure::where('FundID',substr_replace($center_money,"00",5,6))->whereNull('CostCenterID')->first();
+      return $fund->CostCenterTitle;
     }else{
       return $name->CostCenterTitle;
     }
@@ -87,7 +88,7 @@ class Func{
   {
     $name = Structure::where('CostCenterID',$center_money)->first();
     if($name == NULL){
-      $cost = Structure::where('FundID',$center_money)->whereNull('CostCenterID')->first();
+      $cost = Structure::where('FundID',substr_replace($center_money,"00",5,6))->whereNull('CostCenterID')->first();
       if($cost == NULL){
         return NULL;
       }else{
@@ -100,7 +101,7 @@ class Func{
 
   public static function get_name_costcenter_by_divID($div_center)
   {
-    $name = Structure::where('FundsCenterID',$div_center)->whereNull('CostCenterID')->orWhere('CostCenterName','สาย%')->first();
+    $name = Structure::where('FundsCenterID',$div_center)->whereNull('FundID')->whereNull('CostCenterID')->first();
     if($name == NULL){
       return NULL;
     }else{

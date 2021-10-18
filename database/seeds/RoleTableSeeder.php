@@ -37,6 +37,11 @@ class RoleTableSeeder extends Seeder
           'role_name' => 'approve2',
           'created_at' => date('Y-m-d H:i:s'),
           'updated_at' => date('Y-m-d H:i:s')
+        ],
+        [
+          'role_name' => 'approve_all',
+          'created_at' => date('Y-m-d H:i:s'),
+          'updated_at' => date('Y-m-d H:i:s')
         ]
       ]);
     }

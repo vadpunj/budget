@@ -32,6 +32,7 @@ class EstimateController extends Controller
       $all_now=[];
       $status=[];
       $reason=[];
+      $stage=6;
 
       // query หาชื่อค่าใช้จ่ายทั้งหมด
       $name = DB::table('masters')
@@ -385,7 +386,7 @@ class EstimateController extends Controller
        $insert = new Estimate;
        $insert->stat_year = $value['ปีงบ'];
        $insert->version = $last+1;
-       $insert->account = $value['บัญชี'];
+       $insert->account = trim($value['บัญชี']);
        $id = Func::list_cmmt($value['บัญชี']);
        if($id->isEmpty()){
          return back()->with('success', 'กรุณาเพิ่มรายการบัญชี');
@@ -442,6 +443,7 @@ class EstimateController extends Controller
     {
 // SELECT FundID FROM `structures` where FundsCenterID = '1n00000' and FundID is not null group by FundID
 // SELECT * FROM `structures` where FundsCenterID = '1B00000' and CostCenterID is null and FundID is not null
+// select FundID,CostCenterName FROM structures where FundsCenterID = '1R00000' and FundID is not null and (CostCenterName like 'ฝ่าย%' or CostCenterName like 'สำนักงาน%') group by FundID,CostCenterName
       $divid = $request->id;
       $data = Structure::select('FundID','CostCenterName')
       ->where('FundsCenterID',$divid)
@@ -451,7 +453,7 @@ class EstimateController extends Controller
       ->get();
       // return $name;
       // $data = Structure::select('FundID')
-      // ->where('FundsCenterID',$fundid)
+      // ->where('FundsCenterID',$divid)
       // ->whereNotNull('FundID')
       // ->groupBy('FundID')
       // ->get();
@@ -484,6 +486,7 @@ class EstimateController extends Controller
       // เฉพาะ วง ที่สามารถค้นหาตามชื่อฝ่ายได้
       $bg =null;
       $status[] =null;
+      $reason[]=null;
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
         $fun_center = $request->fund_id;
       }elseif(Auth::user()->type == 4){
@@ -694,6 +697,111 @@ class EstimateController extends Controller
 //           }
 //         }
 //   }
+    public function get_view_approve()
+    {
+      $bg = null;
+      $cmmt = Cmmt::get();
+      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+      $first = $str->first()->FundsCenterID;
+
+      // dd($first);
+      return view('approve',['bg' => $bg,'cmmt' => $cmmt ,'cat_cm' => 1,'str' => $str ,'divid' => $first]);
+    }
+    public function post_view_approve(Request $request)
+    {
+      $bg =null;
+      $status =null;
+      // $view =null;
+// dd($fun_center);
+
+        $view = Export_estimate::select(DB::raw('status, id2 ,fund_center,year,account,sum(budget) as budget'))
+          ->where('year',date('Y')+544)
+          ->whereIn('status',[0,1])
+          ->where('fund_center',$request->fund_id)
+          ->where('id1',$request->id1)
+          ->groupBy('status','version','id2','year','fund_center','account')
+          ->orderBy('fund_center','asc')
+          ->orderBy('account','asc')
+          ->get();
+          if($view->count() != 0){
+            foreach($view as $key){
+              $status[$key->id2][$key->account] = $key->status;
+              $bg[$key->id2][$key->account] = $key->budget;
+            }
+          }else{
+            $view2 = Estimate::select(DB::raw('id2 ,fund_center,stat_year,account,sum(budget) as budget'))
+                ->where('stat_year',date('Y')+544)
+                ->where('status_ver',1)
+                ->whereIn('status',[0,1])
+                ->where('fund_center',$request->fund_id)
+                ->where('id1',$request->id1)
+                ->groupBy('version','id2','stat_year','fund_center','account')
+                ->orderBy('fund_center','asc')
+                ->orderBy('account','asc')
+                ->get();
+                if(!empty($view2)){
+                  foreach($view2 as $key){
+                    $status[$key->id2][$key->account] = 5;
+                    $bg[$key->id2][$key->account] = $key->budget;
+                  }
+                }
+          }
+
+// dd($bg);
+// dd(1232);
+      $cmmt = Cmmt::get();
+      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+
+// dd($name);
+      return view('approve',['fundid'=> $request->fund_id,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
+    }
+    public function approve_log(Request $request)
+    {
+      // dd($request->all());
+      if(Auth::user()->type == 5){
+        foreach($request->approve2 as $key => $val){
+          $arr = explode("-",$val);
+            // dd($last_ver);
+            if($request->btn == "true"){
+               $insert = new Export_estimate;
+               $insert->version = 1;
+               $insert->year = date('Y')+544;
+               $insert->div_center = $request->div_id;
+               $insert->fund_center = $request->fund_id;
+               $insert->account =  $arr[0];
+               $insert->id1 =  $request->id1;
+               $insert->id2 =  $request->id2;
+               $insert->status = 0;
+               $insert->budget = $request->new1[$arr[0]][$arr[1]];
+               $insert->approve2 = Auth::user()->emp_id;
+               $insert->save();
+            }
+        }
+        if($insert){
+          return back()->with('success', 'บันทึกข้อมูลแล้ว');
+        }
+      }
+      // dd($request->all());
+      if(Auth::user()->type == 6 || Auth::user()->type == 1){
+        foreach($request->approve_all as $key => $val){
+          $arr = explode("-",$val);
+            if($request->btn == "true"){
+              $update = DB::table('export_estimates')
+                ->where('year', date('Y')+544)
+                ->where('account', $arr[0])
+                ->where('div_center', $request->div_id)
+                ->where('fund_center', $request->fund_id)
+                ->where('version',1)
+                ->update(['status' => 1 ,'budget'=> $request->new2[$arr[0]][$arr[1]],'approve_all' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+
+            }
+        }
+        if($update){
+          return back()->with('success', 'บันทึกข้อมูลแล้ว');
+        }
+      }
+
+    }
     public function get_struc()
     {
       $data = Structure::get();
@@ -803,15 +911,23 @@ class EstimateController extends Controller
     {
       // $data_array[] = 0;
       // export template to sap
-      $sap = Estimate::select('stat_year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
+      if($request->stat_year <= '2564'){
+        $sap = Estimate::select('stat_year as year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
         ->where('stat_year', $request->stat_year)
         ->where('status',1)
         ->groupBy('stat_year','version','fund_center','account')
         ->get()->toArray();
+      }else{
+        $sap = Export_estimate::select('year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
+          ->where('year', $request->stat_year)
+          ->where('status',1)
+          ->groupBy('year','version','fund_center','account')
+          ->get()->toArray();
+      }
         // dd($sap);
         foreach ($sap as $key => $value) {
               $data[] = array(
-                'year' => $value['stat_year']-543,
+                'year' => $value['year']-543,
                 'from' => 1,
                 'to' => 1,
                 'version' => 1,
@@ -840,7 +956,7 @@ class EstimateController extends Controller
     {
       // ขั้นตอนงบประมาณ
 
-      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+      if(Auth::user()->type == 5 || Auth::user()->type == 6 || Auth::user()->type == 1){
         $get_status = null;
         $cmmt = Cmmt::get();
         $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
@@ -1791,7 +1907,7 @@ class EstimateController extends Controller
       $cmmt = Cmmt::get();
       $id1 = $cmmt->first();
       $fund_id = null;
-      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+      if(Auth::user()->type == 5 ||Auth::user()->type == 6 || Auth::user()->type == 1){
         $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
         $divid = $str->first();
         return view('report_compare',['fund_id' => $fund_id,'id1' => $id1 ,'cmmt' => $cmmt ,'divid' => $divid,'str' => $str,'yy' => date('Y')+544, 'fund' => NULL ,'center' => NULL ,'account' => NULL]);
@@ -1817,7 +1933,7 @@ class EstimateController extends Controller
          }
          $view =[];
          $old =[];
-      if(Auth::user()->type == "5" || Auth::user()->type == "1"){
+      if(Auth::user()->type == "5" ||Auth::user()->type == 6 || Auth::user()->type == "1"){
           $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
             ->where('id1',$request->id1)
             ->where('fund_center',$request->fund_id)
@@ -1894,7 +2010,7 @@ class EstimateController extends Controller
        $center = NULL;
        $view =[];
        $old =[];
-      if(Auth::user()->type == "5" || Auth::user()->type == "1"){
+      if(Auth::user()->type == "5" || Auth::user()->type == 6 ||Auth::user()->type == "1"){
         $view = Estimate::select('account','stat_year',DB::raw('SUM(budget) as budget'))
           ->where('id1',$request->account)
           ->where('fund_center',$request->fundcenter)
