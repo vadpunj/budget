@@ -103,7 +103,7 @@
                     @endif
                     @if(Auth::user()->type == 5)
                     <th>งบประมาณใหม่</th>
-                    <th>วง.</th>
+                    <th>วง.1</th>
                     @endif
                     <th>สถานะ</th>
                   </tr>
@@ -170,7 +170,7 @@
                       @elseif($status[$id2][$acc][$cent] == "4")
                         <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
                       @elseif($status[$id2][$acc][$cent] == "3")
-                        <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
+                        <td align="center"><span class="badge badge-pill badge-warning">วง.1ขอแก้ไขงบ</span></td>
                       @endif
                     </tr>
                       @endforeach

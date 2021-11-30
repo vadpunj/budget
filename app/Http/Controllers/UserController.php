@@ -209,6 +209,10 @@ class UserController extends Controller
       $name = Func::get_part_name($request->center_money);
       $update->part = $name->CostCenterName;
       $update->cost_title =  $name->CostCenterTitle;
+      if($request->center_money == NULL){
+        $update->part = null;
+        $update->cost_title =  null;
+      }
       $update->center_money = $request->center_money;
       $update->type = $request->type;
       $update->tel = $request->tel;

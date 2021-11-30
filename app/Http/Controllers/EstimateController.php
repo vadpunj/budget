@@ -123,6 +123,7 @@ class EstimateController extends Controller
         if(!is_null($last)){
           $update = DB::table('estimates')->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->where('version','<=',$last)->update(['status_ver' => 0]);
         }
+        $insert = [];
         foreach ($request->budget as $key => $val) {
           // dd($last+1);
           if(!is_null($val)){
@@ -370,7 +371,7 @@ class EstimateController extends Controller
      $pathreal = Storage::disk('log')->getAdapter()->getPathPrefix();
      Storage::disk('log')->put($name, File::get($request->file('select_file')));
      $data = Excel::load($path)->get();
-     // dd($data->toArray());
+
      $insert_log = new Log_user;
      $insert_log->user_id = Auth::user()->emp_id;
      $insert_log->path = $pathreal.$name;
@@ -380,33 +381,66 @@ class EstimateController extends Controller
      if(!is_null($last)){
        $update = DB::table('estimates')->where('stat_year',$data->toArray()[0]['ปีงบ'])->where('center_money',$data->toArray()[0]['ศูนย์ต้นทุน'])->where('version','<=',$last)->update(['status_ver' => 0]);
      }
-
+     $data_list = [];
     foreach($data->toArray() as $value){
-      if($value['ปีงบ']){
-       $insert = new Estimate;
-       $insert->stat_year = $value['ปีงบ'];
-       $insert->version = $last+1;
-       $insert->account = trim($value['บัญชี']);
-       $id = Func::list_cmmt($value['บัญชี']);
-       if($id->isEmpty()){
-         return back()->with('success', 'กรุณาเพิ่มรายการบัญชี');
-       }
-       $insert->id1 = $id[0]->id1;
-       $insert->id2 = $id[0]->id2;
-       $insert->budget = $value['เงิน'];
-       $insert->center_money = $value['ศูนย์ต้นทุน'];
-       $insert->fund_center = $value['ศูนย์เงินทุน'];
-       $insert->div_center = $value['สายงาน'];
-       $insert->cost_title = Func::get_cost_title($value['ศูนย์ต้นทุน']);
-       $insert->cost_name = trim(Func::get_name_costcenter($value['ศูนย์ต้นทุน']));
-       $insert->status = 5;
-       $insert->status_ver = 1;
-       $insert->reason = $value['คำอธิบาย'];
-       $insert->created_by = Auth::user()->emp_id;
-       $insert->save();
-      }
+
+      $id = Func::list_cmmt($value['บัญชี']);
+      $insert = [
+                'version'  =>  ($last+1),
+                'stat_year' =>  (date('Y')+544),
+                'account'   =>  $value['บัญชี'],
+                'id1'       =>  $id[0]->id1,
+                'id2'       =>  $id[0]->id2,
+                'budget'    =>  $value['เงิน'],
+                'status'    =>  5,
+                'status_ver'=>  1,
+                'center_money'=> $value['ศูนย์ต้นทุน'],
+                'fund_center'=> $value['ศูนย์เงินทุน'],
+                'div_center'=>  $value['สายงาน'],
+                'cost_title'=>  Func::get_cost_title($value['ศูนย์ต้นทุน']),
+                'cost_name' =>  Func::get_name_costcenter($value['ศูนย์ต้นทุน']),
+                'reason'    =>  $value['คำอธิบาย'],
+                'created_by'=>  Auth::user()->emp_id,
+                'created_at'=>  Carbon::now(),
+                'updated_at'=>  Carbon::now()
+              ];
+
+      $data_list[] = $insert;
     }
-       if($insert){
+      $data_list = collect($data_list);
+
+      $chunks = $data_list->chunk(10);
+
+      foreach ($chunks as $chunk)
+      {
+         $dd = DB::table('estimates')->insert($chunk->toArray());
+      }
+
+
+      // if($value['ปีงบ']){
+      //  $insert = new Estimate;
+      //  $insert->stat_year = $value['ปีงบ'];
+      //  $insert->version = $last+1;
+      //  $insert->account = trim($value['บัญชี']);
+      //  $id = Func::list_cmmt($value['บัญชี']);
+      //  if($id->isEmpty()){
+      //    return back()->with('success', 'กรุณาเพิ่มรายการบัญชี');
+      //  }
+      //  $insert->id1 = $id[0]->id1;
+      //  $insert->id2 = $id[0]->id2;
+      //  $insert->budget = $value['เงิน'];
+      //  $insert->center_money = $value['ศูนย์ต้นทุน'];
+      //  $insert->fund_center = $value['ศูนย์เงินทุน'];
+      //  $insert->div_center = $value['สายงาน'];
+      //  $insert->cost_title = Func::get_cost_title($value['ศูนย์ต้นทุน']);
+      //  $insert->cost_name = trim(Func::get_name_costcenter($value['ศูนย์ต้นทุน']));
+      //  $insert->status = 5;
+      //  $insert->status_ver = 1;
+      //  $insert->reason = $value['คำอธิบาย'];
+      //  $insert->created_by = Auth::user()->emp_id;
+      //  $insert->save();
+      // }
+       if($dd){
          return back()->with('success', 'บันทึกข้อมูลแล้ว');
        }
     }

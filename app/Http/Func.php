@@ -6,6 +6,7 @@ use App\Role;
 use App\Structure;
 use App\Shutdown;
 use App\Cmmt;
+// use DB;
 
 class Func{
   public static function get_date($value)

@@ -164,7 +164,7 @@
                       @elseif($status[$id2][$acc] == "4")
                         <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
                       @elseif($status[$id2][$acc] == "3")
-                        <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
+                        <td align="center"><span class="badge badge-pill badge-warning">วง.1ขอแก้ไขงบ</span></td>
                       @endif
                     </tr>
                       @endforeach
