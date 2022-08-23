@@ -20,11 +20,11 @@ class CreateExportEstimatesTable extends Migration
             $table->string('div_center');
             $table->string('fund_center');
             $table->string('account');
-            $table->string('id1');
-            $table->string('id2');
+            // $table->string('id1');
+            // $table->string('id2');
             $table->string('budget');
             $table->string('status');
-            $table->string('approve2');
+            // $table->string('approve2');
             $table->string('approve_all')->nullable();
             $table->timestamps();
             $table->softDeletes();

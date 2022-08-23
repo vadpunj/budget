@@ -40,6 +40,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    const APPROVE3_TYPE = 6;
     const APPROVE2_TYPE = 5;
     const APPROVE1_TYPE = 4;
     const USER_TYPE = 3;
@@ -59,6 +60,9 @@ class User extends Authenticatable
     }
     public function isApprove2(){
       return $this->type === self::APPROVE2_TYPE;
+    }
+    public function isApproveAll(){
+      return $this->type === self::APPROVE3_TYPE;
     }
 
     // const ACCOUNT_TYPE = 3;

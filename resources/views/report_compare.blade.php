@@ -28,7 +28,7 @@
 <main class="main">
   <!-- Breadcrumb-->
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">หน้าแรก</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">หน้าแรก</a></li>
     <li class="breadcrumb-item"><a href="#">รายงาน</a></li>
     <li class="breadcrumb-item active" aria-current="page">เปรียบเทียบงบประมาณ</li>
   </ol>

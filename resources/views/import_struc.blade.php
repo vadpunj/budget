@@ -27,12 +27,10 @@
 <main class="main">
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="#">หน้าแรก</a>
+      <a href="{{ route('dashboard') }}">หน้าแรก</a>
     </li>
     <li class="breadcrumb-item active">Add/Import file structure</li>
   </ol>
-   <h3 align="center">Add/Import Excel File</h3>
-
    @if(count($errors) > 0)
     <div class="alert alert-danger">
      Upload Validation Error<br><br>

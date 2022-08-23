@@ -25,7 +25,7 @@
 <main class="main">
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="#">หน้าแรก</a>
+      <a href="{{ route('dashboard') }}">หน้าแรก</a>
     </li>
     <li class="breadcrumb-item active">Import file estimate</li>
   </ol>

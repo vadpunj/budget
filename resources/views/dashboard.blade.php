@@ -132,9 +132,13 @@
                   <td align="center">{{ '-' }}</td>
                 @elseif($value["status"] == "3")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                  <td align="center">{{ 'วง.ขอแก้ไขงบ' }}</td>
+                  <td align="center">{{ 'วง.1 ขอแก้ไขงบ' }}</td>
                   <td align="center">{{ '-' }}</td>
                 @elseif($value["status"] == "1")
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                  <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                  <td align="center">กำลังพิจารณา</td>
+                @elseif($value["status"] == "2")
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                   <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
@@ -156,7 +160,7 @@
       </div>
     </div>
   @endif
-  @if(Auth::user()->type == 2 ||Auth::user()->type == 3)
+  @if(Auth::user()->type == 2 ||Auth::user()->type == 3 || Auth::user()->type == 4)
   <div class="animated fadeIn">
     <div class="row">
       <div class="col-lg-12">
@@ -167,41 +171,15 @@
               <th>ปีงบประมาณ</th>
               <th>ตั้งงบประมาณ</th>
               <th>เขต/ฝ่าย อนุมัติ</th>
-              <th>วง.อนุมัติ</th>
+              <th>วง.1 อนุมัติ</th>
             </tr>
           </thead>
           <tbody>
             @if(count($stat) > 0)
             <tr>
-              <td align="center">{{ date('Y')+543 }}</td>
+              <td align="center">{{ date('Y')+544 }}</td>
               <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
-              <td align="right">{{ number_format($stat["1"],2) }}</td>
-            </tr>
-            @endif
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  @elseif(Auth::user()->type == 4)
-  <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-lg-12">
-        สถานะงบประมาณ(ภาพรวม)
-        <table class="table table-responsive-sm table-bordered myTable">
-          <thead>
-            <tr>
-              <th>ปีงบประมาณ</th>
-              <th>ตั้งงบประมาณ</th>
-              <th>งบประมาณที่อนุมัติแล้ว</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if(count($stat) > 0)
-            <tr>
-              <td align="center">{{ date('Y')+543 }}</td>
-              <td align="right">{{ number_format($budget,2) }}</td>
               <td align="right">{{ number_format($stat["1"],2) }}</td>
             </tr>
             @endif

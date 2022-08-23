@@ -17,7 +17,7 @@ class ApproveAuth
      */
     public function handle($request, Closure $next)
     {
-      if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isApprove2())){
+      if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isApprove2() || Auth::user()->isApproveAll())){
           return $next($request);
       }
       return redirect('home');

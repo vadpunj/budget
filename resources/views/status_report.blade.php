@@ -38,7 +38,7 @@
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">หน้าแรก</a>
+        <a href="{{ route('dashboard') }}">หน้าแรก</a>
       </li>
       <li class="breadcrumb-item active">ขั้นตอนงบประมาณทำการ</li>
     </ol>
@@ -78,7 +78,7 @@
                 <th>งบประมาณ</th>
                 <th>ตั้งงบ</th>
                 <th>ฝ่าย/เขต อนุมัติ</th>
-                <th>วง. อนุมัติ</th>
+                <th>วง.1 อนุมัติ</th>
               </tr>
             </thead>
             <tbody>
@@ -99,9 +99,13 @@
                       <td align="center">{{ '-' }}</td>
                     @elseif($value["status"] == "3")
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
-                      <td align="center">{{ 'วง.ขอแก้ไขงบ' }}</td>
+                      <td align="center">{{ 'วง.1 ขอแก้ไขงบ' }}</td>
                       <td align="center">{{ '-' }}</td>
                     @elseif($value["status"] == "1")
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
+                      <td align="center">กำลังพิจารณา</td>
+                    @elseif($value["status"] == "2")
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>
                       <td align="center"><i class="nav-icon fa fa-check" style="color:green;"></i></td>

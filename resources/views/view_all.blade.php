@@ -36,7 +36,7 @@
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">หน้าแรก</a>
+        <a href="{{ route('dashboard') }}">หน้าแรก</a>
       </li>
       <li class="breadcrumb-item active">ข้อมูลงบประมาณทำการประจำปี</li>
     </ol>
@@ -63,7 +63,7 @@
                       @endforeach
                     </select>
                   </div>
-                  @if(Auth::user()->type == 5 || Auth::user()->type == 1)
+                  @if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6)
                   <div class="form-group col-sm-3">
                     <label for="postal-code">สายงาน : </label>
                       <select class="form-control div_id" name="div_id" id="div_id">
@@ -104,6 +104,9 @@
                     @if(Auth::user()->type == 5)
                     <th>งบประมาณใหม่</th>
                     <th>วง.1</th>
+                    @endif
+                    @if(Auth::user()->type == 6)
+                    <th>Approve วง.1</th>
                     @endif
                     <th>สถานะ</th>
                   </tr>
@@ -161,9 +164,21 @@
                         </td>
                         <td align="center"><input type="checkbox" name="approve2[]" value="{{$acc.'-'.$cent}}" <?php echo $able; ?>></td>
                       @endif
+                      @if(Auth::user()->type == 6)
+                      <?php
+                        $able = 'disabled';
+                        if($status[$id2][$acc][$cent] == "1"){
+                          $able = '';
+                        }
+                       ?>
+                        <input type="hidden" name="bg[{{$acc}}][{{$cent}}]" value="{{ $value }}">
+                        <td align="center"><input type="checkbox" name="approve3[]" value="{{$acc.'-'.$cent}}" <?php echo $able; ?>></td>
+                      @endif
                       @if($status[$id2][$acc][$cent] == "0")
                         <td align="center"><span class="badge badge-pill badge-warning">ฝ่าย/เขต อนุมัติแล้ว</span></td>
-                      @elseif($status[$id2][$acc][$cent] == "1")
+                      @elseif($status[$id2][$acc][$cent] == 1)
+                        <td align="center"><span class="badge badge-pill badge-warning">วง.1 พิจารณางบประมาณ</span></td>
+                      @elseif($status[$id2][$acc][$cent] == "2")
                         <td align="center"><span class="badge badge-pill badge-success">งบประมาณอนุมัติแล้ว</span></td>
                       @elseif($status[$id2][$acc][$cent] == 5)
                         <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
@@ -189,12 +204,18 @@
                       <td>Select All <input type="checkbox" id="all2" onclick='selectAll2()'></td>
                     @endif
                     <td></td>
+                    @if(Auth::user()->type == 6)
+                      <td>Select All <input type="checkbox" id="all3" onclick='selectAll3()'></td>
+                      <input type="hidden" name="div" value="{{ $divid }}">
+                      <input type="hidden" name="fund" value="{{ $fundid }}">
+                    @endif
                   </tr>
                 </table>
               @endif
-              @if((Auth::user()->type == 5 || Auth::user()->type == 4) && !empty($bg))
+              @if((Auth::user()->type == 5 || Auth::user()->type == 4 || Auth::user()->type == 6) && !empty($bg))
               <button type="submit" class="btn btn-success" name="btn" value="true">
                 <i class="nav-icon fa fa-check"></i> Approve log
+
               </button>
               {{--<button type="submit" class="btn btn-danger" name="btn" value="false">
                 <i class="nav-icon fa fa-times"></i> Unapprove log
@@ -290,6 +311,22 @@
           }
         }else{
           var items = document.getElementsByName('approve2[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = false;
+          }
+        }
+      }
+      function selectAll3() {
+        // console.log($('#all1').is(':checked'));
+        if($('#all3').is(':checked') == true){
+          var items = document.getElementsByName('approve3[]');
+          for (var i = 0; i < items.length; i++) {
+              if (items[i].type == 'checkbox')
+                  items[i].checked = true;
+          }
+        }else{
+          var items = document.getElementsByName('approve3[]');
           for (var i = 0; i < items.length; i++) {
               if (items[i].type == 'checkbox')
                   items[i].checked = false;

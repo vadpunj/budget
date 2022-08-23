@@ -70,15 +70,15 @@
           <i class="nav-icon fa fa-download"></i> เสนองบประมาณ</a>
       </li>
       @endif
-      @if(Auth::user()->type != 6)
+      {{--@if(Auth::user()->type != 6)--}}
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view/all')) ? 'active' : '' }}" href="{{ route('get_view') }}">
           <i class="nav-icon icon-check"></i> ขออนุมัติงบประมาณ</a>
       </li>
-      @endif
+      {{--@endif--}}
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('/status')) ? 'active' : '' }}" href="{{ route('get_status') }}">
-          <i class="nav-icon fa fa-eye"></i> ขั้นตอนงบประมาณ</a>
+          <i class="nav-icon fa fa-bar-chart"></i> ขั้นตอนงบประมาณ</a>
       </li>
       @if(Auth::user()->type ==2 || Auth::user()->type ==3)
       <li class="nav-item">
@@ -102,7 +102,7 @@
           </li>
         </ul>
       </li>
-      @if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6)
+      {{--@if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6)
       <li class="nav-item nav-dropdown {{ (request()->is('sap/*')) ? 'show open' : '' }}">
         <a class="nav-link nav-dropdown-toggle" href="#">
            ระบบ SAP</a>
@@ -119,6 +119,12 @@
           @endif
         </ul>
       </li>
+      @endif--}}
+      @if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6)
+      <li class="nav-item">
+        <a class="nav-link {{ (request()->is('/sap/export/sap')) ? 'active' : '' }}" href="{{ route('get_export') }}">
+          <i class="nav-icon fa fa-download"></i> Export File To SAP</a>
+      </li>
       @endif
       @if(Auth::user()->type == 5 || Auth::user()->type == 1)
       <li class="nav-item">
@@ -131,12 +137,15 @@
         <a class="nav-link" target="_blank" href="{{ route('register') }}" >
           <i class="nav-icon icon-user"></i> Register</a>
       </li>
-      @endif
       <li class="nav-item">
         <a class="nav-link {{ (request()->is('view_user/*')) ? 'active' : '' }}" href="{{ route('list_user') }}" >
           <i class="nav-icon icon-people"></i> ข้อมูลผู้ใช้ระบบ</a>
       </li>
-
+      @endif
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('/download/document.pdf') }}" >
+          <i class="nav-icon fa fa-book"></i> คู่มือการใช้งาน</a>
+      </li>
     </ul>
   </nav>
 </div>

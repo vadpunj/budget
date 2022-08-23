@@ -27,7 +27,7 @@
   <main class="main">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">หน้าแรก</a>
+        <a href="{{ route('dashboard') }}">หน้าแรก</a>
       </li>
       <li class="breadcrumb-item active">Export file to SAP</li>
     </ol>
@@ -70,7 +70,9 @@
             </div>
 
           </div>
+
           <div class="modal-footer">
+            <font color="red">*กด Submit แล้วกรุณารอสักครู่* </font>
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>

@@ -29,7 +29,7 @@
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">หน้าแรก</a>
+        <a href="{{ route('dashboard') }}">หน้าแรก</a>
       </li>
       <li class="breadcrumb-item active">ข้อมูลบัญชี</li>
     </ol>

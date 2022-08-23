@@ -35,7 +35,7 @@
   <main class="main">
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">หน้าแรก</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">หน้าแรก</a></li>
     <li class="breadcrumb-item"><a href="#">รายงาน</a></li>
     <li class="breadcrumb-item active" aria-current="page">สถานะอนุมัติงบประมาณ</li>
 </ol>
@@ -75,7 +75,7 @@
               <label class="col-md-2 col-form-label">รหัสศูนย์ต้นทุน :</label>
               <div class="form-group col-md-4">
                 <div class="input-group">
-                  <input class="form-control" type="text" name="center_money">
+                  <input class="form-control" type="text" name="center_money" value="{{ old('center_money') }}">
                 </div>
               </div>
             </div>
@@ -137,13 +137,15 @@
                   @if($value['status'] == "0")
                     <td align="center"><span class="badge badge-pill badge-warning">ฝ่าย/เขต อนุมัติแล้ว</span></td>
                   @elseif($value['status'] == "1")
+                    <td align="center"><span class="badge badge-pill badge-warning">วง.1 พิจารณางบประมาณ</span></td>
+                  @elseif($value['status'] == "2")
                     <td align="center"><span class="badge badge-pill badge-success">งบประมาณอนุมัติแล้ว</span></td>
                   @elseif($value['status'] == 5)
                     <td align="center"><span class="badge badge-pill badge-danger">งบประมาณรอพิจารณา</span></td>
                   @elseif($value['status'] == "4")
                     <td align="center"><span class="badge badge-pill badge-danger">แก้ไขงบประมาณ</span></td>
                   @elseif($value['status'] == "3")
-                    <td align="center"><span class="badge badge-pill badge-warning">วง.ขอแก้ไขงบ</span></td>
+                    <td align="center"><span class="badge badge-pill badge-warning">วง.1 ขอแก้ไขงบ</span></td>
                   @endif
                 </tr>
               @endforeach

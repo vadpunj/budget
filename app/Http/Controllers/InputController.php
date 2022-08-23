@@ -30,24 +30,27 @@ class InputController extends Controller
       // $group_status = [];
       $data = Information::orderBy('id','DESC')->get();
       if(Auth::user()->type == 4){
-        $money = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('status_ver',1)->where('stat_year',date('Y')+544)->where('fund_center',Auth::user()->fund_center)->where('status',5)->groupBy('status')->first();
-        // dd($money);
-        if($money == NULL){
-          $budget = NULL;
-        }else{
-          $budget = $money->budget;
-        }
-        $group_status = Export_estimate::select('status',DB::raw('SUM(budget) as budget'))->where('version',1)->where('year',date('Y')+544)->where('fund_center',Auth::user()->fund_center)->groupBy('status')->get();
-        $stat= array('0'=> 0, '1'=>0);
+        $center = Estimate::select('center_money')->where('stat_year',date('Y')+544)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
+        // dd($center->count());
+        for($i=0 ;$i< $center->count() ; $i++){
+          $last = Func::get_last_version(date('Y')+544,$center[$i]->center_money);
+          $group_status[] = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('center_money',$center[$i]->center_money)->where('fund_center',Auth::user()->fund_center)->where('version',$last)->where('stat_year',date('Y')+544)->groupBy('status')->get();
 
-        foreach ($group_status as $key) {
-          $stat[$key->status] = $key->budget;
+        }
+        // dd($group_status);
+        $stat= array('6'=> 0,'5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+        if(isset($group_status)){
+          foreach ($group_status as $key => $arr_val) {
+            foreach($arr_val as $key2 => $val){
+              // dd($val);
+              $stat[$val->status] += $val->budget;
+            }
+          }
         }
 
-// dd($stat);
-        return view('dashboard',['stat'=>$stat ,'data' => $data,'budget'=> $budget]);
+  // dd($stat);
+        return view('dashboard',['stat'=>$stat ,'data' => $data]);
       }
-
 // dd(count($stat));
       if(Auth::user()->type == 2 ||Auth::user()->type == 3){
         $center = Estimate::select('center_money')->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();

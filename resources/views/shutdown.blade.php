@@ -2,7 +2,7 @@
 
 @section('title')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Add page</title>
+<title>Shutdown page</title>
 @endsection
 
 @section('css')
@@ -38,7 +38,7 @@
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="#">หน้าแรก</a>
+        <a href="{{ route('dashboard') }}">หน้าแรก</a>
       </li>
       <li class="breadcrumb-item active">ปิดระบบ</li>
     </ol>

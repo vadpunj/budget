@@ -521,16 +521,20 @@ class EstimateController extends Controller
       $bg =null;
       $status[] =null;
       $reason[]=null;
-      if(Auth::user()->type == 5 || Auth::user()->type == 1){
+
+      $cmmt = Cmmt::get();
+      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+
+      if(Auth::user()->type == 5 || Auth::user()->type == 1 || Auth::user()->type == 6){
         $fun_center = $request->fund_id;
       }elseif(Auth::user()->type == 4){
         $fun_center = Auth::user()->fund_center;
       }
 
-      if(Auth::user()->type == 5 || Auth::user()->type == 1 ||  Auth::user()->type == 4){
+      if(Auth::user()->type == 5 || Auth::user()->type == 1 ||  Auth::user()->type == 4 || Auth::user()->type == 6){
 // dd($fun_center);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',date('Y')+543)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('fund_center',$fun_center)
@@ -547,9 +551,12 @@ class EstimateController extends Controller
               $reason[$key->id2][$key->account][$key->center_money] = $key->reason;
             }
           }
+      return view('view_all',['fundid'=> $fun_center ,'reason'=> $reason,'views' => $view,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
+
       }else{
+        // dd(232);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',date('Y')+543)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('center_money', Auth::user()->center_money)
@@ -565,14 +572,14 @@ class EstimateController extends Controller
               $reason[$key->id2][$key->account][$key->center_money] = $key->reason;
             }
           }
+          return view('view_all',['reason'=> $reason,'views' => $view,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
+
       }
 // dd($reason);
 // dd(1232);
-      $cmmt = Cmmt::get();
-      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+
 
 // dd($name);
-      return view('view_all',['reason'=> $reason,'views' => $view,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
     }
 
     public function post_approve(Request $request)
@@ -607,6 +614,51 @@ class EstimateController extends Controller
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
                 ->update(['status' => 3,'approve_by1' => NULL]);
+                $msg = 'ยกเลิกอนุมัติสำเร็จ';
+            }
+
+        }
+      }
+      if(Auth::user()->type == 6){
+        // dd($request->bg);
+        foreach($request->approve3 as $key => $val){
+            $arr = explode("-",$val);
+            $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
+            if($request->btn == "true"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account', $arr[0])
+                ->where('version',$last_ver)
+                ->where('center_money',$arr[1])
+                ->update(['status' => 2 ,'budget'=> $request->bg[$arr[0]][$arr[1]],'updated_at' => Carbon::now()]);
+              $insert = new Export_estimate;
+              $insert->version = 1;
+              $insert->year = date('Y')+543;
+              $insert->div_center = $request->div;
+              $insert->fund_center = $request->fund;
+              $insert->account = $arr[0];
+              // $insert->id1 =
+              // $insert->id2 =
+              $insert->budget = $request->bg[$arr[0]][$arr[1]];
+              $insert->status = 1;
+              // $insert->approve2 =
+              $insert->approve_all = Auth::user()->emp_id;
+              $insert->save();
+
+              $approve = new Approve_log;
+              $approve->user_approve = Auth::user()->emp_id;
+              $approve->stat_year = date('Y')+543;
+              $approve->version = $last_ver;
+              $approve->center_money = $arr[1];
+              $approve->save();
+              $msg = 'อนุมัติสำเร็จ';
+            }elseif($request->btn == "false"){
+              $update = DB::table('estimates')
+                ->where('stat_year', date('Y')+543)
+                ->where('account',$arr[0])
+                ->where('version',$last_ver)
+                ->where('center_money',$arr[1])
+                ->update(['status' => 4,'approve_by1' => NULL,'updated_at' => Carbon::now()]);
                 $msg = 'ยกเลิกอนุมัติสำเร็จ';
             }
 
@@ -731,111 +783,111 @@ class EstimateController extends Controller
 //           }
 //         }
 //   }
-    public function get_view_approve()
-    {
-      $bg = null;
-      $cmmt = Cmmt::get();
-      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
-      $first = $str->first()->FundsCenterID;
-
-      // dd($first);
-      return view('approve',['bg' => $bg,'cmmt' => $cmmt ,'cat_cm' => 1,'str' => $str ,'divid' => $first]);
-    }
-    public function post_view_approve(Request $request)
-    {
-      $bg =null;
-      $status =null;
-      // $view =null;
-// dd($fun_center);
-
-        $view = Export_estimate::select(DB::raw('status, id2 ,fund_center,year,account,sum(budget) as budget'))
-          ->where('year',date('Y')+544)
-          ->whereIn('status',[0,1])
-          ->where('fund_center',$request->fund_id)
-          ->where('id1',$request->id1)
-          ->groupBy('status','version','id2','year','fund_center','account')
-          ->orderBy('fund_center','asc')
-          ->orderBy('account','asc')
-          ->get();
-          if($view->count() != 0){
-            foreach($view as $key){
-              $status[$key->id2][$key->account] = $key->status;
-              $bg[$key->id2][$key->account] = $key->budget;
-            }
-          }else{
-            $view2 = Estimate::select(DB::raw('id2 ,fund_center,stat_year,account,sum(budget) as budget'))
-                ->where('stat_year',date('Y')+544)
-                ->where('status_ver',1)
-                ->whereIn('status',[0,1])
-                ->where('fund_center',$request->fund_id)
-                ->where('id1',$request->id1)
-                ->groupBy('version','id2','stat_year','fund_center','account')
-                ->orderBy('fund_center','asc')
-                ->orderBy('account','asc')
-                ->get();
-                if(!empty($view2)){
-                  foreach($view2 as $key){
-                    $status[$key->id2][$key->account] = 5;
-                    $bg[$key->id2][$key->account] = $key->budget;
-                  }
-                }
-          }
-
-// dd($bg);
-// dd(1232);
-      $cmmt = Cmmt::get();
-      $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
-
-// dd($name);
-      return view('approve',['fundid'=> $request->fund_id,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
-    }
-    public function approve_log(Request $request)
-    {
-      // dd($request->all());
-      if(Auth::user()->type == 5){
-        foreach($request->approve2 as $key => $val){
-          $arr = explode("-",$val);
-            // dd($last_ver);
-            if($request->btn == "true"){
-               $insert = new Export_estimate;
-               $insert->version = 1;
-               $insert->year = date('Y')+544;
-               $insert->div_center = $request->div_id;
-               $insert->fund_center = $request->fund_id;
-               $insert->account =  $arr[0];
-               $insert->id1 =  $request->id1;
-               $insert->id2 =  $request->id2;
-               $insert->status = 0;
-               $insert->budget = $request->new1[$arr[0]][$arr[1]];
-               $insert->approve2 = Auth::user()->emp_id;
-               $insert->save();
-            }
-        }
-        if($insert){
-          return back()->with('success', 'บันทึกข้อมูลแล้ว');
-        }
-      }
-      // dd($request->all());
-      if(Auth::user()->type == 6 || Auth::user()->type == 1){
-        foreach($request->approve_all as $key => $val){
-          $arr = explode("-",$val);
-            if($request->btn == "true"){
-              $update = DB::table('export_estimates')
-                ->where('year', date('Y')+544)
-                ->where('account', $arr[0])
-                ->where('div_center', $request->div_id)
-                ->where('fund_center', $request->fund_id)
-                ->where('version',1)
-                ->update(['status' => 1 ,'budget'=> $request->new2[$arr[0]][$arr[1]],'approve_all' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
-
-            }
-        }
-        if($update){
-          return back()->with('success', 'บันทึกข้อมูลแล้ว');
-        }
-      }
-
-    }
+//     public function get_view_approve()
+//     {
+//       $bg = null;
+//       $cmmt = Cmmt::get();
+//       $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+//       $first = $str->first()->FundsCenterID;
+//
+//       // dd($first);
+//       return view('approve',['bg' => $bg,'cmmt' => $cmmt ,'cat_cm' => 1,'str' => $str ,'divid' => $first]);
+//     }
+//     public function post_view_approve(Request $request)
+//     {
+//       $bg =null;
+//       $status =null;
+//       // $view =null;
+// // dd($fun_center);
+//
+//         $view = Estimate::select(DB::raw('status, id2 ,fund_center,stat_year,account,sum(budget) as budget'))
+//           ->where('stat_year',date('Y')+544)
+//           ->whereIn('status',[0,1])
+//           ->where('fund_center',$request->fund_id)
+//           ->where('id1',$request->id1)
+//           ->groupBy('status','version','id2','stat_year','fund_center','account')
+//           ->orderBy('fund_center','asc')
+//           ->orderBy('account','asc')
+//           ->get();
+//           if($view->count() != 0){
+//             foreach($view as $key){
+//               $status[$key->id2][$key->account] = $key->status;
+//               $bg[$key->id2][$key->account] = $key->budget;
+//             }
+//           }else{
+//             $view2 = Estimate::select(DB::raw('id2 ,fund_center,stat_year,account,sum(budget) as budget'))
+//                 ->where('stat_year',date('Y')+544)
+//                 ->where('status_ver',1)
+//                 ->whereIn('status',[0,1])
+//                 ->where('fund_center',$request->fund_id)
+//                 ->where('id1',$request->id1)
+//                 ->groupBy('version','id2','stat_year','fund_center','account')
+//                 ->orderBy('fund_center','asc')
+//                 ->orderBy('account','asc')
+//                 ->get();
+//                 if(!empty($view2)){
+//                   foreach($view2 as $key){
+//                     $status[$key->id2][$key->account] = 5;
+//                     $bg[$key->id2][$key->account] = $key->budget;
+//                   }
+//                 }
+//           }
+//
+// // dd($bg);
+// // dd(1232);
+//       $cmmt = Cmmt::get();
+//       $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
+//
+// // dd($name);
+//       return view('approve',['fundid'=> $request->fund_id,'bg' => $bg,'status' => $status, 'cat_cm' => $request->id1, 'divid' => $request->div_id ,'cmmt' => $cmmt,'str' => $str]);
+//     }
+    // public function approve_log(Request $request)
+    // {
+    //   // dd($request->all());
+    //   if(Auth::user()->type == 5){
+    //     foreach($request->approve2 as $key => $val){
+    //       $arr = explode("-",$val);
+    //         // dd($last_ver);
+    //         if($request->btn == "true"){
+    //            $insert = new Export_estimate;
+    //            $insert->version = 1;
+    //            $insert->year = date('Y')+544;
+    //            $insert->div_center = $request->div_id;
+    //            $insert->fund_center = $request->fund_id;
+    //            $insert->account =  $arr[0];
+    //            $insert->id1 =  $request->id1;
+    //            $insert->id2 =  $request->id2;
+    //            $insert->status = 0;
+    //            $insert->budget = $request->new1[$arr[0]][$arr[1]];
+    //            $insert->approve2 = Auth::user()->emp_id;
+    //            $insert->save();
+    //         }
+    //     }
+    //     if($insert){
+    //       return back()->with('success', 'บันทึกข้อมูลแล้ว');
+    //     }
+    //   }
+    //   // dd($request->all());
+    //   if(Auth::user()->type == 6 || Auth::user()->type == 1){
+    //     foreach($request->approve_all as $key => $val){
+    //       $arr = explode("-",$val);
+    //         if($request->btn == "true"){
+    //           $update = DB::table('export_estimates')
+    //             ->where('year', date('Y')+544)
+    //             ->where('account', $arr[0])
+    //             ->where('div_center', $request->div_id)
+    //             ->where('fund_center', $request->fund_id)
+    //             ->where('version',1)
+    //             ->update(['status' => 1 ,'budget'=> $request->new2[$arr[0]][$arr[1]],'approve_all' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
+    //
+    //         }
+    //     }
+    //     if($update){
+    //       return back()->with('success', 'บันทึกข้อมูลแล้ว');
+    //     }
+    //   }
+    //
+    // }
     public function get_struc()
     {
       $data = Structure::get();
@@ -945,23 +997,20 @@ class EstimateController extends Controller
     {
       // $data_array[] = 0;
       // export template to sap
-      if($request->stat_year <= '2564'){
-        $sap = Estimate::select('stat_year as year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
-        ->where('stat_year', $request->stat_year)
-        ->where('status',1)
-        ->groupBy('stat_year','version','fund_center','account')
-        ->get()->toArray();
-      }else{
+        // $sap = Estimate::select('stat_year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
+        //   ->where('stat_year', $request->stat_year)
+        //   ->where('status',1)
+        //   ->groupBy('stat_year','version','fund_center','account')
+        //   ->get()->toArray();
         $sap = Export_estimate::select('year','version','fund_center','account',DB::raw('SUM(budget) as budget'))
           ->where('year', $request->stat_year)
           ->where('status',1)
           ->groupBy('year','version','fund_center','account')
           ->get()->toArray();
-      }
         // dd($sap);
         foreach ($sap as $key => $value) {
               $data[] = array(
-                'year' => $value['year']-543,
+                'stat_year' => $value['year']-543,
                 'from' => 1,
                 'to' => 1,
                 'version' => 1,
@@ -969,7 +1018,7 @@ class EstimateController extends Controller
                 'func.a' => 'z0',
                 'fund_center' => $value['fund_center'],
                 'cmmt' => $value['account'],
-                'name' => Func::get_account($value['account']),
+                // 'name' => Func::get_account($value['account']),
                 'amount' => $value['budget']
               );
         }
@@ -1123,7 +1172,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('fund_center',$request->fund_id)
             ->groupBy('stat_year','id1','account')
             ->orderBy('id1','DESC')
@@ -1161,7 +1210,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('center_money',$request->center_id)
             ->groupBy('stat_year','id1','account')
             ->orderBy('id1','DESC')
@@ -1201,7 +1250,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('center_money',$request->center_id)
             ->groupBy('stat_year','id1','account')
             ->orderBy('id1','DESC')
@@ -1293,7 +1342,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('fund_center',$fund)//
             ->groupBy('stat_year','id1','account')
             ->orderBy('id1','DESC')
@@ -1329,7 +1378,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('center_money',$request->center_id)
             ->groupBy('stat_year','id1','account')
             ->orderBy('id1','DESC')
@@ -1400,7 +1449,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('fund_center', $fund)//
             ->groupBy('stat_year','id1','id2','account')
             ->orderBy('id1','DESC')
@@ -1523,7 +1572,7 @@ class EstimateController extends Controller
             ->where('stat_year',$i)
             ->whereNull('deleted_at')
             ->where('status_ver', 1)
-            ->where('status',1)
+            ->where('status',2)
             ->where('center_money',$request->center)
             ->groupBy('stat_year','id1','id2','account')
             ->orderBy('id1','DESC')
