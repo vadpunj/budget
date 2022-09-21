@@ -180,7 +180,7 @@
               <td align="center">{{ date('Y')+544 }}</td>
               <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
-              <td align="right">{{ number_format($stat["1"],2) }}</td>
+              <td align="right">{{ number_format($stat["2"],2) }}</td>
             </tr>
             @endif
           </tbody>

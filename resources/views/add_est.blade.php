@@ -220,7 +220,7 @@
          </tbody>
        </table>
      </div>
-       <div class="col-md-2 form-group">
+       <div class="col-md-2 form-group" style="padding-top: 20px;">
          <button class="btn btn-primary" type="button" data-toggle="modal" data-target="{{'#myAlert'}}" @if($stage == 6) @else disabled @endif>Submit</button>
        </div>
        @endif

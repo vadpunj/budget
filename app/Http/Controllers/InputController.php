@@ -38,7 +38,7 @@ class InputController extends Controller
 
         }
         // dd($group_status);
-        $stat= array('6'=> 0,'5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+        $stat= array('6'=> 0,'5'=> 0,'0'=> 0, '1'=>0,'2'=>0,'3'=>0,'4'=>0);
         if(isset($group_status)){
           foreach ($group_status as $key => $arr_val) {
             foreach($arr_val as $key2 => $val){
@@ -57,7 +57,7 @@ class InputController extends Controller
         $last_version = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
         // dd($last_version);
         $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('version',$last_version)->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
-        $stat= array('5'=> 0,'0'=> 0, '1'=>0, '3'=>0,'4'=>0);
+        $stat= array('5'=> 0,'0'=> 0, '1'=>0,'2'=>0, '3'=>0,'4'=>0);
         // dd($group_status);
 
         foreach ($group_status as $key) {

@@ -143,7 +143,7 @@
                       @if(Auth::user()->type == 4)
                       <?php
                         $able = '';
-                        if($status[$id2][$acc][$cent] == "1"){
+                        if($status[$id2][$acc][$cent] == "1" || $status[$id2][$acc][$cent] == "2" || $status[$id2][$acc][$cent] == "0"){
                           $able = 'disabled';
                         }
                        ?>
@@ -155,7 +155,7 @@
                       @if(Auth::user()->type == 5)
                       <?php
                         $able = 'disabled';
-                        if($status[$id2][$acc][$cent] == "0" || $status[$id2][$acc][$cent] == "1"){
+                        if($status[$id2][$acc][$cent] == "0"){
                           $able = '';
                         }
                        ?>

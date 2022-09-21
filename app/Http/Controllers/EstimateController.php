@@ -534,7 +534,7 @@ class EstimateController extends Controller
       if(Auth::user()->type == 5 || Auth::user()->type == 1 ||  Auth::user()->type == 4 || Auth::user()->type == 6){
 // dd($fun_center);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+543)
+          ->where('stat_year',date('Y')+544)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('fund_center',$fun_center)
@@ -556,7 +556,7 @@ class EstimateController extends Controller
       }else{
         // dd(232);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+543)
+          ->where('stat_year',date('Y')+544)
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('center_money', Auth::user()->center_money)
@@ -623,17 +623,17 @@ class EstimateController extends Controller
         // dd($request->bg);
         foreach($request->approve3 as $key => $val){
             $arr = explode("-",$val);
-            $last_ver = Func::get_last_version(date('Y')+543,$arr[1]);
+            $last_ver = Func::get_last_version(date('Y')+544,$arr[1]);
             if($request->btn == "true"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+543)
+                ->where('stat_year', date('Y')+544)
                 ->where('account', $arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
                 ->update(['status' => 2 ,'budget'=> $request->bg[$arr[0]][$arr[1]],'updated_at' => Carbon::now()]);
               $insert = new Export_estimate;
               $insert->version = 1;
-              $insert->year = date('Y')+543;
+              $insert->year = date('Y')+544;
               $insert->div_center = $request->div;
               $insert->fund_center = $request->fund;
               $insert->account = $arr[0];
@@ -647,14 +647,14 @@ class EstimateController extends Controller
 
               $approve = new Approve_log;
               $approve->user_approve = Auth::user()->emp_id;
-              $approve->stat_year = date('Y')+543;
+              $approve->stat_year = date('Y')+544;
               $approve->version = $last_ver;
               $approve->center_money = $arr[1];
               $approve->save();
               $msg = 'อนุมัติสำเร็จ';
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+543)
+                ->where('stat_year', date('Y')+544)
                 ->where('account',$arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
@@ -1879,6 +1879,7 @@ class EstimateController extends Controller
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('fund_center',$request->cost_title)
+          ->where('center_money','like','%'.$request->center_money.'%')
           ->groupBy('status', 'center_money','version','stat_year','fund_center','cost_title','account','approve_by1','approve_by2')
           ->orderBy('center_money')
           ->get()->toArray();
@@ -2030,7 +2031,7 @@ class EstimateController extends Controller
             ->where('fund_center',$request->fund_id)
             ->where('stat_year',($request->stat_year-1))
             ->where('status',1)
-            ->where('status_ver',1)
+            ->where('status_ver',2)
             ->groupBy('account','stat_year')->get();
             $div_id = $request->div_id;
             $fund_id = $request->fund_id;
@@ -2051,7 +2052,7 @@ class EstimateController extends Controller
           ->where('center_money',Auth::user()->center_money)
           ->where('stat_year',($request->stat_year-1))
           ->where('status_ver',1)
-          ->where('status',1)
+          ->where('status',2)
           ->groupBy('account','stat_year')->get();
           $div_id = null;
           $fund_id = Auth::user()->center_money;
@@ -2106,7 +2107,7 @@ class EstimateController extends Controller
         ->where('id1',$request->account)
         ->where('fund_center',$request->fundcenter)
         ->where('stat_year',($request->statyear-1))
-        ->where('status',1)
+        ->where('status',2)
         ->where('status_ver',1)
         ->groupBy('account','stat_year')->get();
       }else{
@@ -2124,7 +2125,7 @@ class EstimateController extends Controller
             ->where('center_money',$request->fundcenter)
             ->where('stat_year',($request->statyear-1))
             ->where('status_ver',1)
-            ->where('status',1)
+            ->where('status',2)
             ->groupBy('account','stat_year')->get();
           $fund = Auth::user()->fund_center;
           $center = Auth::user()->center_money;
