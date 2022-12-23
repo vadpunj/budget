@@ -22,6 +22,7 @@ Route::get('/', "UserController@login")->middleware('guest')->name('login');
 Route::post('/', "UserController@postlogin")->middleware('guest')->name('login');
 Route::get('/logout', "UserController@logout")->name('logout');
 Route::group(['middleware' => ['auth']], function () {
+  Route::post('/pwd', 'UserController@change_pw')->name('change_pw');
   Route::get('/home', 'InputController@get_source')->name('dashboard');
   Route::post('/home', 'InputController@post_information')->name('inform');
   Route::post('/home/del', 'InputController@delete_infor')->name('delete_infor');

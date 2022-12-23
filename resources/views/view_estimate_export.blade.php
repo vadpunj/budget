@@ -122,10 +122,10 @@
           <tr>
             <th>รหัสบัญชี</th>
             <th>หมวด/ประเภทรายจ่าย</th>
-            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-3 year"))+544)}}</th>
-            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-2 year"))+544)}}</th>
-            <th>{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
-            <th>{{'งบประมาณขอตั้งปี '.(date("Y")+544)}}</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(Func::get_year()-3)}}</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(Func::get_year()-2)}}</th>
+            <th>{{'ประมาณจ่ายจริงปี '.(Func::get_year()-1)}}</th>
+            <th>{{'งบประมาณขอตั้งปี '.(Func::get_year())}}</th>
             @if($type != 'all')
             <th>{{'คำอธิบาย'}}</th>
             @endif
@@ -166,45 +166,45 @@
            <tr>
              <td>{{ $account }}</td>
              <td>{{ Func::get_account($account) }}</td>
-             @if(!empty($year3[date("Y")+541][$account]))
+             @if(!empty($year3[(Func::get_year()-3)][$account]))
              @php
-               $sum3 += $year3[date("Y")+541][$account];
-               $all_sum3 += $year3[date("Y")+541][$account];
+               $sum3 += $year3[(Func::get_year()-3)][$account];
+               $all_sum3 += $year3[(Func::get_year()-3)][$account];
              @endphp
-               <td align="right">{{ number_format($year3[date("Y")+541][$account],2) }}</td>
+               <td align="right">{{ number_format($year3[(Func::get_year()-3)][$account],2) }}</td>
              @else
                <td align="center">{{ '-' }}</td>
              @endif
-             @if(!empty($year2[date("Y")+542][$account]))
+             @if(!empty($year2[(Func::get_year()-2)][$account]))
              @php
-               $sum2 += $year2[date("Y")+542][$account];
-               $all_sum2 += $year2[date("Y")+542][$account];
+               $sum2 += $year2[(Func::get_year()-2)][$account];
+               $all_sum2 += $year2[(Func::get_year()-2)][$account];
              @endphp
-               <td align="right">{{ number_format($year2[date("Y")+542][$account],2) }}</td>
+               <td align="right">{{ number_format($year2[(Func::get_year()-2)][$account],2) }}</td>
              @else
                <td align="center">{{ '-' }}</td>
              @endif
-             @if(!empty($year1[date("Y")+543][$account]))
+             @if(!empty($year1[(Func::get_year()-1)][$account]))
              @php
-               $sum1 += $year1[date("Y")+543][$account];
-               $all_sum1  += $year1[date("Y")+543][$account];
+               $sum1 += $year1[(Func::get_year()-1)][$account];
+               $all_sum1  += $year1[(Func::get_year()-1)][$account];
              @endphp
-               <td align="right">{{ number_format($year1[date("Y")+543][$account],2) }}</td>
+               <td align="right">{{ number_format($year1[(Func::get_year()-1)][$account],2) }}</td>
              @else
                <td align="center">{{ '-' }}</td>
              @endif
-             @if(!empty($now[date("Y")+544][$account]))
+             @if(!empty($now[Func::get_year()][$account]))
              @php
-               $sum += $now[date("Y")+544][$account];
-               $all_sum += $now[date("Y")+544][$account];
+               $sum += $now[Func::get_year()][$account];
+               $all_sum += $now[Func::get_year()][$account];
              @endphp
                <td align="right">{{ number_format($now[$year][$account],2) }}</td>
              @else
                <td align="center">{{ '-' }}</td>
              @endif
              @if($type != 'all')
-               @if(!empty($reason[date("Y")+544][$account]))
-                 <td>{{ $reason[date("Y")+544][$account] }}</td>
+               @if(!empty($reason[Func::get_year()][$account]))
+                 <td>{{ $reason[Func::get_year()][$account] }}</td>
                @else
                  <td align="center">{{ '-' }}</td>
                @endif

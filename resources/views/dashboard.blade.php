@@ -27,6 +27,11 @@
   @endsection
 
   @section('content')
+  @if(session()->has('jsAlert'))
+     <script>
+         alert({{ session()->get('jsAlert') }});
+     </script>
+  @endif 
   <main class="main">
     <!-- Breadcrumb-->
     <ol class="breadcrumb">
@@ -177,7 +182,7 @@
           <tbody>
             @if(count($stat) > 0)
             <tr>
-              <td align="center">{{ date('Y')+544 }}</td>
+              <td align="center">{{ Func::get_year() }}</td>
               <td align="right">{{ number_format($stat["5"],2) }}</td>
               <td align="right">{{ number_format($stat["0"],2) }}</td>
               <td align="right">{{ number_format($stat["2"],2) }}</td>
@@ -227,6 +232,7 @@
   </div>
  <!-- /.modal-dialog-->
 </div>
+
 @endsection
 
 @section('js')

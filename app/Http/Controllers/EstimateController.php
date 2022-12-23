@@ -40,17 +40,17 @@ class EstimateController extends Controller
         ->get()->toArray();
 // dd($test);
        foreach ($name as $key => $value) {
-         $year3[date("Y")+541][$value->account] = 0;
-         $year2[date("Y")+542][$value->account] = 0;
-         $year1[date("Y")+543][$value->account] = 0;
-         $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
-         $now[date("Y")+544][$value->account] = NULL;
-         $status[date("Y")+544][$value->account] = 5;
-         $reason[date("Y")+544][$value->account] = NULL;
+         $year3[(Func::get_year()-3)][$value->account] = 0;
+         $year2[(Func::get_year()-2)][$value->account] = 0;
+         $year1[(Func::get_year()-1)][$value->account] = 0;
+         $all_name[$value->id1][$value->id2][Func::get_year()][$value->account] = 0;
+         $now[Func::get_year()][$value->account] = NULL;
+         $status[Func::get_year()][$value->account] = 5;
+         $reason[Func::get_year()][$value->account] = NULL;
        }
        // dd($head[1]);
        // query ค่าใช้จ่ายงบประมาณที่อนุมัติแล้วในปีก่อนย้อนหลังไป3ปี
-        for($i = date("Y")+541 ; $i <= date("Y")+543 ; $i++){
+        for($i = (Func::get_year()-3) ; $i <= (Func::get_year()-1) ; $i++){
           $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
 
           if($last_ver != NULL){
@@ -66,11 +66,11 @@ class EstimateController extends Controller
               ->get()->toArray();
               // dd($list);
               foreach ($list as $key => $value) {
-                if ($value->stat_year == date("Y")+541) {
+                if ($value->stat_year == (Func::get_year()-3)) {
                   $year3[$value->stat_year][$value->account] = $value->budget;
-                }if ($value->stat_year == date("Y")+542) {
+                }if ($value->stat_year == (Func::get_year()-2)) {
                   $year2[$value->stat_year][$value->account] = $value->budget;
-                }if($value->stat_year == date("Y")+543){
+                }if($value->stat_year == (Func::get_year()-1)){
                   $year1[$value->stat_year][$value->account] = $value->budget;
                 }
               }
@@ -81,10 +81,10 @@ class EstimateController extends Controller
         }
         // dd($year3);
         // query ข้อมูลงบปีปัจจุบัน
-        $last_ver_now = Func::get_last_version(date("Y")+544,Auth::user()->center_money);
+        $last_ver_now = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','reason','account','status', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('version', $last_ver_now)
           ->where('center_money',Auth::user()->center_money)
@@ -118,10 +118,10 @@ class EstimateController extends Controller
       // บันทึกข้อมูลมูลงบประมาณ
       // เก็บข้อมูลUserที่ของบในtable User_request
       if($request->type == 'save'){
-        $last = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
+        $last = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
         // dd($last);
         if(!is_null($last)){
-          $update = DB::table('estimates')->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->where('version','<=',$last)->update(['status_ver' => 0]);
+          $update = DB::table('estimates')->where('stat_year',Func::get_year())->where('center_money',Auth::user()->center_money)->where('version','<=',$last)->update(['status_ver' => 0]);
         }
         $insert = [];
         foreach ($request->budget as $key => $val) {
@@ -129,7 +129,7 @@ class EstimateController extends Controller
           if(!is_null($val)){
             $insert = new Estimate;
             $insert->version = $last+1;
-            $insert->stat_year = date('Y')+544;
+            $insert->stat_year = Func::get_year();
             $insert->account = $key;
             $id = Func::list_cmmt($key);
             $insert->id1 = $id[0]->id1;
@@ -150,17 +150,17 @@ class EstimateController extends Controller
           }
         }
       }else{
-        $last = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
+        $last = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
         // dd($last);
         if(!is_null($last)){
-          $update = DB::table('estimates')->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->where('version','<=',$last)->update(['status_ver' => 0]);
+          $update = DB::table('estimates')->where('stat_year',Func::get_year())->where('center_money',Auth::user()->center_money)->where('version','<=',$last)->update(['status_ver' => 0]);
         }
         foreach ($request->budget as $key => $val) {
           // dd($last+1);
           if(!is_null($val)){
             $insert = new Estimate;
             $insert->version = $last+1;
-            $insert->stat_year = date('Y')+544;
+            $insert->stat_year = Func::get_year();
             $insert->account = $key;
             $id = Func::list_cmmt($key);
             $insert->id1 = $id[0]->id1;
@@ -184,7 +184,7 @@ class EstimateController extends Controller
 
 
       $data = new User_request;
-      $data->stat_year = date('Y')+544;
+      $data->stat_year = Func::get_year();
       $data->field = Auth::user()->field;
       $data->office = Auth::user()->office;
       $data->part = Auth::user()->part;
@@ -387,7 +387,7 @@ class EstimateController extends Controller
       $id = Func::list_cmmt($value['บัญชี']);
       $insert = [
                 'version'  =>  ($last+1),
-                'stat_year' =>  (date('Y')+544),
+                'stat_year' =>  Func::get_year(),
                 'account'   =>  $value['บัญชี'],
                 'id1'       =>  $id[0]->id1,
                 'id2'       =>  $id[0]->id2,
@@ -534,7 +534,7 @@ class EstimateController extends Controller
       if(Auth::user()->type == 5 || Auth::user()->type == 1 ||  Auth::user()->type == 4 || Auth::user()->type == 6){
 // dd($fun_center);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',Func::get_year())
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('fund_center',$fun_center)
@@ -556,7 +556,7 @@ class EstimateController extends Controller
       }else{
         // dd(232);
         $view = Estimate::select(DB::raw('status,reason,center_money, id2 ,fund_center,cost_title,stat_year,account,approve_by1,approve_by2,sum(budget) as budget'))
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',Func::get_year())
           ->where('status_ver',1)
           ->where('status','!=',6)
           ->where('center_money', Auth::user()->center_money)
@@ -590,18 +590,18 @@ class EstimateController extends Controller
       if(Auth::user()->type == 5){
         foreach($request->approve2 as $key => $val){
           $arr = explode("-",$val);
-            $last_ver = Func::get_last_version(date('Y')+544,$arr[1]);
+            $last_ver = Func::get_last_version(Func::get_year(),$arr[1]);
             // dd($last_ver);
             if($request->btn == "true"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account', $arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
                 ->update(['status' => 1 ,'budget'=> $request->new2[$arr[0]][$arr[1]],'approve_by2' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
                 $approve = new Approve_log;
                 $approve->user_approve = Auth::user()->emp_id;
-                $approve->stat_year = date('Y')+544;
+                $approve->stat_year = Func::get_year();
                 $approve->version = $last_ver;
                 $approve->center_money = $arr[1];
                 $approve->save();
@@ -609,7 +609,7 @@ class EstimateController extends Controller
 
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account',$arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
@@ -623,17 +623,17 @@ class EstimateController extends Controller
         // dd($request->bg);
         foreach($request->approve3 as $key => $val){
             $arr = explode("-",$val);
-            $last_ver = Func::get_last_version(date('Y')+544,$arr[1]);
+            $last_ver = Func::get_last_version(Func::get_year(),$arr[1]);
             if($request->btn == "true"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account', $arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
                 ->update(['status' => 2 ,'budget'=> $request->bg[$arr[0]][$arr[1]],'updated_at' => Carbon::now()]);
               $insert = new Export_estimate;
               $insert->version = 1;
-              $insert->year = date('Y')+544;
+              $insert->year = Func::get_year();
               $insert->div_center = $request->div;
               $insert->fund_center = $request->fund;
               $insert->account = $arr[0];
@@ -647,14 +647,14 @@ class EstimateController extends Controller
 
               $approve = new Approve_log;
               $approve->user_approve = Auth::user()->emp_id;
-              $approve->stat_year = date('Y')+544;
+              $approve->stat_year = Func::get_year();
               $approve->version = $last_ver;
               $approve->center_money = $arr[1];
               $approve->save();
               $msg = 'อนุมัติสำเร็จ';
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account',$arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
@@ -670,24 +670,24 @@ class EstimateController extends Controller
           $arr = explode("-",$val);
           // for ($i=0 ; $i<count($arr) ; $i++) {
             // dd($arr[1]);
-            $last_ver = Func::get_last_version(date('Y')+544,$arr[1]);
+            $last_ver = Func::get_last_version(Func::get_year(),$arr[1]);
             if($request->btn == "true"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account', $arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
                 ->update(['status' => 0 ,'budget'=> $request->new1[$arr[0]][$arr[1]],'approve_by1' => Auth::user()->emp_id ,'updated_at' => Carbon::now()]);
                 $approve = new Approve_log;
                 $approve->user_approve = Auth::user()->emp_id;
-                $approve->stat_year = date('Y')+544;
+                $approve->stat_year = Func::get_year();
                 $approve->version = $last_ver;
                 $approve->center_money = $arr[1];
                 $approve->save();
                 $msg = 'อนุมัติสำเร็จ';
             }elseif($request->btn == "false"){
               $update = DB::table('estimates')
-                ->where('stat_year', date('Y')+544)
+                ->where('stat_year', Func::get_year())
                 ->where('account',$arr[0])
                 ->where('version',$last_ver)
                 ->where('center_money',$arr[1])
@@ -921,6 +921,8 @@ class EstimateController extends Controller
 
      // $key_name = ['Company','Division','FundsCenterID','CostCenterID','CostCenterTitle','CostCenterName'];
 // dd($data->toArray());
+    // Structure::all()->delete();
+    DB::table('structures')->delete();
     foreach($data->toArray() as $value){
       if($value['Company']){
         $insert = new Structure;
@@ -1049,7 +1051,7 @@ class EstimateController extends Controller
       if(Auth::user()->type == 4){
         $get_status = Estimate::select('stat_year','cost_title','fund_center','center_money','status',DB::raw('SUM(budget) as budget'))
           ->where('status_ver',1)
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',Func::get_year())
           ->where('fund_center',Auth::user()->fund_center)
           ->groupBy('stat_year','fund_center','cost_title','center_money','status')
           ->orderBy('center_money','asc')
@@ -1057,7 +1059,7 @@ class EstimateController extends Controller
       }else{
         $get_status = Estimate::select('stat_year','cost_title','fund_center','center_money','status',DB::raw('SUM(budget) as budget'))
           ->where('status_ver',1)
-          ->where('stat_year',date('Y')+544)
+          ->where('stat_year',Func::get_year())
           ->where('center_money',Auth::user()->center_money)
           ->groupBy('stat_year','fund_center','cost_title','center_money','status')
           ->orderBy('center_money','asc')
@@ -1066,7 +1068,7 @@ class EstimateController extends Controller
       }
 
 // dd($get_status);
-      return view('status_report',['status' => $get_status,'year' => date('Y')+544]);
+      return view('status_report',['status' => $get_status,'year' => Func::get_year()]);
     }
 
     public function post_status(Request $request)
@@ -1076,7 +1078,7 @@ class EstimateController extends Controller
       $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
       $get_status = Estimate::select('stat_year','fund_center','cost_title','center_money','status',DB::raw('SUM(budget) as budget'))
         ->where('status_ver',1)
-        ->where('stat_year',date('Y')+544)
+        ->where('stat_year',Func::get_year())
         ->where('div_center',$request->div_id)
         ->groupBy('stat_year','fund_center','cost_title','center_money','status')
         ->orderBy('fund_center','asc')
@@ -1102,11 +1104,11 @@ class EstimateController extends Controller
     public function get_version()
     {
       // ดูversionงบประมาณ
-      $last_ver = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
+      $last_ver = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
       // $last_ver  = Estimate::where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->latest()->first();
       // dd($last_ver);
       $data = Estimate::where('version',$last_ver)
-      ->where('stat_year', date('Y')+544)
+      ->where('stat_year', Func::get_year())
       ->where('center_money',Auth::user()->center_money)
       ->get();
 
@@ -1116,11 +1118,11 @@ class EstimateController extends Controller
     public function post_version(Request $request)
     {
       // ค้นหางบประมาณversionต่าง
-      $last_ver = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
+      $last_ver = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
 
       // $last_ver  = Estimate::where('stat_year',date('Y')+543)->where('center_money',Auth::user()->center_money)->latest()->first();
       $data = Estimate::where('version',$request->version)
-        ->where('stat_year', date('Y')+544)
+        ->where('stat_year', Func::get_year())
         ->where('center_money',Auth::user()->center_money)
         ->get();
 
@@ -1157,15 +1159,15 @@ class EstimateController extends Controller
         ->get()->toArray();
       // เปรียบเทียบข้อมูลงบประมาณ
       foreach ($name as $key => $value) {
-        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
-        $year3[date("Y")+541][$value->account] = 0;
-        $year2[date("Y")+542][$value->account] = 0;
-        $year1[date("Y")+543][$value->account] = 0;
-        $now[date("Y")+544][$value->account] = NULL;
-        $reason[date("Y")+544][$value->account] = NULL;
+        $all_name[$value->id1][$value->id2][Func::get_year()][$value->account] = 0;
+        $year3[(Func::get_year()-3)][$value->account] = 0;
+        $year2[(Func::get_year()-2)][$value->account] = 0;
+        $year1[(Func::get_year()-1)][$value->account] = 0;
+        $now[Func::get_year()][$value->account] = NULL;
+        $reason[Func::get_year()][$value->account] = NULL;
       }
       if($request->center_id == 'all' && Auth::user()->type == 5){
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
@@ -1178,11 +1180,11 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1191,7 +1193,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status','!=',6)
@@ -1203,7 +1205,7 @@ class EstimateController extends Controller
             $now[$value->stat_year][$value->account] = $value->budget;
           }
       }elseif(Auth::user()->type == 5){
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
@@ -1216,11 +1218,11 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1229,7 +1231,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','reason', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status','!=',6)
@@ -1243,7 +1245,7 @@ class EstimateController extends Controller
           }
       }else{
         // dd(4234);
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
@@ -1256,11 +1258,11 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1269,7 +1271,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','reason', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('center_money',$request->center_id)
@@ -1322,12 +1324,12 @@ class EstimateController extends Controller
         ->get()->toArray();
       // เปรียบเทียบข้อมูลงบประมาณ
       foreach ($name as $key => $value) {
-        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
-        $year3[date("Y")+541][$value->account] = 0;
-        $year2[date("Y")+542][$value->account] = 0;
-        $year1[date("Y")+543][$value->account] = 0;
-        $now[date("Y")+544][$value->account] = NULL;
-        $reason[date("Y")+544][$value->account] = NULL;
+        $all_name[$value->id1][$value->id2][Func::get_year()][$value->account] = 0;
+        $year3[(Func::get_year()-3)][$value->account] = 0;
+        $year2[(Func::get_year()-2)][$value->account] = 0;
+        $year1[(Func::get_year()-1)][$value->account] = 0;
+        $now[Func::get_year()][$value->account] = NULL;
+        $reason[Func::get_year()][$value->account] = NULL;
       }
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
         $fund = $request->fund_id;
@@ -1335,7 +1337,7 @@ class EstimateController extends Controller
         $fund = Auth::user()->fund_center;
       }
       if($request->center_id == 'all'){
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
@@ -1348,18 +1350,18 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
         }
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1371,7 +1373,7 @@ class EstimateController extends Controller
             $now[$value->stat_year][$value->account] = $value->budget;
           }
       }else{
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','account', DB::raw('SUM(budget) as budget'))
@@ -1384,11 +1386,11 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1397,7 +1399,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','reason', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1428,12 +1430,12 @@ class EstimateController extends Controller
         ->get()->toArray();
       // เปรียบเทียบข้อมูลงบประมาณ
       foreach ($name as $key => $value) {
-        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
-        $year3[date("Y")+541][$value->account] = 0;
-        $year2[date("Y")+542][$value->account] = 0;
-        $year1[date("Y")+543][$value->account] = 0;
-        $now[date("Y")+544][$value->account] = 0;
-        $reason[date("Y")+544][$value->account] = NULL;
+        $all_name[$value->id1][$value->id2][Func::get_year()][$value->account] = 0;
+        $year3[(Func::get_year()-3)][$value->account] = 0;
+        $year2[(Func::get_year()-2)][$value->account] = 0;
+        $year1[(Func::get_year()-1)][$value->account] = 0;
+        $now[Func::get_year()][$value->account] = 0;
+        $reason[Func::get_year()][$value->account] = NULL;
         $acname[$value->account] = $value->name;
       }
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
@@ -1442,7 +1444,7 @@ class EstimateController extends Controller
         $fund = Auth::user()->fund_center;
       }
       if($request->center == 'all'){
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
@@ -1455,20 +1457,20 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_1[$value->id1][Func::get_year()] = $value->id1;
               $id_2[$value->id1][$value->id2] = $value->id2;
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
         }
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','id2', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1477,7 +1479,7 @@ class EstimateController extends Controller
           ->orderBy('id1','DESC')
           ->get()->toArray();
           foreach ($list_now as $key => $value) {
-            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_1[$value->id1][Func::get_year()] = $value->id1;
             $id_2[$value->id1][$value->id2] = $value->id2;
             $now[$value->stat_year][$value->account] = $value->budget;
           }
@@ -1565,7 +1567,7 @@ class EstimateController extends Controller
           // }
             $count = 5;
       }else{
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
@@ -1578,13 +1580,13 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_1[$value->id1][Func::get_year()] = $value->id1;
               $id_2[$value->id1][$value->id2] = $value->id2;
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1592,7 +1594,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','id2','reason', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1601,7 +1603,7 @@ class EstimateController extends Controller
           ->orderBy('id1','DESC')
           ->get()->toArray();
           foreach ($list_now as $key => $value) {
-            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_1[$value->id1][Func::get_year()] = $value->id1;
             $id_2[$value->id1][$value->id2] = $value->id2;
             $now[$value->stat_year][$value->account] = $value->budget;
             $reason[$value->stat_year][$value->account] = $value->reason;
@@ -1743,12 +1745,12 @@ class EstimateController extends Controller
         ->get()->toArray();
       // เปรียบเทียบข้อมูลงบประมาณ
       foreach ($name as $key => $value) {
-        $all_name[$value->id1][$value->id2][date("Y")+544][$value->account] = 0;
-        $year3[date("Y")+541][$value->account] = 0;
-        $year2[date("Y")+542][$value->account] = 0;
-        $year1[date("Y")+543][$value->account] = 0;
-        $now[date("Y")+544][$value->account] = 0;
-        $reason[date("Y")+544][$value->account] = NULL;
+        $all_name[$value->id1][$value->id2][Func::get_year()][$value->account] = 0;
+        $year3[(Func::get_year()-3)][$value->account] = 0;
+        $year2[(Func::get_year()-2)][$value->account] = 0;
+        $year1[(Func::get_year()-1)][$value->account] = 0;
+        $now[Func::get_year()][$value->account] = 0;
+        $reason[Func::get_year()][$value->account] = NULL;
         $acname[$value->account] = $value->name;
       }
       if(Auth::user()->type == 5 || Auth::user()->type == 1){
@@ -1757,7 +1759,7 @@ class EstimateController extends Controller
         $fund = Auth::user()->fund_center;
       }
       if($request->center == 'all'){
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = (Func::get_year()-3) ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
@@ -1770,20 +1772,20 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_1[$value->id1][Func::get_year()] = $value->id1;
               $id_2[$value->id1][$value->id2] = $value->id2;
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
         }
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','id2', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1792,13 +1794,13 @@ class EstimateController extends Controller
           ->orderBy('id1','DESC')
           ->get()->toArray();
           foreach ($list_now as $key => $value) {
-            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_1[$value->id1][Func::get_year()] = $value->id1;
             $id_2[$value->id1][$value->id2] = $value->id2;
             $now[$value->stat_year][$value->account] = $value->budget;
           }
           $count = 5;
       }else{
-        for($i = date("Y",strtotime("-3 year"))+544 ; $i <= date("Y")+543 ; $i++){
+        for($i = (Func::get_year()-3) ; $i <= (Func::get_year()-1) ; $i++){
           // $last_ver = Func::get_last_version($i ,Auth::user()->center_money);
           $list = DB::table('estimates')
             ->select('stat_year','id1','id2','account', DB::raw('SUM(budget) as budget'))
@@ -1811,13 +1813,13 @@ class EstimateController extends Controller
             ->orderBy('id1','DESC')
             ->get()->toArray();
             foreach ($list as $key => $value) {
-              $id_1[$value->id1][date("Y")+544] = $value->id1;
+              $id_1[$value->id1][Func::get_year()] = $value->id1;
               $id_2[$value->id1][$value->id2] = $value->id2;
-              if ($value->stat_year == date("Y")+541) {
+              if ($value->stat_year == (Func::get_year()-3)) {
                 $year3[$value->stat_year][$value->account] = $value->budget;
-              }if ($value->stat_year == date("Y")+542) {
+              }if ($value->stat_year == (Func::get_year()-2)) {
                 $year2[$value->stat_year][$value->account] = $value->budget;
-              }if($value->stat_year == date("Y")+543){
+              }if($value->stat_year == (Func::get_year()-1)){
                 $year1[$value->stat_year][$value->account] = $value->budget;
               }
             }
@@ -1825,7 +1827,7 @@ class EstimateController extends Controller
         // query ข้อมูลงบปีปัจจุบัน
         $list_now = DB::table('estimates')
           ->select('stat_year','id1','account','id2','reason', DB::raw('SUM(budget) as budget'))
-          ->where('stat_year',date("Y")+544)
+          ->where('stat_year',Func::get_year())
           ->whereNull('deleted_at')
           ->where('status_ver', 1)
           ->where('status',0)
@@ -1834,7 +1836,7 @@ class EstimateController extends Controller
           ->orderBy('id1','DESC')
           ->get()->toArray();
           foreach ($list_now as $key => $value) {
-            $id_1[$value->id1][date("Y")+544] = $value->id1;
+            $id_1[$value->id1][Func::get_year()] = $value->id1;
             $id_2[$value->id1][$value->id2] = $value->id2;
             $now[$value->stat_year][$value->account] = $value->budget;
             $reason[$value->stat_year][$value->account] = $value->reason;
@@ -1936,7 +1938,7 @@ class EstimateController extends Controller
 
 
 
-      return view('report_apv',['fund_id'=>$fund_id->FundID,'fund' => $fund,'views' => $view ,'yy' => date('Y')+544, 'centermoney' => null,'fund_id' => null]);
+      return view('report_apv',['fund_id'=>$fund_id->FundID,'fund' => $fund,'views' => $view ,'yy' => Func::get_year(), 'centermoney' => null,'fund_id' => null]);
 
     }
     public function post_report_apv(Request $request)
@@ -1994,11 +1996,11 @@ class EstimateController extends Controller
       if(Auth::user()->type == 5 ||Auth::user()->type == 6 || Auth::user()->type == 1){
         $str = Structure::select('FundsCenterID')->groupBy('FundsCenterID')->get();
         $divid = $str->first();
-        return view('report_compare',['fund_id' => $fund_id,'id1' => $id1 ,'cmmt' => $cmmt ,'divid' => $divid,'str' => $str,'yy' => date('Y')+544, 'fund' => NULL ,'center' => NULL ,'account' => NULL]);
+        return view('report_compare',['fund_id' => $fund_id,'id1' => $id1 ,'cmmt' => $cmmt ,'divid' => $divid,'str' => $str,'yy' => Func::get_year(), 'fund' => NULL ,'center' => NULL ,'account' => NULL]);
 
       }
 
-      return view('report_compare',['fund_id' => $fund_id,'id1' => $id1 ,'cmmt' => $cmmt ,'yy' => date('Y')+544, 'fund' => NULL ,'center' => NULL ,'account' => NULL]);
+      return view('report_compare',['fund_id' => $fund_id,'id1' => $id1 ,'cmmt' => $cmmt ,'yy' => Func::get_year(), 'fund' => NULL ,'center' => NULL ,'account' => NULL]);
     }
 
     public function post_compare(Request $request)
@@ -2013,7 +2015,7 @@ class EstimateController extends Controller
         ->get()->toArray();
          foreach ($name as $key => $value) {
            $data_old[$value->account][date("Y",strtotime("-1 year"))+544] = 0;
-           $data[$value->account][date("Y")+544] = 0;
+           $data[$value->account][Func::get_year()] = 0;
          }
          $view =[];
          $old =[];
@@ -2088,7 +2090,7 @@ class EstimateController extends Controller
         ->get();
          foreach ($name as $key => $value) {
            $data_old[$value->account][date("Y",strtotime("-1 year"))+544] = 0;
-           $data[$value->account][date("Y")+544] = 0;
+           $data[$value->account][Func::get_year()] = 0;
          }
        $fund = NULL;
        $center = NULL;

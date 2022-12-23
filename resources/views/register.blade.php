@@ -89,6 +89,32 @@
                       <i class="icon-people"></i>
                     </span>
                   </div>
+                  <input class="form-control @error('cost_id') is-invalid @enderror" type="text" placeholder="CostCenterID" name="cost_id" value="{{ old('cost_id') }}" required autocomplete="cost_id">
+                  @error('cost_id')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-phone"></i>
+                    </span>
+                  </div>
+                  <input class="form-control @error('phone') is-invalid @enderror" type="text" placeholder="Phone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
+                  @error('phone')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                  @enderror
+                </div>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="icon-people"></i>
+                    </span>
+                  </div>
                   <select class="form-control" name="type">
                     @foreach($role as $data)
                       <option value="{{$data->id}}">{{ ucfirst($data->role_name) }}</option>

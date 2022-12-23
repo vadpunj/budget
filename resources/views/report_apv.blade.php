@@ -52,7 +52,7 @@
               <label class="col-md-2 col-form-label">ปี (พ.ศ.) :<font color="red">*</font></label>
                 <div class="col-md-3">
                   <select class="form-control" name="stat_year">
-                    @for($i = (date('Y')+544) ;$i >= (date('Y',strtotime("-3 year"))+544) ; $i--)
+                    @for($i = (Func::get_year()) ;$i >= (Func::get_year()-3) ; $i--)
                       <option value="{{ $i }}" @if($i == $yy) selected @else '' @endif>{{ $i }}</option>
                     @endfor
                   </select>

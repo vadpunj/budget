@@ -6,6 +6,7 @@ use App\Role;
 use App\Structure;
 use App\Shutdown;
 use App\Cmmt;
+use App\Stat_year;
 // use DB;
 
 class Func{
@@ -151,7 +152,7 @@ class Func{
     $name = Structure::select('CostCenterName')
     ->where('FundID',$fundid)
     ->whereNull('CostCenterID')
-    ->where('CostCenterName','like','ฝ่าย%')
+    // ->where('CostCenterName','like','ฝ่าย%')
     ->get();
     return $name;
 
@@ -216,6 +217,17 @@ class Func{
       return NULL;
     }else{
       return $name->FundID;
+    }
+  }
+  public static function get_year()
+  {
+    $year = Stat_year::select('stat_year')
+      ->orderBy('id', 'DESC')
+      ->get();
+    if($year == NULL){
+      return NULL;
+    }else{
+      return $year[0]->stat_year;
     }
   }
 }

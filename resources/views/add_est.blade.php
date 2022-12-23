@@ -60,7 +60,7 @@
                   <label class="col-md-2 col-form-label">ปีงบประมาณ(พ.ศ.)</label>
                   <div class="form-group col-sm-4">
                     <div class="input-group">
-                      <input class="form-control @error('stat_year') is-invalid @enderror" type="text" name="stat_year" value="{{ date('Y')+544 }}" readonly>
+                      <input class="form-control @error('stat_year') is-invalid @enderror" type="text" name="stat_year" value="{{ Func::get_year() }}" readonly>
 
                     </div>
                   </div>
@@ -109,11 +109,11 @@
            <tr>
              <th>รหัสบัญชี</th>
              <th>หมวด/ประเภทรายจ่าย</th>
-             <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-3 year"))+544)}}</th>
-             <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-2 year"))+544)}}</th>
-             <th>{{'ประมาณจ่ายปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
-             <th>{{'งบประมาณขอตั้งปี '.(date("Y")+544)}}</th>
-             <th>{{'% ผลรวมที่เพิ่มขึ้นจากปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
+             <th>{{'ประมาณจ่ายปี '.(Func::get_year()-3)}}</th>
+             <th>{{'ประมาณจ่ายปี '.(Func::get_year()-2)}}</th>
+             <th>{{'ประมาณจ่ายปี '.(Func::get_year()-1)}}</th>
+             <th>{{'งบประมาณขอตั้งปี '.Func::get_year()}}</th>
+             <th>{{'% ผลรวมที่เพิ่มขึ้นจากปี '.Func::get_year()}}</th>
              <th>คำอธิบาย</th>
            </tr>
          </thead>
@@ -146,27 +146,27 @@
             <tr>
               <td>{{ $account }}</td>
               <td>{{ Func::get_account($account) }}</td>
-              @if(!empty($year3[date("Y")+541][$account]))
+              @if(!empty($year3[(Func::get_year()-3)][$account]))
               @php
-                $sum3 += $year3[date("Y")+541][$account];
+                $sum3 += $year3[(Func::get_year()-3)][$account];
               @endphp
-                <td align="right">{{ number_format($year3[date("Y")+541][$account],2) }}</td>
+                <td align="right">{{ number_format($year3[(Func::get_year()-3)][$account],2) }}</td>
               @else
                 <td align="center">{{ '-' }}</td>
               @endif
-              @if(!empty($year2[date("Y")+542][$account]))
+              @if(!empty($year2[(Func::get_year()-2)][$account]))
               @php
-                $sum2 += $year2[date("Y")+542][$account];
+                $sum2 += $year2[(Func::get_year()-2)][$account];
               @endphp
-                <td align="right">{{ number_format($year2[date("Y")+542][$account],2) }}</td>
+                <td align="right">{{ number_format($year2[(Func::get_year()-2)][$account],2) }}</td>
               @else
                 <td align="center">{{ '-' }}</td>
               @endif
-              @if(!empty($year1[date("Y")+543][$account]))
+              @if(!empty($year1[(Func::get_year()-1)][$account]))
               @php
-                $sum1 += $year1[date("Y")+543][$account];
+                $sum1 += $year1[(Func::get_year()-1)][$account];
               @endphp
-                <td align="right">{{ number_format($year1[date("Y")+543][$account],2) }}</td>
+                <td align="right">{{ number_format($year1[(Func::get_year()-1)][$account],2) }}</td>
               @else
                 <td align="center">{{ '-' }}</td>
               @endif
@@ -184,9 +184,9 @@
                 <td align="center">{{ '-' }}</td>
               @endif
               @endif
-              @if(($now[$year][$account] != 0 && $year1[date("Y")+543][$account] != 0) && $year1[date("Y")+543][$account] <= $now[date("Y")+544][$account])
+              @if(($now[$year][$account] != 0 && $year1[(Func::get_year()-1)][$account] != 0) && $year1[(Func::get_year()-1)][$account] <= $now[Func::get_year()][$account])
                 @php
-                  $cal = ((($now[date('Y')+544][$account] - $year1[date("Y")+543][$account]) * 100) / $year1[date("Y")+543][$account]);
+                  $cal = ((($now[Func::get_year()][$account] - $year1[(Func::get_year()-1)][$account]) * 100) / $year1[(Func::get_year()-1)][$account]);
                 @endphp
                 <td align="center">{{round($cal,2).' %'}}</td>
               @else

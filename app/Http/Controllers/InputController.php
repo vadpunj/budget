@@ -30,11 +30,11 @@ class InputController extends Controller
       // $group_status = [];
       $data = Information::orderBy('id','DESC')->get();
       if(Auth::user()->type == 4){
-        $center = Estimate::select('center_money')->where('stat_year',date('Y')+544)->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
+        $center = Estimate::select('center_money')->where('stat_year',Func::get_year())->where('fund_center',Auth::user()->fund_center)->groupBy('center_money')->get();
         // dd($center->count());
         for($i=0 ;$i< $center->count() ; $i++){
-          $last = Func::get_last_version(date('Y')+544,$center[$i]->center_money);
-          $group_status[] = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('center_money',$center[$i]->center_money)->where('fund_center',Auth::user()->fund_center)->where('version',$last)->where('stat_year',date('Y')+544)->groupBy('status')->get();
+          $last = Func::get_last_version(Func::get_year(),$center[$i]->center_money);
+          $group_status[] = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('center_money',$center[$i]->center_money)->where('fund_center',Auth::user()->fund_center)->where('version',$last)->where('stat_year',Func::get_year())->groupBy('status')->get();
 
         }
         // dd($group_status);
@@ -53,10 +53,10 @@ class InputController extends Controller
       }
 // dd(count($stat));
       if(Auth::user()->type == 2 ||Auth::user()->type == 3){
-        $center = Estimate::select('center_money')->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
-        $last_version = Func::get_last_version(date('Y')+544,Auth::user()->center_money);
+        $center = Estimate::select('center_money')->where('stat_year',Func::get_year())->where('center_money',Auth::user()->center_money)->groupBy('center_money')->get();
+        $last_version = Func::get_last_version(Func::get_year(),Auth::user()->center_money);
         // dd($last_version);
-        $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('version',$last_version)->where('stat_year',date('Y')+544)->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
+        $group_status = Estimate::select('status',DB::raw('SUM(budget) as budget'))->where('version',$last_version)->where('stat_year',Func::get_year())->where('center_money',Auth::user()->center_money)->groupBy('status')->get();
         $stat= array('5'=> 0,'0'=> 0, '1'=>0,'2'=>0, '3'=>0,'4'=>0);
         // dd($group_status);
 
@@ -70,11 +70,11 @@ class InputController extends Controller
         $first = $center->first();
         // dd($first->center_money);
         $firstcen = $first->center_money;
-        $last_ver = Func::get_last_version(date('Y')+544,$firstcen);
+        $last_ver = Func::get_last_version(Func::get_year(),$firstcen);
   // dd($last_ver);
         $get_status = Estimate::select('stat_year','center_money','status',DB::raw('SUM(budget) as budget'))
         ->where('center_money',$firstcen)
-        ->where('stat_year',date('Y')+544)
+        ->where('stat_year',Func::get_year())
         ->where('version',$last_ver)
         ->groupBy('status','center_money','stat_year')
         ->get()->toArray();
@@ -84,7 +84,7 @@ class InputController extends Controller
         $center = NULL;
         $get_status = NULL;
       }
-      return view('dashboard',['stat'=>$stat ,'data' => $data,'status' => $get_status,'year' => date('Y')+544,'center' => $center,'first'=> $firstcen]);
+      return view('dashboard',['stat'=>$stat ,'data' => $data,'status' => $get_status,'year' => Func::get_year(),'center' => $center,'first'=> $firstcen]);
 
     }
 // dd($status);

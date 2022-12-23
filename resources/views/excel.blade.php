@@ -12,7 +12,7 @@
   <body>
       <table>
         <tr>
-          <th colspan="2">{{ 'คำขอตั้งงบประมาณทำการประจำปี '.(date("Y")+544) }}</th>
+          <th colspan="2">{{ 'คำขอตั้งงบประมาณทำการประจำปี '.(Func::get_year()) }}</th>
         </tr>
         <tr>
           @if($type != 'all')
@@ -23,10 +23,10 @@
         </tr>
           <tr>
             <th align="center">รายการ</th>
-            <th align="center">{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-3 year"))+544)}}</th>
-            <th align="center">{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-2 year"))+544)}}</th>
-            <th align="center">{{'ประมาณจ่ายจริงปี '.(date("Y",strtotime("-1 year"))+544)}}</th>
-            <th align="center">{{'งบประมาณขอตั้งปี '.(date("Y")+544)}}</th>
+            <th align="center">{{'ประมาณจ่ายจริงปี '.(Func::get_year()-3)}}</th>
+            <th align="center">{{'ประมาณจ่ายจริงปี '.(Func::get_year()-2)}}</th>
+            <th align="center">{{'ประมาณจ่ายจริงปี '.(Func::get_year()-1)}}</th>
+            <th align="center">{{'งบประมาณขอตั้งปี '.(Func::get_year())}}</th>
             @if($type != 'all')
             <th align="center">{{'คำอธิบาย'}}</th>
             @endif
@@ -38,7 +38,7 @@
             $all_sum3 = 0;
           @endphp
          @foreach($all_name as $id1 => $arr_id2)
-           @if(isset($id_1[$id1][date("Y")+544]) && $id_1[$id1][date("Y")+544] == $id1)
+           @if(isset($id_1[$id1][Func::get_year()]) && $id_1[$id1][Func::get_year()] == $id1)
              <tr>
                  <td colspan="{{ $count }}"><b>{{ $head[$id1] }}</b></td>
              </tr>
@@ -50,21 +50,21 @@
            $sum3 = 0;
          @endphp
            @foreach($arr_id2 as $id2 => $arr_year)
-              @if(isset($id_1[$id1][date("Y")+544]) && isset($id_2[$id1][$id2]))
-               @if($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 1)
+              @if(isset($id_1[$id1][Func::get_year()]) && isset($id_2[$id1][$id2]))
+               @if($id_1[$id1][Func::get_year()] == 1 && $id_2[$id1][$id2] == 1)
                <tr>
                  <td colspan="{{ $count }}">1.1 เงินเดือน ค่าจ้าง ค่าตอบแทน</td>
                </tr>
-               @elseif($id_1[$id1][date("Y")+544] == 1 && $id_2[$id1][$id2] == 2)
+               @elseif($id_1[$id1][Func::get_year()] == 1 && $id_2[$id1][$id2] == 2)
                <tr>
                  <td colspan="{{ $count }}">1.2 เงินเดือน ค่าจ้าง ค่าตอบแทนผู้บริหาร</td>
                </tr>
                @endif
-               @if($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 1)
+               @if($id_1[$id1][Func::get_year()] == 2 && $id_2[$id1][$id2] == 1)
                <tr>
                  <td colspan="{{ $count }}">2.1 ค่าสวัสดิการพนักงาน ลูกจ้าง</td>
                </tr>
-               @elseif($id_1[$id1][date("Y")+544] == 2 && $id_2[$id1][$id2] == 2)
+               @elseif($id_1[$id1][Func::get_year()] == 2 && $id_2[$id1][$id2] == 2)
                <tr>
                  <td colspan="{{ $count }}">2.2 ค่าสวัสดิการผู้บริหาร</td>
                </tr>
@@ -73,48 +73,48 @@
               @endif
            @foreach($arr_year as $year =>$arr_acc)
              @foreach($arr_acc as $account => $value)
-              @if($year3[date("Y")+541][$account] > 0 || $year2[date("Y")+542][$account] > 0 || $year1[date("Y")+543][$account] > 0 || $now[$year][$account] > 0)
+              @if($year3[(Func::get_year()-3)][$account] > 0 || $year2[(Func::get_year()-2)][$account] > 0 || $year1[(Func::get_year()-1)][$account] > 0 || $now[$year][$account] > 0)
                  <tr>
                    <td>{{ $account.' '.$acname[$account] }}</td>
-                   @if(!empty($year3[date("Y")+541][$account]))
+                   @if(!empty($year3[(Func::get_year()-3)][$account]))
                    @php
-                     $sum3 += $year3[date("Y")+541][$account];
-                     $all_sum3 += $year3[date("Y")+541][$account];
+                     $sum3 += $year3[(Func::get_year()-3)][$account];
+                     $all_sum3 += $year3[(Func::get_year()-3)][$account];
                    @endphp
-                     <td align="right">{{ number_format($year3[date("Y")+541][$account],2) }}</td>
+                     <td align="right">{{ number_format($year3[(Func::get_year()-3)][$account],2) }}</td>
                    @else
                      <td align="center">{{ '-' }}</td>
                    @endif
-                   @if(!empty($year2[date("Y")+542][$account]))
+                   @if(!empty($year2[(Func::get_year()-2)][$account]))
                    @php
-                     $sum2 += $year2[date("Y")+542][$account];
-                     $all_sum2 += $year2[date("Y")+542][$account];
+                     $sum2 += $year2[(Func::get_year()-2)][$account];
+                     $all_sum2 += $year2[(Func::get_year()-2)][$account];
                    @endphp
-                     <td align="right">{{ number_format($year2[date("Y")+542][$account],2) }}</td>
+                     <td align="right">{{ number_format($year2[(Func::get_year()-2)][$account],2) }}</td>
                    @else
                      <td align="center">{{ '-' }}</td>
                    @endif
-                   @if(!empty($year1[date("Y")+543][$account]))
+                   @if(!empty($year1[(Func::get_year()-1)][$account]))
                    @php
-                     $sum1 += $year1[date("Y")+543][$account];
-                     $all_sum1  += $year1[date("Y")+543][$account];
+                     $sum1 += $year1[(Func::get_year()-1)][$account];
+                     $all_sum1  += $year1[(Func::get_year()-1)][$account];
                    @endphp
-                     <td align="right">{{ number_format($year1[date("Y")+543][$account],2) }}</td>
+                     <td align="right">{{ number_format($year1[(Func::get_year()-1)][$account],2) }}</td>
                    @else
                      <td align="center">{{ '-' }}</td>
                    @endif
-                   @if(!empty($now[date("Y")+544][$account]))
+                   @if(!empty($now[Func::get_year()][$account]))
                    @php
-                     $sum += $now[date("Y")+544][$account];
-                     $all_sum += $now[date("Y")+544][$account];
+                     $sum += $now[Func::get_year()][$account];
+                     $all_sum += $now[Func::get_year()][$account];
                    @endphp
                      <td align="right">{{ number_format($now[$year][$account],2) }}</td>
                    @else
                      <td align="center">{{ '-' }}</td>
                    @endif
                    @if($type != 'all')
-                     @if(!empty($reason[date("Y")+544][$account]))
-                       <td>{{ $reason[date("Y")+544][$account] }}</td>
+                     @if(!empty($reason[Func::get_year()][$account]))
+                       <td>{{ $reason[Func::get_year()][$account] }}</td>
                      @else
                        <td align="center">{{ '-' }}</td>
                      @endif
@@ -124,7 +124,7 @@
                @endforeach
              @endforeach
            @endforeach
-           @if(isset($id_1[$id1][date("Y")+544]) && $id_1[$id1][date("Y")+544] == $id1)
+           @if(isset($id_1[$id1][Func::get_year()]) && $id_1[$id1][Func::get_year()] == $id1)
            <tr>
              <td align="center"><b>Sum</b></td>
              <td align="right"><b>{{ number_format($sum3,2) }}</b></td>

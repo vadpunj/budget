@@ -69,7 +69,7 @@
                   @endif
                   <div class="card-header">
                   <center><span style="font-size:23px;">ระบบจัดทำงบประมาณทำการประจำปี</span></center></div>
-                  <center><h4 style="padding-bottom: 20px;margin-top: 5px;">Login เข้าสู่ระบบ <span style="font-size:14px;" class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</span></h4></center>
+                  <center><h4 style="padding-bottom: 20px;margin-top: 5px;">Login เข้าสู่ระบบ {{-- <span style="font-size:14px;" class="text-muted">**ใช้รหัสผ่านเดียวกับ Email**</span> --}}</h4></center>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text">

@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
           $table->bigIncrements('id');
           $table->string('name');
           $table->string('emp_id');
+          $table->string('pwd')->nullable();
           $table->tinyInteger('type');
           $table->string('field')->nullable();
           $table->string('cost_title')->nullable();
